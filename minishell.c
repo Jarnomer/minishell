@@ -23,9 +23,12 @@ static void	free_struct(t_shell *ms)
 int	main(void)
 {
 	t_shell	ms;
+	extern char **environ;
 
 	ft_bzero(&ms, sizeof(t_shell));
 	ms.prompt = ft_strdup("[ minishell ] ");
+	//copy the environ to ms.envp
+	ms.envp = environ;
 	while (true)
 	{
 		ms.input = readline(ms.prompt);
@@ -35,15 +38,30 @@ int	main(void)
 			printf("\nReceived EOF!\n");
 			break ;
 		}
-		if (ft_strncmp("kill", ms.input, 5) == 0)
+		//parse the input, use 'output' in struct to set the correct message (compare to bash)
+		ms.output = ms.input;
+		//check if input is 'exit'
+		if (ft_strncmp("exit", ms.input, 5) == 0)
 		{
 			free_struct(&ms);
 			printf("\nProgram ended successfully!\n");
 			break ;
 		}
-		//parse the input, use 'output' in struct to set the correct message (compare to bash)
-		ms.output = ms.input;
-		printf("output: %s\n", ms.output);
+		//check if input is 'env'
+		else if (ft_strncmp("env", ms.input, 5) == 0)
+		{
+			int i = 0;
+			while (ms.envp[i] != 0)
+			{
+				printf("%s\n", ms.envp[i]);
+				i++;
+			}
+		}
+		//check if input is 'pwd'
+		else if (ft_strncmp("pwd", ms.input, 5) == 0)
+			printf("%s\n", getenv("PWD"));
+		else
+			printf("output: %s\n", ms.output);
 		free(ms.input);
 	}
 	return (0);
