@@ -13,7 +13,7 @@ ${NAME}: ${OFILES}
 	cc ${OFILES} ${LIBFT} -lreadline -o ${NAME}
 
 ${OFILES}: ${CFILES}
-	cc -Wall -Wextra -Werror -c ${CFILES}
+	cc -Wall -Wextra -Werror -c ${CFILES} -I minishell.h
 
 clean:
 	rm -f ${OFILES}
