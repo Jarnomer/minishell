@@ -12,6 +12,9 @@
 
 #include "minishell.h"
 
+//this will parse the input string to a valid command line and return it as output
+//remove extra spaces, determine whether a command exists and that there is access permissions
+
 char *parse_input(t_shell *ms)
 {
 	return (ms->input);
