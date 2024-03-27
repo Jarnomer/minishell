@@ -123,6 +123,7 @@ int	main(void)
 			i = 0;
 			while (ms.envp[i] != NULL)
 			{
+				//print everything except name='' variables
 				printf("%s\n", ms.envp[i]);
 				i++;
 			}
