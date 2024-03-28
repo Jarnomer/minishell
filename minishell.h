@@ -30,7 +30,7 @@ typedef struct	s_shell
 }				t_shell;
 
 //parser.c
-//true parcer uest
+//true parcer uest testimg testing
 char *parse_input(t_shell *ms);
 
 #endif
