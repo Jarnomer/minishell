@@ -1,6 +1,10 @@
 NAME = minishell
 
-CFILES = minishell.c parser.c
+CFILES = 	minishell.c \
+			init_minishell.c \
+			init_modules.c \
+			free_runtime.c
+
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a
 
@@ -10,7 +14,7 @@ ${LIBFT}:
 	make -C libft
 
 ${NAME}: ${OFILES}
-	cc ${OFILES} ${LIBFT} -lreadline -o ${NAME}
+	cc ${OFILES} ${LIBFT} -lreadline -g -fsanitize=address -o ${NAME}
 
 ${OFILES}: ${CFILES}
 	cc -Wall -Wextra -Werror -c ${CFILES} -I minishell.h
