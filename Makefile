@@ -1,6 +1,6 @@
 NAME = minishell
 
-CFILES = minishell.c parser.c
+CFILES = minishell.c parser.c builtin.c envp.c cd.c free.c
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a
 
