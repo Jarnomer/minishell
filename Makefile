@@ -1,9 +1,14 @@
 NAME = minishell
 
 CFILES = 	minishell.c \
-			init_minishell.c \
+			init_shell.c \
+			init_environ.c \
 			init_modules.c \
-			free_runtime.c
+			utils_parser.c \
+			free_runtime.c \
+			free_destruct.c \
+			free_utils.c \
+			safe_utils.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

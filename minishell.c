@@ -28,7 +28,7 @@ int	main(void)
 {
 	t_shell	ms;
 
-	init_minishell(&ms);
+	init_shell(&ms);
 	while (true)
 	{
 		ms.input = readline(ms.prompt);

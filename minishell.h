@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/30 17:59:17 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/03/31 14:39:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <stdbool.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <sys/_types/_size_t.h>
 
 typedef struct s_shell	t_shell;
 
@@ -77,12 +78,26 @@ typedef struct	s_shell
 	char			**envp;
 	char			*prompt;
 	char			*input;
+	int				cmds;
 	t_module		*mods;
 	t_descriptors	*fds;
 }	t_shell;
 
-void	init_minishell(t_shell *ms);
+// initialization functions
+void	init_shell(t_shell *ms);
+char	**init_environ(void);
 void	init_modules(char *input, t_shell *ms);
+
+// parser WIP
+void	parse_inputs(t_module **lst);
+
+// main freeing functions
 void	free_runtime(t_shell *ms);
+void	self_destruct(t_shell *ms);
+void	close_fds(t_descriptors **fds);
+
+// these functions are for safe allocations
+void	*safe_calloc(size_t n, t_shell *ms);
+char	*safe_substr(char *stt, char *end, t_shell *ms);
 
 #endif

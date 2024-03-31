@@ -10,12 +10,12 @@ static void	init_fds(t_descriptors **fds)
 	(*fds)->out = -1;
 }
 
-void	init_minishell(t_shell *ms)
+void	init_shell(t_shell *ms)
 {
-	extern char **environ;
-
 	ft_bzero(ms, sizeof(*ms));
 	init_fds(&ms->fds);
-	ms->envp = environ;
+	ms->envp = init_environ();
 	ms->prompt = ft_strdup("minishell~>");
+	if (!ms->prompt)
+		perror("Malloc failed!");
 }

@@ -90,15 +90,15 @@ static inline int	ft_isspace(char c)
 static char	*next_quote(char *input, char c)
 {
 	if (!*input)
-		exit (5); // this means that user just inserted quote at the end -> error
+		exit (5);
 	while (*input && *input != c)
 		input++;
 	if (!*input)
-		exit (5); // this means that user didn't insert closing quote -> error
+		exit (5);
 	return (++input);
 }
 
-static char	*breakpoint(char *input, char c)
+static char	*next_break(char *input, char c)
 {
 	int	quotes;
 
@@ -117,7 +117,7 @@ static char	*breakpoint(char *input, char c)
 		return (input);
 }
 
-static void	parse_input(char *input, t_module *mod)
+static void	parse_input(char *input, t_module *mod, t_shell *ms)
 {
 	char		*temp;
 	t_parser	*new;
@@ -126,15 +126,11 @@ static void	parse_input(char *input, t_module *mod)
 	{
 		while (ft_isspace(*input))
 			input++;
-		temp = breakpoint(input, *input);
+		temp = next_break(input, *input);
 		if (input == temp)
 			break;
-		new = ft_calloc(1, sizeof(t_parser));
-		if (!new)
-			perror("Malloc failed!");
-		new->content = ft_substr(input, 0, temp - input);
-		if (!new->content)
-			perror("Malloc failed!");
+		new = safe_calloc(sizeof(t_parser), ms);
+		new->content = safe_substr(input, temp, ms);
 		append_argument(&mod->parse, new);
 		input = temp;
 	}
@@ -152,13 +148,9 @@ void init_modules(char *input, t_shell *ms)
 		temp = ft_strchr(input, '|');
 		if (!temp)
 			temp = input + ft_strlen(input);
-		mod = ft_calloc(1, sizeof(t_module));
-		if (!mod)
-			perror("Malloc failed!");
-		mod->input = ft_substr(input, 0, temp - input);
-		if (!mod->input)
-			perror("Malloc failed!");
-		parse_input(mod->input, mod);
+		mod = safe_calloc(sizeof(t_module), ms);
+		mod->input = safe_substr(input, temp, ms);
+		parse_input(mod->input, mod, ms);
 		append_module(&ms->mods, mod);
 		input = temp + 1;
 	}

@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-static void	reset_fds(t_descriptors **fds)
-{
-	if (!fds || !*fds)
-		return ;
-	(*fds)->pipe[WR_END] = -1;
-	(*fds)->pipe[RD_END] = -1;
-	(*fds)->in = -1;
-	(*fds)->out = -1;
-}
-
 static void	free_single(char **str)
 {
 	if (!str || !*str)
@@ -72,14 +62,15 @@ static void	free_modules(t_module **lst)
 	*lst = NULL;
 }
 
-void	free_runtime(t_shell *ms)
+void	self_destruct(t_shell *ms)
 {
 	if (!ms)
 		return ;
 	if (ms->input != NULL)
 		free_single(&ms->input);
+	if (ms->prompt != NULL)
+		free_single(&ms->prompt);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
 	close_fds(&ms->fds);
-	reset_fds(&ms->fds);
 }
