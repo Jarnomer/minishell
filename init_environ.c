@@ -2,7 +2,7 @@
 
 char	**init_environ(void)
 {
-	extern char **environ;
+	extern char	**environ;
 
 	return (environ);
 }

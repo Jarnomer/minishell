@@ -15,7 +15,6 @@ void	init_shell(t_shell *ms)
 	ft_bzero(ms, sizeof(*ms));
 	init_fds(&ms->fds);
 	ms->envp = init_environ();
-	ms->prompt = ft_strdup("minishell~>");
-	if (!ms->prompt)
-		perror("Malloc failed!");
+	safe_strdup(&ms->prompt, "minishell~>", ms);
+	ms->excode = SUCCESS;
 }

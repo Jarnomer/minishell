@@ -1,0 +1,18 @@
+#include "minishell.h"
+
+void	safe_fn_error(t_shell *ms)
+{
+	perror("Out of memory");
+	self_destruct(ms);
+	exit(ENOMEM);
+}
+
+void	*safe_calloc(size_t n, t_shell *ms)
+{
+	void	*p;
+
+	p = ft_calloc(1, n);
+	if (!p)
+		safe_fn_error(ms);
+	return (p);
+}

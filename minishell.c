@@ -1,19 +1,23 @@
 #include "minishell.h"
 
-static void print_inputs(t_module **lst)
+static void	print_inputs(t_module **lst)
 {
 	t_module	*module;
 	t_parser	*parse;
 	int			i;
+	int			j;
 
+	j = 0;
 	module = *lst;
 	while (module)
 	{
 		i = 0;
 		parse = module->parse;
+		printf("MODULE [%d]\n", j);
+		printf("INPUT: %s\n", module->input);
 		while (parse)
 		{
-			printf("[%d] %s ", i, parse->content);
+			printf("[%d]_%s_", i, parse->content);
 			parse = parse->next;
 			i++;
 		}
@@ -21,6 +25,7 @@ static void print_inputs(t_module **lst)
 		if (module->next)
 			printf("\nNext Module!\n\n");
 		module = module->next;
+		j++;
 	}
 }
 
@@ -37,9 +42,10 @@ int	main(void)
 		else
 		{
 			init_modules(ms.input, &ms);
+			parse_inputs(&ms.mods, &ms);
 			print_inputs(&ms.mods);
 		}
 		free_runtime(&ms);
 	}
-	return (0);
+	return (ms.excode);
 }
