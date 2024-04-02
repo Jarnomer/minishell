@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <stdio.h>
 
 static void	print_inputs(t_module **lst)
 {
@@ -12,12 +13,13 @@ static void	print_inputs(t_module **lst)
 	while (module)
 	{
 		i = 0;
-		parse = module->parse;
 		printf("MODULE [%d]\n", j);
 		printf("INPUT: %s\n", module->input);
+		printf("INFILES:\n");
+		parse = module->infiles;
 		while (parse)
 		{
-			printf("[%d]_%s_", i, parse->content);
+			printf("infile[%d] %s\n", i, parse->content);
 			parse = parse->next;
 			i++;
 		}

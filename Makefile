@@ -11,7 +11,8 @@ CFILES = 	minishell.c \
 			safe_allocs.c \
 			safe_strings.c \
 			error_handling.c \
-			error_modules.c
+			error_modules.c \
+			utils_misc.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

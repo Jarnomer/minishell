@@ -47,5 +47,5 @@ void	self_destruct(t_shell *ms)
 		free_single(&ms->prompt);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
-	close_fds(&ms->fds);
+	// close_fds(&ms->fds);
 }

@@ -1,8 +1,16 @@
 #include "minishell.h"
 
-static inline int	ft_isspace(char c)
+static int	command_count(t_module *mod)
 {
-	return ((c >= 9 && c <= 13) || c == 32);
+	int	len;
+
+	len = 0;
+	while (mod)
+	{
+		mod = mod->next;
+		++len;
+	}
+	return (len);
 }
 
 static void	append_module(t_module **lst, t_module *new)
@@ -35,8 +43,9 @@ void	init_modules(char *input, t_shell *ms)
 		mod = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&mod->input, input, temp, ms);
 		append_module(&ms->mods, mod);
-		if (invalid_syntax(input, mod, ms))
-			break ;
+		// if (invalid_syntax(input, mod, ms))
+		// 	break ;
 		input = temp + 1;
 	}
+	ms->cmds = command_count(ms->mods);
 }

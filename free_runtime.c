@@ -1,14 +1,14 @@
 #include "minishell.h"
 
-static void	reset_fds(t_descriptors **fds)
-{
-	if (!fds || !*fds)
-		return ;
-	(*fds)->pipe[WR_END] = -1;
-	(*fds)->pipe[RD_END] = -1;
-	(*fds)->in = -1;
-	(*fds)->out = -1;
-}
+// static void	reset_fds(t_descriptors **fds)
+// {
+// 	if (!fds || !*fds)
+// 		return ;
+// 	(*fds)->pipe[WR_END] = -1;
+// 	(*fds)->pipe[RD_END] = -1;
+// 	(*fds)->in = -1;
+// 	(*fds)->out = -1;
+// }
 
 static void	free_parser(t_parser **lst)
 {
@@ -55,6 +55,6 @@ void	free_runtime(t_shell *ms)
 		free_single(&ms->input);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
-	close_fds(&ms->fds);
-	reset_fds(&ms->fds);
+	// close_fds(&ms->fds);
+	// reset_fds(&ms->fds);
 }

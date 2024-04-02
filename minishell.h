@@ -17,7 +17,6 @@
 # include "error.h"
 # include "styles.h"
 
-# include <errno.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdbool.h>
@@ -56,6 +55,8 @@ typedef enum e_redirect
 typedef struct s_parser
 {
 	char			*content;
+	int				mode;
+	int				fd;
 	struct s_parser	*next;
 }	t_parser;
 
@@ -63,31 +64,22 @@ typedef struct s_module
 {
 	char			*input;
 	char			**cmd;
-	char			*infile;
-	int				indirect;
-	char			*outfile;
-	int				outdirect;
+	t_parser		*infiles;
+	t_parser		*outfiles;
 	t_parser		*parse;
 	t_shell			*ms;
 	struct s_module	*next;
 }	t_module;
-
-typedef struct s_descriptors
-{
-	int	in;
-	int	out;
-	int	pipe[2];
-}	t_descriptors;
 
 typedef struct s_shell
 {
 	char			**envp;
 	char			*prompt;
 	char			*input;
-	t_module		*mods;
-	t_descriptors	*fds;
-	int				cmds;
+	int				pipe[2];
 	int				excode;
+	int				cmds;
+	t_module		*mods;
 }	t_shell;
 
 // Init functions
@@ -101,7 +93,7 @@ void	parse_inputs(t_module **lst, t_shell *ms);
 // Free functions and utils
 void	free_runtime(t_shell *ms);
 void	self_destruct(t_shell *ms);
-void	close_fds(t_descriptors **fds);
+// void	close_fds(t_descriptors **fds);
 void	free_douple(char ***arr);
 void	free_single(char **str);
 
@@ -117,4 +109,8 @@ void	safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void	safe_strtrim(char **src, char *set, t_shell *ms);
 void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 void	safe_fn_error(t_shell *ms);
+
+// Miscellaneous utility functions
+int	ft_isspace(char c);
+
 #endif

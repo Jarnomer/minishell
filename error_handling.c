@@ -18,7 +18,7 @@ void	exit_error(int errcode, char *errmsg, t_shell *ms)
 	{
 		error_logger(errmsg, ": ", strerror(errno));
 	}
-	close_fds(&ms->fds);
+	// close_fds(&ms->fds);
 	self_destruct(ms);
 	exit(errcode);
 }
