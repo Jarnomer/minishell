@@ -30,11 +30,11 @@ static int name_exists(t_shell *ms, char *name)
 	return (1);
 }
 
-static void builtin_unset(t_shell *ms, int i, int j)
+static void builtin_unset(t_shell *ms, char *input, int i, int j)
 {
 	char **cmds;
 	
-	cmds = ft_split(ms->output, ' ');
+	cmds = ft_split(input, ' ');
 	while (cmds[i] != NULL)
 	{
 		j = 0;
@@ -49,11 +49,11 @@ static void builtin_unset(t_shell *ms, int i, int j)
 	free(cmds);
 }
 
-static void builtin_export(t_shell *ms, int i, int j)
+static void builtin_export(t_shell *ms, char *input, int i, int j)
 {
 	char **cmds;
 	
-	cmds = ft_split(ms->output, ' ');
+	cmds = ft_split(input, ' ');
 	if (cmds[i] == NULL)
 		envp_print(ms->envp, ms->envp_size, 0, 0);
 	while (cmds[i] != NULL)
@@ -80,7 +80,7 @@ static void builtin_env(char **envp, int i, int j)
 		while (envp[i][j] != '=' && envp[i][j] != '\0')
 			j++;
 		if (envp[i][j] == '=')
-			printf("%s\n", envp[i]);
+			ft_putendl_fd(envp[i], 1);
 		i++;
 	}
 }
@@ -94,21 +94,17 @@ int	check_if_builtin(t_shell *ms, char *cmd)
 		else
 			ft_putendl_fd(cmd + 5, 1);
 	}
-	else if (ft_strncmp("cd", cmd, 2) == 0)
-		change_directory(cmd);
+	//else if (ft_strncmp("cd", cmd, 2) == 0)
+	//	builtin_cd(ms, cmd);
 	else if (ft_strncmp("env", cmd, 4) == 0)
 		builtin_env(ms->envp, 0, 0);
 	else if (ft_strncmp("export", cmd, 6) == 0)
-		builtin_export(ms, 1, 0);
+		builtin_export(ms, cmd, 1, 0);
 	else if (ft_strncmp("unset", cmd, 5) == 0)
-		builtin_unset(ms, 1, 0);
+		builtin_unset(ms, cmd, 1, 0);
 	else if (ft_strncmp("pwd", cmd, 4) == 0)
-		printf("%s\n", getenv("PWD"));
+		ft_putendl_fd(getenv("PWD"), 1);
 	else if (ft_strncmp("exit", cmd, 5) == 0)
-	{
-		free_struct(ms);
-		printf("exit\n");
 		return (1);
-	}
 	return (0);
 }

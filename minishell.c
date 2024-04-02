@@ -12,15 +12,58 @@
 
 #include "minishell.h"
 
-//add a working history
+//add a working history (should survive several instances)
+
+static void	print_inputs(t_module **lst, t_shell *ms)
+{
+	t_module	*module;
+	t_parser	*parse;
+	int			i;
+	int			j;
+
+	j = 0;
+	module = *lst;
+	while (module)
+	{
+		i = 0;
+		parse = module->parse;
+		printf("MODULE [%d]\n", j);
+		printf("INPUT: %s\n", module->input);
+		/*while (parse)
+		{
+			printf("[%d]_%s_", i, parse->content);
+			parse = parse->next;
+			i++;
+		}*/
+		ft_putstr_fd("OUTPUT:\n", 1);
+		if (check_if_builtin(ms, module->input) == 1)
+		{
+			free_struct(ms);
+			ft_putstr_fd("exit\n", 1);
+			exit(1);
+		}
+		if (module->next)
+			ft_putstr_fd("\n", 1);
+		module = module->next;
+		j++;
+	}
+}
+
+static void	free_runtime(t_shell *ms)
+{
+	if (ms->input)
+		free(ms->input);
+	if (ms->mods)
+		free_modules(&ms->mods);
+	close_fds(ms->fds);
+	init_fds(ms->fds);
+}
 
 int	main(void)
 {
 	t_shell	ms;
 
-	ft_bzero(&ms, sizeof(t_shell));
-	ms.prompt = ft_strdup("[ minishell ]$ ");
-	ms.envp = init_envp(0, 0, &ms);
+	init_minishell(&ms);
 	while (true)
 	{
 		ms.input = readline(ms.prompt);
@@ -28,18 +71,19 @@ int	main(void)
 		{
 			free_struct(&ms);
 			printf("\nReceived EOF!\n");
-			break ;
-		}	
+			return (1);
+		}
+		//add history functions here
+		init_modules(ms.input, &ms);
+		parse_inputs(&ms.mods, &ms);
+		print_inputs(&ms.mods, &ms);
 		//parse the input, use 'output' in struct to set the correct message (compare to bash)
-		ms.output = parse_input(&ms);
-		//check if input is 'history' (display history list except for the current line)
-		//add history after checking history
-		if (check_if_builtin(&ms, ms.output) == 1)
-			break ;
-		else if (ms.output)
-			printf("command line: %s\n", ms.output);
-		//free input & free parse structs
-		free(ms.input);
+		//ms.output = parse_input(&ms);
+		//if (check_if_builtin(&ms, ms.output) == 1)
+		//	break ;
+		//else if (ms.output)
+		//	printf("command line: %s\n", ms.output);
+		free_runtime(&ms);
 	}
 	return (0);
 }

@@ -58,6 +58,7 @@ void	envp_update(t_shell *ms, char *content)
 		i++;
 	}
 	temp = ms->envp[i];
+	//safe_strdup(&ms->envp[i], content, ms);
 	ms->envp[i] = ft_strdup(content);
 	free(temp);
 }
@@ -71,20 +72,22 @@ void	envp_add(t_shell *ms, char *content)
 	i = 0;
 	j = 0;
 	ms->envp_size += 1;
-	new_envp = ft_calloc(ms->envp_size + 1, sizeof(char *));
+	new_envp = safe_calloc((ms->envp_size + 1) * sizeof(char *), ms);
 	while (i < ms->envp_size)
 	{
 		if (ft_strncmp(ms->envp[j], "_=", 2) == 0)
 		{
 			new_envp[i] = ft_strdup(content);
+			//safe_strdup(&new_envp[i], content, ms);
 			i++;
 		}
 		new_envp[i] = ft_strdup(ms->envp[j]);
+		//safe_strdup(&new_envp[j], content, ms);
 		i++;
 		j++;
 	}
 	new_envp[i] = NULL;
-	free_envp(ms);
+	free_array(ms->envp);
 	ms->envp = new_envp;
 }
 
@@ -97,17 +100,18 @@ void	envp_remove(t_shell *ms, char *content)
 	i = 0;
 	j = 0;
 	ms->envp_size -= 1;
-	new_envp = ft_calloc(ms->envp_size + 1, sizeof(char *));
+	new_envp = safe_calloc((ms->envp_size + 1) * sizeof(char *), ms);
 	while (i < ms->envp_size)
 	{
 		if (ft_strncmp(ms->envp[j], content, ft_strlen(content)) == 0)
 			j++;
 		new_envp[i] = ft_strdup(ms->envp[j]);
+		//safe_strdup(&new_envp[i], ms->envp[j], ms);
 		i++;
 		j++;
 	}
 	new_envp[i] = NULL;
-	free_envp(ms);
+	free_array(ms->envp);
 	ms->envp = new_envp;
 }
 
@@ -119,10 +123,11 @@ char	**init_envp(int i, int size, t_shell *ms)
 	while (environ[size] != NULL)
 		size++;
 	ms->envp_size = size;
-	envp = ft_calloc(size + 1, sizeof(char *));
+	envp = safe_calloc((size + 1) * sizeof(char *), ms);
 	while (i < size)
 	{
 		envp[i] = ft_strdup(environ[i]);
+		//safe_strdup(&envp[i], environ[i], ms);
 		i++;
 	}
 	envp[i] = NULL;
