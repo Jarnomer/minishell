@@ -32,13 +32,11 @@ void	safe_strdup(char **dst, char *src, t_shell *ms)
 {
 	char	*s;
 
-	if (!dst || !src || !*src)
+	if (!dst || !src)
 		return ;
 	s = ft_strdup(src);
 	if (!s)
 		safe_fn_error(ms);
-	if (dst != NULL)
-		free(*dst);
 	*dst = s;
 }
 
@@ -46,7 +44,7 @@ void	safe_substr(char **dst, char *stt, char *end, t_shell *ms)
 {
 	char	*s;
 
-	if (!dst || stt >= end)
+	if (!dst)
 		return ;
 	s = ft_substr(stt, 0, end - stt);
 	if (!s)
