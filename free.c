@@ -72,9 +72,10 @@ void	free_modules(t_module **lst)
 			free_array((*lst)->cmd);
 		if ((*lst)->parse != NULL)
 			free_parser(&(*lst)->parse);
+		free(*lst);
 		*lst = temp;
 	}
-	free(*lst);
+	//free(*lst);
 	*lst = NULL;
 }
 
