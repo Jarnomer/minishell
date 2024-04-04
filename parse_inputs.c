@@ -6,19 +6,19 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:35:25 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:21:04 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*parse_command(char *argv, t_module *mod, t_shell *ms)
+static char	*append_command(char *argv, t_module *mod, t_shell *ms)
 {
 	argv = handle_command(argv, mod, ms);
 	return (argv);
 }
 
-static char	*parse_outfile(char *argv, t_module *mod, t_shell *ms)
+static char	*append_outfile(char *argv, t_module *mod, t_shell *ms)
 {
 	int		mode;
 
@@ -27,7 +27,7 @@ static char	*parse_outfile(char *argv, t_module *mod, t_shell *ms)
 	return (argv);
 }
 
-static char	*parse_infile(char *argv, t_module *mod, t_shell *ms)
+static char	*append_infile(char *argv, t_module *mod, t_shell *ms)
 {
 	int		mode;
 
@@ -50,11 +50,11 @@ void	parse_inputs(t_module **lst, t_shell *ms)
 			while (ft_isspace(*input))
 				input++;
 			if (*input == '<')
-				input = parse_infile(input, mod, ms);
+				input = append_infile(input, mod, ms);
 			else if (*input == '>')
-				input = parse_outfile(input, mod, ms);
+				input = append_outfile(input, mod, ms);
 			else
-				input = parse_command(input, mod, ms);
+				input = append_command(input, mod, ms);
 		}
 		mod = mod->next;
 	}
