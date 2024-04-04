@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:34:48 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ERROR_H
 # define ERROR_H
 
 # define MSG_SYNX		"syntax error near unexpected token"
-# define MSG_QUOTE		"unexpected EOF while looking for matching"
-# define MSG_PARSE		"parse error near"
+# define MSG_QUOT		"unexpected EOF while looking for matching"
 # define MSG_CMD		"command not found"
 # define MSG_PERM		"Permission denied"
 # define MSG_FLDR		"Is a directory"

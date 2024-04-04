@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   open_files.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:32:41 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:35:38 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void open_file(t_parser **lst, int mode)
+void	open_file(t_parser **lst, int mode)
 {
 	t_parser	*temp;
 
@@ -15,6 +27,5 @@ void open_file(t_parser **lst, int mode)
 	else
 	{
 		temp->mode = mode;
-		//open fd with mode
 	}
 }

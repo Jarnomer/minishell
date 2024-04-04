@@ -1,20 +1,25 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_shell.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:30:38 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-// static void	init_fds(t_descriptors **fds)
-// {
-// 	if (!fds || !*fds)
-// 		return ;
-// 	(*fds)->pipe[WR_END] = -1;
-// 	(*fds)->pipe[RD_END] = -1;
-// 	(*fds)->in = -1;
-// 	(*fds)->out = -1;
-// }
+#include "minishell.h"
 
 void	init_shell(t_shell *ms)
 {
+	extern char	**environ;
+
 	ft_bzero(ms, sizeof(*ms));
-	// init_fds(&ms->fds);
-	ms->envp = init_environ();
+	ms->envp = environ;
 	safe_strdup(&ms->prompt, "minishell~>", ms);
+	ms->pipe[RD_END] = -1;
+	ms->pipe[WR_END] = -1;
 	ms->excode = SUCCESS;
 }

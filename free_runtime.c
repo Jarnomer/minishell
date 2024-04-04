@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_runtime.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:28:45 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	free_parser(t_parser **lst)
@@ -14,7 +26,6 @@ static void	free_parser(t_parser **lst)
 		free(*lst);
 		*lst = temp;
 	}
-	free(*lst);
 	*lst = NULL;
 }
 

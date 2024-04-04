@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:25:48 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	count_quotes(char *content, char c)
@@ -37,7 +49,6 @@ void	filter_quotes(char *content, char c, t_shell *ms)
 
 static char	*opposing_quote(char *input, char c)
 {
-	// need to add syntax error handling for unclosed quotes
 	while (*input && *input != c && !ft_issyntax(c))
 		input++;
 	return (++input);
@@ -64,19 +75,20 @@ char	*find_breakpoint(char *input, char c)
 
 char	assign_delimiter(char *argv)
 {
-	char	*sngl;
-	char	*dpbl;
+	char	*single_qt;
+	char	*double_qt;
 
-	sngl = ft_strchr(argv, '\'');
-	dpbl = ft_strchr(argv, '\"');
-	if ((sngl && dpbl) && (sngl > dpbl))
-		return ('\"');
-	else if (sngl && dpbl)
-		return ('\'');
-	else if (dpbl)
-		return ('\"');
-	else if (sngl)
-		return ('\'');
+	single_qt = ft_strchr(argv, SINGLEQUOTE);
+	double_qt = ft_strchr(argv, DOUBLEQUOTE);
+	if ((single_qt && double_qt)
+		&& (single_qt > double_qt))
+		return (DOUBLEQUOTE);
+	else if (single_qt && double_qt)
+		return (SINGLEQUOTE);
+	else if (double_qt)
+		return (DOUBLEQUOTE);
+	else if (single_qt)
+		return (SINGLEQUOTE);
 	else
-		return (' ');
+		return (SPACE);
 }

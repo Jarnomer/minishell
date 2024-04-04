@@ -2,7 +2,6 @@ NAME = minishell
 
 CFILES = 	minishell.c \
 			init_shell.c \
-			init_environ.c \
 			init_modules.c \
 			parse_inputs.c \
 			parse_infile.c \

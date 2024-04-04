@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parse_inputs.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:35:25 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static char	*parse_command(char * argv, t_module *mod, t_shell *ms)
+static char	*parse_command(char *argv, t_module *mod, t_shell *ms)
 {
 	argv = handle_command(argv, mod, ms);
 	return (argv);

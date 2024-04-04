@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_modules.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:35:54 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	command_count(t_module *mod)
@@ -33,7 +45,7 @@ void	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*mod;
 
-	if (invalid_syntax(input, '|', ms))
+	if (error_syntax(input, '|', ms))
 		return ;
 	while (*input)
 	{
@@ -45,8 +57,8 @@ void	init_modules(char *input, t_shell *ms)
 		mod = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&mod->input, input, temp, ms);
 		append_module(&ms->mods, mod);
-		if (invalid_syntax(mod->input, '<', ms)
-			|| invalid_syntax(mod->input, '>', ms))
+		if (error_syntax(mod->input, '<', ms)
+			|| error_syntax(mod->input, '>', ms))
 			return ;
 		input = temp + 1;
 	}

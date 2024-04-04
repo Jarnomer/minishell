@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/04 17:17:44 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:34:18 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,11 @@
 # include "error.h"
 # include "styles.h"
 
-# include <stdio.h>
-# include <stdlib.h>
 # include <stdbool.h>
 # include <fcntl.h>
-# include <string.h>
+# include <stdio.h>
 # include <errno.h>
-#include <sys/_types/_pid_t.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
@@ -50,6 +48,16 @@ typedef enum e_redirect
 	OUTFILE,
 	APPEND
 }	t_redirect;
+
+typedef enum e_syntax
+{
+	PIPE = 124,
+	INDIRECT = 60,
+	OUTDIRECT = 62,
+	SINGLEQUOTE = 39,
+	DOUBLEQUOTE = 34,
+	SPACE = 32
+}	t_syntax;
 
 typedef struct s_parser
 {
@@ -82,10 +90,9 @@ typedef struct s_shell
 
 // Init functions
 void	init_shell(t_shell *ms);
-char	**init_environ(void);
 void	init_modules(char *input, t_shell *ms);
 
-// parser WIP
+// parser functions
 void	parse_inputs(t_module **mod, t_shell *ms);
 char	*handle_infile(char *input, int *mode, t_module *mod, t_shell *ms);
 char	*handle_outfile(char *input, int *mode, t_module *mod, t_shell *ms);
@@ -103,9 +110,9 @@ void	free_douple(char ***arr);
 void	free_single(char **str);
 
 // Error functions and utils
-void	exit_error(int errcode, char *errmsg, t_shell *ms);
+void	error_exit(int errcode, char *errmsg, t_shell *ms);
 void	error_logger(char *msg1, char *msg2, char *msg3);
-int		invalid_syntax(char *input, char c, t_shell *ms);
+int		error_syntax(char *input, char c, t_shell *ms);
 
 // Safety wrapper functions
 void	*safe_calloc(size_t n, t_shell *ms);
@@ -113,7 +120,7 @@ void	safe_strdup(char **dst, char *src, t_shell *ms);
 void	safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void	safe_strtrim(char **src, char *set, t_shell *ms);
 void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
-void	safe_fn_error(t_shell *ms);
+void	fail_malloc(t_shell *ms);
 
 // Miscellaneous utility functions
 int		ft_isspace(char c);

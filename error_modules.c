@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   error_modules.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:36:22 by jmertane         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	error_occured(int errcode, char *token, t_shell *ms)
@@ -22,7 +34,7 @@ static int	invalid_argument(char *input, char c)
 		return (SUCCESS);
 }
 
-int	invalid_syntax(char *input, char c, t_shell *ms)
+int	error_syntax(char *input, char c, t_shell *ms)
 {
 	if (!input || !*input)
 		return (SUCCESS);
