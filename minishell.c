@@ -12,20 +12,50 @@ static void	print_inputs(t_module **lst)
 	module = *lst;
 	while (module)
 	{
-		i = 0;
+		printf("\n==========\n");
 		printf("MODULE [%d]\n", j);
+		printf("==========\n\n");
 		printf("INPUT: %s\n", module->input);
-		printf("INFILES:\n");
-		parse = module->infiles;
+		i = 0;
+		parse = module->command;
 		while (parse)
 		{
-			printf("infile[%d] %s\n", i, parse->content);
+			if (!i)
+			{
+				printf("COMMAND:\n");
+				printf("Executable: %s\n", parse->content);
+			}
+			else
+				printf("Argument[%d]: %s\n", i, parse->content);
 			parse = parse->next;
 			i++;
 		}
-		printf("\n");
-		if (module->next)
-			printf("\nNext Module!\n\n");
+		i = 0;
+		parse = module->infiles;
+		while (parse)
+		{
+			if (!i)
+				printf("INFILES:\n");
+			if (parse->mode == INFILE)
+				printf("Infile: %s\n", parse->content);
+			else
+				printf("Heredoc[EOF]: %s\n", parse->content);
+			parse = parse->next;
+			i++;
+		}
+		i = 0;
+		parse = module->outfiles;
+		while (parse)
+		{
+			if (!i)
+				printf("OUTFILES:\n");
+			if (parse->mode == OUTFILE)
+				printf("Outfile: %s\n", parse->content);
+			else
+				printf("Append: %s\n", parse->content);
+			parse = parse->next;
+			i++;
+		}
 		module = module->next;
 		j++;
 	}
@@ -47,7 +77,7 @@ int	main(void)
 			parse_inputs(&ms.mods, &ms);
 			print_inputs(&ms.mods);
 		}
-		free_runtime(&ms);
+		free_runtime(&ms, SUCCESS);
 	}
 	return (ms.excode);
 }

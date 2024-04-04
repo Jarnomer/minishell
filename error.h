@@ -2,6 +2,8 @@
 # define ERROR_H
 
 # define MSG_SYNX		"syntax error near unexpected token"
+# define MSG_QUOTE		"unexpected EOF while looking for matching"
+# define MSG_PARSE		"parse error near"
 # define MSG_CMD		"command not found"
 # define MSG_PERM		"Permission denied"
 # define MSG_FLDR		"Is a directory"
@@ -12,11 +14,10 @@
 
 enum e_errcodes
 {
-	NOERROR,
-	ERR_FILE,
+	ERR_FILE = 1,
 	ERR_PERM = 126,
-	ERR_CMD,
-	ERR_SIG,
+	ERR_CMD = 127,
+	ERR_SIG = 128,
 	ERR_SYNX = 258
 };
 

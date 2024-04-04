@@ -3,7 +3,7 @@
 void	safe_fn_error(t_shell *ms)
 {
 	perror("Out of memory");
-	self_destruct(ms);
+	free_runtime(ms, FAILURE);
 	exit(ENOMEM);
 }
 

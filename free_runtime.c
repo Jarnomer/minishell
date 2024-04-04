@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-// static void	reset_fds(t_descriptors **fds)
-// {
-// 	if (!fds || !*fds)
-// 		return ;
-// 	(*fds)->pipe[WR_END] = -1;
-// 	(*fds)->pipe[RD_END] = -1;
-// 	(*fds)->in = -1;
-// 	(*fds)->out = -1;
-// }
-
 static void	free_parser(t_parser **lst)
 {
 	t_parser	*temp;
@@ -19,6 +9,8 @@ static void	free_parser(t_parser **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
+		if ((*lst)->fd != -1)
+			close((*lst)->fd);
 		free(*lst);
 		*lst = temp;
 	}
@@ -37,24 +29,33 @@ static void	free_modules(t_module **lst)
 		temp = (*lst)->next;
 		if ((*lst)->input != NULL)
 			free_single(&(*lst)->input);
-		if ((*lst)->cmd != NULL)
-			free_douple(&(*lst)->cmd);
-		if ((*lst)->parse != NULL)
-			free_parser(&(*lst)->parse);
+		if ((*lst)->command != NULL)
+			free_parser(&(*lst)->command);
+		if ((*lst)->infiles != NULL)
+			free_parser(&(*lst)->infiles);
+		if ((*lst)->outfiles != NULL)
+			free_parser(&(*lst)->outfiles);
+		free(*lst);
 		*lst = temp;
 	}
-	free(*lst);
 	*lst = NULL;
 }
 
-void	free_runtime(t_shell *ms)
+void	free_runtime(t_shell *ms, int errcode)
 {
 	if (!ms)
 		return ;
+	if (errcode == FAILURE
+		&& ms->prompt != NULL)
+		free_single(&ms->prompt);
 	if (ms->input != NULL)
 		free_single(&ms->input);
+	if (ms->pids != NULL)
+		free(ms->pids);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
-	// close_fds(&ms->fds);
-	// reset_fds(&ms->fds);
+	if (ms->pipe[RD_END] != -1)
+		close(ms->pipe[RD_END]);
+	if (ms->pipe[WR_END] != -1)
+		close(ms->pipe[WR_END]);
 }

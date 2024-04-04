@@ -4,14 +4,18 @@ CFILES = 	minishell.c \
 			init_shell.c \
 			init_environ.c \
 			init_modules.c \
-			free_runtime.c \
-			free_destruct.c \
-			utils_free.c \
-			parser.c \
-			safe_allocs.c \
-			safe_strings.c \
+			parse_inputs.c \
+			parse_infile.c \
+			parse_outfile.c \
+			parse_command.c \
+			parse_utils.c \
+			open_files.c \
 			error_handling.c \
 			error_modules.c \
+			free_runtime.c \
+			safe_allocs.c \
+			safe_strings.c \
+			utils_free.c \
 			utils_misc.c
 
 OFILES = ${CFILES:.c=.o}

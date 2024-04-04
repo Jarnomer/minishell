@@ -22,13 +22,15 @@ static int	invalid_argument(char *input, char c)
 		return (SUCCESS);
 }
 
-int	invalid_syntax(char *input, t_module *mod, t_shell *ms)
+int	invalid_syntax(char *input, char c, t_shell *ms)
 {
-	if (invalid_argument(input, '|'))
+	if (!input || !*input)
+		return (SUCCESS);
+	else if (c == '|' && invalid_argument(input, c))
 		return (error_occured(ERR_SYNX, "'|'", ms));
-	if (invalid_argument(mod->input, '<'))
+	else if (c == '<' && invalid_argument(input, c))
 		return (error_occured(ERR_SYNX, "'<'", ms));
-	if (invalid_argument(mod->input, '>'))
+	else if (c == '>' && invalid_argument(input, c))
 		return (error_occured(ERR_SYNX, "'>'", ms));
 	return (SUCCESS);
 }
