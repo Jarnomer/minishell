@@ -20,7 +20,7 @@ static int	command_count(t_module *mod)
 	while (mod)
 	{
 		mod = mod->next;
-		++len;
+		len++;
 	}
 	return (len);
 }
@@ -40,13 +40,14 @@ static void	append_module(t_module **lst, t_module *new)
 	}
 }
 
-void	init_modules(char *input, t_shell *ms)
+int	init_modules(char *input, t_shell *ms)
 {
 	char		*temp;
 	t_module	*mod;
 
-	if (error_syntax(input, '|', ms))
-		return ;
+	if (!input || !*input
+		|| error_syntax(input, '|', ms))
+		return (FAILURE);
 	while (*input)
 	{
 		while (ft_isspace(*input))
@@ -57,11 +58,11 @@ void	init_modules(char *input, t_shell *ms)
 		mod = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&mod->input, input, temp, ms);
 		append_module(&ms->mods, mod);
-		if (error_syntax(mod->input, '<', ms)
-			|| error_syntax(mod->input, '>', ms))
-			return ;
+		if (error_syntax(mod->input, 0, ms))
+			return (FAILURE);
 		input = temp + 1;
 	}
 	ms->cmds = command_count(ms->mods);
 	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
+	return (SUCCESS);
 }

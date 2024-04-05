@@ -8,9 +8,10 @@ CFILES = 	minishell.c \
 			parse_outfile.c \
 			parse_command.c \
 			parse_utils.c \
+			parse_helpers.c \
 			open_files.c \
 			error_handling.c \
-			error_modules.c \
+			error_syntax.c \
 			free_runtime.c \
 			safe_allocs.c \
 			safe_strings.c \

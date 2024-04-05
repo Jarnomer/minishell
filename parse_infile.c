@@ -12,21 +12,6 @@
 
 #include "minishell.h"
 
-static void	append_infile(t_parser **lst, t_parser *new)
-{
-	t_parser	*temp;
-
-	if (!*lst)
-		*lst = new;
-	else
-	{
-		temp = *lst;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new;
-	}
-}
-
 static char	*format_infile(char *argv, char c, t_module *mod, t_shell *ms)
 {
 	t_parser	*new;
@@ -39,7 +24,7 @@ static char	*format_infile(char *argv, char c, t_module *mod, t_shell *ms)
 	safe_substr(&new->content, argv, temp, ms);
 	if (ft_strchr(new->content, c))
 		filter_quotes(new->content, c, ms);
-	append_infile(&mod->infiles, new);
+	append_parser(&mod->infiles, new);
 	return (temp);
 }
 

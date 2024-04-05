@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "libft/libft.h"
 #include <stdio.h>
 
 static void	print_inputs(t_module **lst)
@@ -81,11 +82,10 @@ int	main(void)
 	while (true)
 	{
 		ms.input = readline(ms.prompt);
-		if (!ms.input)
+		if (!ms.input || !ft_strncmp(ms.input, "exit", 5))
 			break ;
-		else
+		else if (!init_modules(ms.input, &ms))
 		{
-			init_modules(ms.input, &ms);
 			parse_inputs(&ms.mods, &ms);
 			print_inputs(&ms.mods);
 		}
