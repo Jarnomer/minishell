@@ -94,7 +94,8 @@ int		init_modules(char *input, t_shell *ms);
 
 // parser functions
 void	parse_inputs(t_module **mod, t_shell *ms);
-void	append_parser(t_parser **lst, t_parser *new);
+// void	append_parser(t_parser **lst, t_parser *new);
+char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
 char	*handle_infile(char *input, int *mode, t_module *mod, t_shell *ms);
 char	*handle_outfile(char *input, int *mode, t_module *mod, t_shell *ms);
 char	*handle_command(char *input, t_module *mod, t_shell *ms);

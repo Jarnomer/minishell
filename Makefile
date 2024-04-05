@@ -4,19 +4,15 @@ CFILES = 	minishell.c \
 			init_shell.c \
 			init_modules.c \
 			parse_inputs.c \
-			parse_infile.c \
-			parse_outfile.c \
-			parse_command.c \
 			parse_utils.c \
 			parse_helpers.c \
-			open_files.c \
-			error_handling.c \
 			error_syntax.c \
+			error_utils.c \
 			free_runtime.c \
+			free_utils.c \
 			safe_allocs.c \
 			safe_strings.c \
-			utils_free.c \
-			utils_misc.c
+			misc_utils.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

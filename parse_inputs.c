@@ -12,28 +12,54 @@
 
 #include "minishell.h"
 
-static char	*append_command(char *argv, t_module *mod, t_shell *ms)
+void	assing_mode(t_module *mod, int mode)
 {
-	argv = handle_command(argv, mod, ms);
-	return (argv);
+	t_parser	*temp;
+
+	if (mode == OUTFILE || mode == APPEND)
+		temp = mod->outfiles;
+	else
+		temp = mod->infiles;
+	while (temp->next)
+		temp = temp->next;
+	temp->mode = mode;
 }
 
-static char	*append_outfile(char *argv, t_module *mod, t_shell *ms)
+static char	*append_file(char *input, int *mode)
 {
-	int		mode;
-
-	argv = handle_outfile(argv, &mode, mod, ms);
-	open_file(&mod->outfiles, mode);
-	return (argv);
+	if (*(input + 1) == OUTDIRECT)
+		*mode = APPEND;
+	else if (*(input + 1) == INDIRECT)
+		*mode = HEREDOC;
+	else if (*input == OUTDIRECT)
+		*mode = OUTFILE;
+	else if (*input == INDIRECT)
+		*mode = INFILE;
+	if (*mode == APPEND || *mode == HEREDOC)
+		input += 2;
+	else
+		input += 1;
+	return (input);
 }
 
-static char	*append_infile(char *argv, t_module *mod, t_shell *ms)
+static char	*append_argument(char *input, t_module *mod, t_shell *ms)
 {
 	int		mode;
+	char	c;
 
-	argv = handle_infile(argv, &mode, mod, ms);
-	open_file(&mod->infiles, mode);
-	return (argv);
+	mode = -1;
+	if (ft_issyntax(*input))
+		input = append_file(input, &mode);
+	c = assign_delimiter(input);
+	if (mode == -1)
+		input = parse_argument(input, c, &mod->command, ms);
+	else if (mode == OUTFILE || mode == APPEND)
+		input = parse_argument(input, c, &mod->outfiles, ms);
+	else if (mode == INFILE || mode == HEREDOC)
+		input = parse_argument(input, c, &mod->infiles, ms);
+	if (mode != -1)
+		assing_mode(mod, mode);
+	return (input);
 }
 
 void	parse_inputs(t_module **lst, t_shell *ms)
@@ -49,12 +75,8 @@ void	parse_inputs(t_module **lst, t_shell *ms)
 		{
 			while (ft_isspace(*input))
 				input++;
-			if (*input == '<')
-				input = append_infile(input, mod, ms);
-			else if (*input == '>')
-				input = append_outfile(input, mod, ms);
-			else
-				input = append_command(input, mod, ms);
+			input = append_argument(input, mod, ms);
+			printf("hello");
 		}
 		mod = mod->next;
 	}
