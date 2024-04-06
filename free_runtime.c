@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:28:45 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:56:20 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ static void	free_parser(t_parser **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		if ((*lst)->fd != -1)
-			close((*lst)->fd);
 		free(*lst);
 		*lst = temp;
 	}
@@ -46,6 +44,10 @@ static void	free_modules(t_module **lst)
 			free_parser(&(*lst)->infiles);
 		if ((*lst)->outfiles != NULL)
 			free_parser(&(*lst)->outfiles);
+		if ((*lst)->infd != -1)
+			close((*lst)->infd);
+		if ((*lst)->outfd != -1)
+			close((*lst)->outfd);
 		free(*lst);
 		*lst = temp;
 	}
@@ -65,8 +67,10 @@ void	free_runtime(t_shell *ms, int errcode)
 		free(ms->pids);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
-	if (ms->pipe[RD_END] != -1)
-		close(ms->pipe[RD_END]);
-	if (ms->pipe[WR_END] != -1)
-		close(ms->pipe[WR_END]);
+	if (ms->pipefd[RD_END] != -1)
+		close(ms->pipefd[RD_END]);
+	if (ms->pipefd[WR_END] != -1)
+		close(ms->pipefd[WR_END]);
+	if (ms->tempfd != -1)
+		close(ms->tempfd);
 }

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/04 18:34:18 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:51:39 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 # include "libft/libft.h"
 # include "error.h"
-# include "styles.h"
 
 # include <stdbool.h>
 # include <fcntl.h>
@@ -26,10 +25,14 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# define BR		"\033[1;31m"
+# define Y		"\033[0;33m"
+# define T		"\033[0m"
+
 typedef enum e_checker
 {
-	SUCCESS,
-	FAILURE
+	SUCCESS = 0,
+	FAILURE = -1
 }	t_checker;
 
 typedef enum e_pipe
@@ -63,13 +66,14 @@ typedef struct s_parser
 {
 	char			*content;
 	int				mode;
-	int				fd;
 	struct s_parser	*next;
 }	t_parser;
 
 typedef struct s_module
 {
 	char			*input;
+	int				infd;
+	int				outfd;
 	t_parser		*infiles;
 	t_parser		*outfiles;
 	t_parser		*command;
@@ -81,42 +85,44 @@ typedef struct s_shell
 	char			**envp;
 	char			*prompt;
 	char			*input;
-	int				pipe[2];
-	pid_t			*pids;
 	int				excode;
+	int				pipefd[2];
+	int				tempfd;
 	int				cmds;
+	pid_t			*pids;
 	t_module		*mods;
 }	t_shell;
 
-// Init functions
+// Initialization
 void	init_shell(t_shell *ms);
 int		init_modules(char *input, t_shell *ms);
 
-// parser functions
-void	parse_inputs(t_module **mod, t_shell *ms);
-// void	append_parser(t_parser **lst, t_parser *new);
-char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
-char	*handle_infile(char *input, int *mode, t_module *mod, t_shell *ms);
-char	*handle_outfile(char *input, int *mode, t_module *mod, t_shell *ms);
-char	*handle_command(char *input, t_module *mod, t_shell *ms);
+// Parser
+void	parse_inputs(t_module **lst, t_shell *ms);
+void	parse_files(t_module **lst, t_shell *ms);
 char	assign_delimiter(char *argv);
 char	*find_breakpoint(char *input, char c);
 void	filter_quotes(char *content, char c, t_shell *ms);
+char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
 
-// open functions
+// Child processes
+void	exec_children(t_shell *ms);
+void	wait_children(t_shell *ms);
+
+// Open files
 void	open_file(t_parser **lst, int mode);
 
-// Free functions and utils
+// Free memory
 void	free_runtime(t_shell *ms, int errcode);
 void	free_douple(char ***arr);
 void	free_single(char **str);
 
-// Error functions and utils
+// Error handling
 void	error_exit(int errcode, char *errmsg, t_shell *ms);
 void	error_logger(char *msg1, char *msg2, char *msg3);
 int		error_syntax(char *input, char c, t_shell *ms);
 
-// Safety wrapper functions
+// Safety wrappers
 void	*safe_calloc(size_t n, t_shell *ms);
 void	safe_strdup(char **dst, char *src, t_shell *ms);
 void	safe_substr(char **dst, char *stt, char *end, t_shell *ms);
@@ -124,7 +130,7 @@ void	safe_strtrim(char **src, char *set, t_shell *ms);
 void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 void	fail_malloc(t_shell *ms);
 
-// Miscellaneous utility functions
+// Utility functions
 int		ft_isspace(char c);
 int		ft_issyntax(char c);
 

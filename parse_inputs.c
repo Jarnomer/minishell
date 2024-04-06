@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 19:21:04 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/06 15:10:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ void	assing_mode(t_module *mod, int mode)
 {
 	t_parser	*temp;
 
-	if (mode == OUTFILE || mode == APPEND)
+	if (mode == -1)
+		temp = mod->command;
+	else if (mode == OUTFILE || mode == APPEND)
 		temp = mod->outfiles;
 	else
 		temp = mod->infiles;
@@ -57,8 +59,7 @@ static char	*append_argument(char *input, t_module *mod, t_shell *ms)
 		input = parse_argument(input, c, &mod->outfiles, ms);
 	else if (mode == INFILE || mode == HEREDOC)
 		input = parse_argument(input, c, &mod->infiles, ms);
-	if (mode != -1)
-		assing_mode(mod, mode);
+	assing_mode(mod, mode);
 	return (input);
 }
 
@@ -76,7 +77,6 @@ void	parse_inputs(t_module **lst, t_shell *ms)
 			while (ft_isspace(*input))
 				input++;
 			input = append_argument(input, mod, ms);
-			printf("hello");
 		}
 		mod = mod->next;
 	}

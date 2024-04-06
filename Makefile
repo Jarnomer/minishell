@@ -12,7 +12,7 @@ CFILES = 	minishell.c \
 			free_utils.c \
 			safe_allocs.c \
 			safe_strings.c \
-			misc_utils.c
+			misc_utils.c \
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

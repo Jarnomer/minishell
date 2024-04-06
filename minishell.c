@@ -6,13 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:32:28 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:59:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "libft/libft.h"
-#include <stdio.h>
 
 static void	print_inputs(t_module **lst)
 {
@@ -84,10 +82,13 @@ int	main(void)
 		ms.input = readline(ms.prompt);
 		if (!ms.input || !ft_strncmp(ms.input, "exit", 5))
 			break ;
-		else if (!init_modules(ms.input, &ms))
+		else if (init_modules(ms.input, &ms) == SUCCESS)
 		{
 			parse_inputs(&ms.mods, &ms);
+			// parse_files(&ms.mods, &ms);
 			print_inputs(&ms.mods);
+			// exec_children(&ms);
+			// wait_children(&ms);
 		}
 		free_runtime(&ms, SUCCESS);
 	}

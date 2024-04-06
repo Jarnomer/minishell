@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   styles.h                                           :+:      :+:    :+:   */
+/*   child_wait.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/04 18:34:42 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:34:50 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/06 15:10:53 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef STYLES_H
-# define STYLES_H
+#include "minishell.h"
 
-# define BR		"\033[1;31m"
-# define Y		"\033[0;33m"
-# define T		"\033[0m"
-
-#endif
+void	wait_children(t_shell *ms)
+{
+	ms = NULL;
+	return ;
+}

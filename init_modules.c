@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:35:54 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/06 14:18:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ static void	append_module(t_module **lst, t_module *new)
 			temp = temp->next;
 		temp->next = new;
 	}
+	new->outfd = -1;
+	new->infd = -1;
 }
 
 int	init_modules(char *input, t_shell *ms)
@@ -45,8 +47,7 @@ int	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*mod;
 
-	if (!input || !*input
-		|| error_syntax(input, '|', ms))
+	if (!input || !*input || error_syntax(input, '|', ms))
 		return (FAILURE);
 	while (*input)
 	{
@@ -62,7 +63,7 @@ int	init_modules(char *input, t_shell *ms)
 			return (FAILURE);
 		input = temp + 1;
 	}
-	ms->cmds = command_count(ms->mods);
+	ms->cmds = command_count(ms->mods) - 1;
 	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
 	return (SUCCESS);
 }
