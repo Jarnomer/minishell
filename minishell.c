@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/06 14:59:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:25:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ int	main(void)
 		ms.input = readline(ms.prompt);
 		if (!ms.input || !ft_strncmp(ms.input, "exit", 5))
 			break ;
-		else if (init_modules(ms.input, &ms) == SUCCESS)
+		add_history(ms.input);
+		if (init_modules(ms.input, &ms) == SUCCESS)
 		{
 			parse_inputs(&ms.mods, &ms);
 			// parse_files(&ms.mods, &ms);
@@ -90,7 +91,8 @@ int	main(void)
 			// exec_children(&ms);
 			// wait_children(&ms);
 		}
-		free_runtime(&ms, SUCCESS);
+		free_runtime(&ms);
 	}
+	free_exit(&ms);
 	return (ms.excode);
 }

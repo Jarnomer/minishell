@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_free.c                                       :+:      :+:    :+:   */
+/*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:05 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:26:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:25:40 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	free_single(char **str)
 	*str = NULL;
 }
 
-void	free_douple(char ***arr)
+void	free_double(char ***arr)
 {
 	int	i;
 
@@ -30,9 +30,17 @@ void	free_douple(char ***arr)
 	while ((*arr)[i])
 	{
 		free((*arr)[i]);
-		(*arr)[i] = NULL;
 		i++;
 	}
 	free(*arr);
 	*arr = NULL;
+}
+
+void	free_exit(t_shell *ms)
+{
+	if (ms->prompt != NULL)
+		free_single(&ms->prompt);
+	if (ms->envp != NULL)
+		free_double(&ms->envp);
+	free_runtime(ms);
 }

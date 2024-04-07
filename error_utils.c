@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_handling.c                                   :+:      :+:    :+:   */
+/*   error_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:13 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:36:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:01:31 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ void	error_exit(int errcode, char *errmsg, t_shell *ms)
 	{
 		error_logger(errmsg, ": ", strerror(errno));
 	}
-	free_runtime(ms, FAILURE);
+	free_exit(ms);
 	exit(errcode);
 }

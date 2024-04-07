@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:25:56 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:00:57 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	fail_malloc(t_shell *ms)
 {
 	perror(MSG_MEM);
-	free_runtime(ms, FAILURE);
+	free_exit(ms);
 	exit(ENOMEM);
 }
 

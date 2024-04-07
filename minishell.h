@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/06 14:51:39 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:25:48 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ typedef struct s_shell
 	char			*prompt;
 	char			*input;
 	int				excode;
+	int				envp_size;
 	int				pipefd[2];
 	int				tempfd;
 	int				cmds;
@@ -113,8 +114,10 @@ void	wait_children(t_shell *ms);
 void	open_file(t_parser **lst, int mode);
 
 // Free memory
-void	free_runtime(t_shell *ms, int errcode);
-void	free_douple(char ***arr);
+void	free_runtime(t_shell *ms);
+void	free_exit(t_shell *ms);
+void	close_fds(t_shell *ms);
+void	free_double(char ***arr);
 void	free_single(char **str);
 
 // Error handling
