@@ -29,12 +29,12 @@ static void	print_inputs(t_module **lst, t_shell *ms)
 		parse = module->parse;
 		printf("MODULE [%d]\n", j);
 		printf("INPUT: %s\n", module->input);
-		/*while (parse)
-		{
-			printf("[%d]_%s_", i, parse->content);
-			parse = parse->next;
-			i++;
-		}*/
+		//while (parse)
+		//{
+		//	printf("[%d]_%s_", i, parse->content);
+		//	parse = parse->next;
+		//	i++;
+		//}
 		ft_putstr_fd("OUTPUT:\n", 1);
 		if (check_if_builtin(ms, module->input) == 1)
 		{
@@ -73,16 +73,10 @@ int	main(void)
 			printf("\nReceived EOF!\n");
 			return (1);
 		}
-		//add history functions here
+		add_history(ms.input);
 		init_modules(ms.input, &ms);
 		parse_inputs(&ms.mods, &ms);
 		print_inputs(&ms.mods, &ms);
-		//parse the input, use 'output' in struct to set the correct message (compare to bash)
-		//ms.output = parse_input(&ms);
-		//if (check_if_builtin(&ms, ms.output) == 1)
-		//	break ;
-		//else if (ms.output)
-		//	printf("command line: %s\n", ms.output);
 		free_runtime(&ms);
 	}
 	return (0);

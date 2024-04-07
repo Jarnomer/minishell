@@ -87,6 +87,8 @@ static void builtin_env(char **envp, int i, int j)
 
 int	check_if_builtin(t_shell *ms, char *cmd)
 {
+	char buf[1000];
+
 	if (ft_strncmp("echo", cmd, 4) == 0)
 	{
 		if (ft_strncmp("echo -n", cmd, 7) == 0)
@@ -94,8 +96,13 @@ int	check_if_builtin(t_shell *ms, char *cmd)
 		else
 			ft_putendl_fd(cmd + 5, 1);
 	}
-	//else if (ft_strncmp("cd", cmd, 2) == 0)
-	//	builtin_cd(ms, cmd);
+	else if (ft_strncmp("cd", cmd, 2) == 0)
+	{
+		if (chdir(cmd + 3) == 0)
+			envp_update(ms, ft_strjoin("PWD=", getcwd(buf, 1000)));
+	}
+	else if (ft_strncmp("cwd", cmd, 4) == 0)
+		printf("cwd: %s\n", getcwd(buf, 1000));
 	else if (ft_strncmp("env", cmd, 4) == 0)
 		builtin_env(ms->envp, 0, 0);
 	else if (ft_strncmp("export", cmd, 6) == 0)
@@ -103,7 +110,7 @@ int	check_if_builtin(t_shell *ms, char *cmd)
 	else if (ft_strncmp("unset", cmd, 5) == 0)
 		builtin_unset(ms, cmd, 1, 0);
 	else if (ft_strncmp("pwd", cmd, 4) == 0)
-		ft_putendl_fd(getenv("PWD"), 1);
+		ft_putendl_fd(getcwd(buf, 1000), 1);
 	else if (ft_strncmp("exit", cmd, 5) == 0)
 		return (1);
 	return (0);

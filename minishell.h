@@ -127,14 +127,15 @@ void	envp_add(t_shell *ms, char *content);
 void	envp_remove(t_shell *ms, char *content);
 void	envp_print(char **envp, int envp_size, int i, int flag);
 
-//history.c
-
 //free.c OK!
 void	free_struct(t_shell *ms);
 void	free_modules(t_module **lst);
 void	free_parser(t_parser **lst);
 void	free_array(char **array);
 void	close_fds(t_descriptors *fds);
+
+//history.c
+//void init_history(t_shell *ms);
 
 //init.c OK!
 void	init_minishell(t_shell *ms);
