@@ -1,48 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_files.c                                      :+:      :+:    :+:   */
+/*   open_outfile.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/06 15:10:37 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:25:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	parse_outfiles(t_parser **lst, t_module *mod)
+static inline int	read_outfile(char *file, int mode)
 {
-	t_parser	*temp;
-
-	temp = *lst;
-	while (temp)
-	{
-		temp = temp->next;
-	}
+	if (mode == OUTFILE)
+		return (open(file, O_CREAT | O_WRONLY | O_TRUNC, 0644));
+	else
+		return (open(file, O_CREAT | O_WRONLY | O_APPEND, 0644));
 }
 
-static void	parse_infiles(t_parser **lst, t_module *mod)
+int	open_outfile(t_module *mod)
 {
-	t_parser	*temp;
+	t_parser	*file;
 
-	temp = *lst;
-	while (temp)
+	if (!mod->outfiles)
+		return (STDOUT_FILENO);
+	file = mod->outfiles;
+	if (parser_length(file) < 242)
 	{
-		temp = temp->next;
+		while (file)
+		{
+			mod->outfd = read_outfile(file->content, file->mode);
+			if (mod->outfd == -1)
+				break ;
+			if (file->next && mod->outfd != -1)
+				close(mod->outfd);
+			file = file->next;
+		}
 	}
-}
-
-void	parse_files(t_module **lst, t_shell *ms)
-{
-	t_module	*mod;
-
-	mod = *lst;
-	while (mod)
-	{
-		parse_infiles(&mod->infiles, mod);
-		parse_outfiles(&mod->outfiles, mod);
-		mod = mod->next;
-	}
+	return (mod->outfd);
 }

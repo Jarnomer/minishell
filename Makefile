@@ -6,13 +6,18 @@ CFILES = 	minishell.c \
 			parse_inputs.c \
 			parse_utils.c \
 			parse_helpers.c \
+			open_infile.c \
+			open_outfile.c \
+			open_heredoc.c \
+			child_exec.c \
 			error_syntax.c \
 			error_utils.c \
 			free_runtime.c \
 			free_utils.c \
 			safe_allocs.c \
 			safe_strings.c \
-			misc_utils.c \
+			utils_path.c \
+			utils_misc.c \
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

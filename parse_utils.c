@@ -6,11 +6,24 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/05 19:36:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:16:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	parser_length(t_parser	*file)
+{
+	int	len;
+
+	len = 0;
+	while (file)
+	{
+		file = file->next;
+		len++;
+	}
+	return (len);
+}
 
 static void	append_parser(t_parser **lst, t_parser *new)
 {

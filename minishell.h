@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/07 12:25:48 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:19:52 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,16 @@ char	assign_delimiter(char *argv);
 char	*find_breakpoint(char *input, char c);
 void	filter_quotes(char *content, char c, t_shell *ms);
 char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
+int		parser_length(t_parser	*file);
 
 // Child processes
-void	exec_children(t_shell *ms);
+void	execute_children(t_shell *ms);
 void	wait_children(t_shell *ms);
 
 // Open files
-void	open_file(t_parser **lst, int mode);
+int		open_infile(t_module *mod, t_shell *ms);
+int		open_outfile(t_module *mod);
+int		open_heredoc(char *eof, t_shell *ms);
 
 // Free memory
 void	free_runtime(t_shell *ms);
@@ -134,6 +137,7 @@ void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 void	fail_malloc(t_shell *ms);
 
 // Utility functions
+char	*executable_path(char *exec, t_shell *ms);
 int		ft_isspace(char c);
 int		ft_issyntax(char c);
 

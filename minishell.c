@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 12:25:42 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 20:26:49 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,8 @@ int	main(void)
 		if (init_modules(ms.input, &ms) == SUCCESS)
 		{
 			parse_inputs(&ms.mods, &ms);
-			// parse_files(&ms.mods, &ms);
 			print_inputs(&ms.mods);
-			// exec_children(&ms);
+			execute_children(&ms);
 			// wait_children(&ms);
 		}
 		free_runtime(&ms);
