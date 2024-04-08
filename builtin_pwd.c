@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/08 13:37:27 by vkinaret          #+#    #+#             */
+/*   Updated: 2024/04/08 13:37:30 by vkinaret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	builtin_pwd(t_shell *ms, char **envp)
 {
-	int	i;
+	int i;
 
 	i = 0;
-	while (s[i] != '\0')
+	while (envp[i])
+	{
+		if (ft_strncmp("PATH=", envp[i], 5) == 0)
+			ft_putendl_fd(envp[i] + 5, 1);
 		i++;
-	return (i);
+	}
 }

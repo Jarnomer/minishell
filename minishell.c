@@ -3,18 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/26 17:02:18 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/26 17:02:19 by vkinaret         ###   ########.fr       */
+/*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/07 12:25:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//add a working history (should survive several instances)
-
-static void	print_inputs(t_module **lst, t_shell *ms)
+static void	print_inputs(t_module **lst)
 {
 	t_module	*module;
 	t_parser	*parse;
@@ -25,59 +23,76 @@ static void	print_inputs(t_module **lst, t_shell *ms)
 	module = *lst;
 	while (module)
 	{
-		i = 0;
-		parse = module->parse;
+		printf("\n==========\n");
 		printf("MODULE [%d]\n", j);
+		printf("==========\n\n");
 		printf("INPUT: %s\n", module->input);
-		//while (parse)
-		//{
-		//	printf("[%d]_%s_", i, parse->content);
-		//	parse = parse->next;
-		//	i++;
-		//}
-		ft_putstr_fd("OUTPUT:\n", 1);
-		if (check_if_builtin(ms, module->input) == 1)
+		i = 0;
+		parse = module->command;
+		while (parse)
 		{
-			free_struct(ms);
-			ft_putstr_fd("exit\n", 1);
-			exit(1);
+			if (!i)
+			{
+				printf("COMMAND:\n");
+				printf("Executable: %s\n", parse->content);
+			}
+			else
+				printf("Argument[%d]: %s\n", i, parse->content);
+			parse = parse->next;
+			i++;
 		}
-		if (module->next)
-			ft_putstr_fd("\n", 1);
+		i = 0;
+		parse = module->infiles;
+		while (parse)
+		{
+			if (!i)
+				printf("INFILES:\n");
+			if (parse->mode == INFILE)
+				printf("Infile: %s\n", parse->content);
+			else
+				printf("Heredoc[EOF]: %s\n", parse->content);
+			parse = parse->next;
+			i++;
+		}
+		i = 0;
+		parse = module->outfiles;
+		while (parse)
+		{
+			if (!i)
+				printf("OUTFILES:\n");
+			if (parse->mode == OUTFILE)
+				printf("Outfile: %s\n", parse->content);
+			else
+				printf("Append: %s\n", parse->content);
+			parse = parse->next;
+			i++;
+		}
 		module = module->next;
 		j++;
 	}
-}
-
-static void	free_runtime(t_shell *ms)
-{
-	if (ms->input)
-		free(ms->input);
-	if (ms->mods)
-		free_modules(&ms->mods);
-	close_fds(ms->fds);
-	init_fds(ms->fds);
 }
 
 int	main(void)
 {
 	t_shell	ms;
 
-	init_minishell(&ms);
+	init_shell(&ms);
 	while (true)
 	{
 		ms.input = readline(ms.prompt);
-		if (!ms.input)
-		{
-			free_struct(&ms);
-			printf("\nReceived EOF!\n");
-			return (1);
-		}
+		if (!ms.input || !ft_strncmp(ms.input, "exit", 5))
+			break ;
 		add_history(ms.input);
-		init_modules(ms.input, &ms);
-		parse_inputs(&ms.mods, &ms);
-		print_inputs(&ms.mods, &ms);
+		if (init_modules(ms.input, &ms) == SUCCESS)
+		{
+			parse_inputs(&ms.mods, &ms);
+			// parse_files(&ms.mods, &ms);
+			print_inputs(&ms.mods);
+			// exec_children(&ms);
+			// wait_children(&ms);
+		}
 		free_runtime(&ms);
 	}
-	return (0);
+	free_exit(&ms);
+	return (ms.excode);
 }

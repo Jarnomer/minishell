@@ -1,23 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/04 18:26:05 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/07 12:25:40 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	free_single(char **str)
+{
+	if (!str || !*str)
+		return ;
+	free(*str);
+	*str = NULL;
+}
+
+void	free_double(char ***arr)
 {
 	int	i;
 
+	if (!arr || !*arr)
+		return ;
 	i = 0;
-	while (s[i] != '\0')
+	while ((*arr)[i])
+	{
+		free((*arr)[i]);
 		i++;
-	return (i);
+	}
+	free(*arr);
+	*arr = NULL;
+}
+
+void	free_exit(t_shell *ms)
+{
+	if (ms->prompt != NULL)
+		free_single(&ms->prompt);
+	if (ms->envp != NULL)
+		free_double(&ms->envp);
+	free_runtime(ms);
 }

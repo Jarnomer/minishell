@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   builtin_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/08 13:36:58 by vkinaret          #+#    #+#             */
+/*   Updated: 2024/04/08 13:36:59 by vkinaret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void builtin_env(char **envp, int i, int j)
 {
-	int	i;
-
-	i = 0;
-	while (s[i] != '\0')
+	while (envp[i] != NULL)
+	{
+		j = 0;
+		while (envp[i][j] != '=' && envp[i][j] != '\0')
+			j++;
+		if (envp[i][j] == '=')
+			ft_putendl_fd(envp[i], 1);
 		i++;
-	return (i);
+	}
 }

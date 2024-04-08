@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   child_wait.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/06 15:10:53 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	wait_children(t_shell *ms)
 {
-	int	i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	ms = NULL;
+	return ;
 }

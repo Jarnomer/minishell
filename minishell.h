@@ -6,52 +6,33 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/28 20:01:13 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:25:48 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define MSG_SYNX		"syntax error near unexpected token"
-# define MSG_CMD		"command not found"
-# define MSG_PERM		"Permission denied"
-# define MSG_FLDR		"Is a directory"
-# define MSG_FILE		"No such file or directory"
-# define MSG_MEM		"Out of memory"
-# define MSG_FORK		"Could not fork"
-# define MSG_PIPE		"Could not pipe"
-# define BR				"\033[1;31m"
-# define Y				"\033[0;33m"
-# define T				"\033[0m"
-
 # include "libft/libft.h"
-# include <errno.h>
-# include <stdio.h>
-# include <stdlib.h>
+# include "error.h"
+
 # include <stdbool.h>
 # include <fcntl.h>
+# include <stdio.h>
+# include <errno.h>
 # include <string.h>
 # include <sys/wait.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
-typedef struct s_shell	t_shell;
-
-enum e_errcodes
-{
-	NOERROR,
-	ERR_FILE,
-	ERR_PERM = 126,
-	ERR_CMD,
-	ERR_SIG,
-	ERR_SYNX = 258
-};
+# define BR		"\033[1;31m"
+# define Y		"\033[0;33m"
+# define T		"\033[0m"
 
 typedef enum e_checker
 {
-	FAILURE =	-1,
-	SUCCESS =	0,
+	SUCCESS = 0,
+	FAILURE = -1
 }	t_checker;
 
 typedef enum e_pipe
@@ -71,88 +52,105 @@ typedef enum e_redirect
 	APPEND
 }	t_redirect;
 
+typedef enum e_syntax
+{
+	PIPE = 124,
+	INDIRECT = 60,
+	OUTDIRECT = 62,
+	SINGLEQUOTE = 39,
+	DOUBLEQUOTE = 34,
+	SPACE = 32
+}	t_syntax;
+
 typedef struct s_parser
 {
 	char			*content;
+	int				mode;
 	struct s_parser	*next;
 }	t_parser;
 
-typedef struct	s_module
+typedef struct s_module
 {
 	char			*input;
-	char			**cmd;
-	char			*infile;
-	int				indirect;
-	char			*outfile;
-	int				outdirect;
-	int				redirect[2];
-	t_parser		*parse;
-	t_shell			*ms;
+	int				infd;
+	int				outfd;
+	t_parser		*infiles;
+	t_parser		*outfiles;
+	t_parser		*command;
 	struct s_module	*next;
 }	t_module;
 
-typedef struct	s_descriptors
+typedef struct s_shell
 {
-	int	in;
-	int	out;
-	int	pipe[2];
-}	t_descriptors;
-
-typedef struct	s_shell
-{
+	char			**envp;
 	char			*prompt;
 	char			*input;
-	char			*output;
-	char			**envp;
-	int				envp_size;
-	t_module		*mods;
-	t_descriptors	*fds;
-	int				cmds;
 	int				excode;
-}				t_shell;
+	int				envp_size;
+	int				pipefd[2];
+	int				tempfd;
+	int				cmds;
+	pid_t			*pids;
+	t_module		*mods;
+}	t_shell;
 
-//parser.c
+// Initialization
+void	init_shell(t_shell *ms);
+int		init_modules(char *input, t_shell *ms);
+
+// Parser
 void	parse_inputs(t_module **lst, t_shell *ms);
+void	parse_files(t_module **lst, t_shell *ms);
+char	assign_delimiter(char *argv);
+char	*find_breakpoint(char *input, char c);
+void	filter_quotes(char *content, char c, t_shell *ms);
+char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
 
-//builtin.c
-int		check_if_builtin(t_shell *ms, char *cmd);
+// Child processes
+void	exec_children(t_shell *ms);
+void	wait_children(t_shell *ms);
 
-//builtin2.c
-void	builtin_cd(t_shell *ms, char *cmd);
+// Open files
+void	open_file(t_parser **lst, int mode);
 
-//envp.c
-char	**init_envp(int i, int size, t_shell *ms);
-void	envp_update(t_shell *ms, char *content);
-void	envp_add(t_shell *ms, char *content);
-void	envp_remove(t_shell *ms, char *content);
-void	envp_print(char **envp, int envp_size, int i, int flag);
+// Free memory
+void	free_runtime(t_shell *ms);
+void	free_exit(t_shell *ms);
+void	close_fds(t_shell *ms);
+void	free_double(char ***arr);
+void	free_single(char **str);
 
-//free.c OK!
-void	free_struct(t_shell *ms);
-void	free_modules(t_module **lst);
-void	free_parser(t_parser **lst);
-void	free_array(char **array);
-void	close_fds(t_descriptors *fds);
-
-//history.c
-//void init_history(t_shell *ms);
-
-//init.c OK!
-void	init_minishell(t_shell *ms);
-void	init_fds(t_descriptors *fds);
-void	init_modules(char *input, t_shell *ms);
-
-//error.c
-void	exit_error(int errcode, char *errmsg, t_shell *ms);
+// Error handling
+void	error_exit(int errcode, char *errmsg, t_shell *ms);
 void	error_logger(char *msg1, char *msg2, char *msg3);
-int		invalid_syntax(char *input, t_module *mod, t_shell *ms);
+int		error_syntax(char *input, char c, t_shell *ms);
 
-//safe_utils.c
+// Safety wrappers
 void	*safe_calloc(size_t n, t_shell *ms);
 void	safe_strdup(char **dst, char *src, t_shell *ms);
 void	safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void	safe_strtrim(char **src, char *set, t_shell *ms);
 void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
-void	safe_fn_error(t_shell *ms);
+void	fail_malloc(t_shell *ms);
+
+// Utility functions
+int		ft_isspace(char c);
+int		ft_issyntax(char c);
+
+// Envp functions
+void	envp_print(char **envp, int envp_size, int i, int flag);
+void	envp_update(t_shell *ms, char *content);
+void	envp_add(t_shell *ms, char *content);
+void	envp_remove(t_shell *ms, char *content);
+
+// Builtin functions
+int		is_builtin(t_shell *ms, char **cmd);
+int		name_exists(t_shell *ms, char *name);
+void	builtin_echo(t_shell *ms, char **cmd);
+void	builtin_cd(t_shell *ms, char **cmd);
+void 	builtin_env(char **envp, int i, int j);
+void	builtin_export(t_shell *ms, char **cmd, int i, int j);
+void	builtin_unset(t_shell *ms, char **cmd, int i, int j);
+void	builtin_pwd(t_shell *ms, char **envp);
 
 #endif

@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/26 19:56:14 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/26 19:56:20 by vkinaret         ###   ########.fr       */
+/*   Created: 2024/04/08 13:37:58 by vkinaret          #+#    #+#             */
+/*   Updated: 2024/04/08 13:37:59 by vkinaret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	parse_inputs(t_module **lst, t_shell *ms)
+void builtin_unset(t_shell *ms, char **cmd, int i, int j)
 {
-	t_module	*mod;
-	t_parser	*temp;
-
-	mod = *lst;
-	while (mod)
+	while (cmd[i] != NULL)
 	{
-		temp = mod->parse;
-		while (temp)
-		{
-			if (*temp->content == '\'')
-				safe_strtrim(&temp->content, "\'", ms);
-			else if (*temp->content == '\"')
-				safe_strtrim(&temp->content, "\"", ms);
-			temp = temp->next;
-		}
-		mod = mod->next;
+		j = 0;
+		while (cmd[i][j] != '=' && cmd[i][j] != '\0')
+			j++;
+		if (cmd[i][j] != '=' && name_exists(ms, cmd[i]) == 0)
+			envp_remove(ms, cmd[i]);
+		i++;
 	}
 }

@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   safe_allocs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/07 12:00:57 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	fail_malloc(t_shell *ms)
 {
-	int	i;
+	perror(MSG_MEM);
+	free_exit(ms);
+	exit(ENOMEM);
+}
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+void	*safe_calloc(size_t n, t_shell *ms)
+{
+	void	*p;
+
+	p = ft_calloc(1, n);
+	if (!p)
+		fail_malloc(ms);
+	return (p);
 }

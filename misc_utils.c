@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   utils_misc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/04 18:26:11 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/04 18:26:13 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+int	ft_issyntax(char c)
 {
-	int	i;
+	return (c == '>' || c == '<' || c == '|');
+}
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+int	ft_isspace(char c)
+{
+	return ((c >= 9 && c <= 13) || c == 32);
 }

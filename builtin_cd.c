@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/08 13:37:48 by vkinaret          #+#    #+#             */
+/*   Updated: 2024/04/08 13:37:50 by vkinaret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-size_t	ft_strlen(const char *s)
+void	builtin_cd(t_shell *ms, char **cmd)
 {
-	int	i;
+	char	*path;
+	char	buf[1000];
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	path = NULL;
+	if (chdir(cmd[1]) == 0)
+	{
+		safe_strjoin(&path, "PWD=", getcwd(buf, 1000), ms);
+		builtin_export(ms, &path, 0, 0);
+	}
 }
