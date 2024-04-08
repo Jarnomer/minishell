@@ -55,9 +55,9 @@ int	is_builtin(t_shell *ms, char **cmd)
 		|| (ft_strncmp("cd", cmd[0], 3) == 0 && ft_strlen(cmd[0]) == 3)
 		|| (ft_strncmp("env", cmd[0], 4) == 0 && ft_strlen(cmd[0]) == 4)
 		|| (ft_strncmp("export", cmd[0], 7) == 0 && ft_strlen(cmd[0]) == 7)
-		|| (ft_strncmp("unset", cmd, 6) == 0 && ft_strlen(cmd[0]) == 6)
-		|| (ft_strncmp("pwd", cmd, 4) == 0 && ft_strlen(cmd[0]) == 6)
-		|| (ft_strncmp("exit", cmd, 5) == 0 && ft_strlen(cmd[0]) == 5))
+		|| (ft_strncmp("unset", cmd[0], 6) == 0 && ft_strlen(cmd[0]) == 6)
+		|| (ft_strncmp("pwd", cmd[0], 4) == 0 && ft_strlen(cmd[0]) == 6)
+		|| (ft_strncmp("exit", cmd[0], 5) == 0 && ft_strlen(cmd[0]) == 5))
 		return (execute_builtin(ms, cmd));
 	return (false);
 }

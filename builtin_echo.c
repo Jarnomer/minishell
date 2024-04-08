@@ -17,6 +17,8 @@ void	builtin_echo(t_shell *ms, char **cmd)
 	int i;
 
 	i = 1;
+	if (ms == NULL)
+		return ;
 	if (ft_strncmp("-n", cmd[i], 3) == 0)
 	{
 		while (cmd[++i] != NULL)

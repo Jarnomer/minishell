@@ -17,6 +17,8 @@ void	builtin_pwd(t_shell *ms, char **envp)
 	int i;
 
 	i = 0;
+	if (ms == NULL)
+		return ;
 	while (envp[i])
 	{
 		if (ft_strncmp("PATH=", envp[i], 5) == 0)

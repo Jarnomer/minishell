@@ -13,6 +13,17 @@ CFILES = 	minishell.c \
 			safe_allocs.c \
 			safe_strings.c \
 			misc_utils.c \
+			builtin_cd.c \
+			builtin_echo.c \
+			builtin_env.c \
+			builtin_export.c \
+			builtin_unset.c \
+			builtin_pwd.c \
+			builtin_utils.c \
+			envp_utils.c 
+##			child_exec.c 
+##			child_wait.c
+##			parse_files.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

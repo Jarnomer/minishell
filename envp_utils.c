@@ -87,7 +87,7 @@ void	envp_add(t_shell *ms, char *content)
 		j++;
 	}
 	new_envp[i] = NULL;
-	free_array(ms->envp);
+	free_double(&ms->envp);
 	ms->envp = new_envp;
 }
 
@@ -111,6 +111,6 @@ void	envp_remove(t_shell *ms, char *content)
 		j++;
 	}
 	new_envp[i] = NULL;
-	free_array(ms->envp);
+	free_double(&ms->envp);
 	ms->envp = new_envp;
 }
