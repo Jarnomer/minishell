@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 16:04:19 by vkinaret          #+#    #+#             */
-/*   Updated: 2023/10/25 15:01:34 by vkinaret         ###   ########.fr       */
+/*   Created: 2023/11/08 15:39:27 by jmertane          #+#    #+#             */
+/*   Updated: 2023/11/08 15:39:54 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_toupper(int c)
 {
-	if (c >= 'a' && c <= 'z')
+	if ('a' <= c && c <= 'z')
 		return (c - 32);
 	return (c);
 }

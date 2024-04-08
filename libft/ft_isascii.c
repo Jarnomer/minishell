@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isascii.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:26:21 by vkinaret          #+#    #+#             */
-/*   Updated: 2023/10/25 16:04:11 by vkinaret         ###   ########.fr       */
+/*   Created: 2023/11/08 15:28:44 by jmertane          #+#    #+#             */
+/*   Updated: 2023/11/26 10:48:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,5 @@
 
 int	ft_isascii(int c)
 {
-	if (c >= 0 && c <= 127)
-		return (1);
-	else
-		return (0);
+	return (0 <= c && c <= 127);
 }

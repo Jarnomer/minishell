@@ -3,93 +3,55 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/26 11:33:24 by vkinaret          #+#    #+#             */
-/*   Updated: 2023/10/30 10:50:48 by vkinaret         ###   ########.fr       */
+/*   Created: 2023/11/08 16:22:39 by jmertane          #+#    #+#             */
+/*   Updated: 2023/11/26 13:05:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	check_size(int n)
+static void	st_fll_str(char *str, int n, int len)
 {
-	int	count;
-
-	if (n == -2147483648)
-		return (11);
-	count = 1;
 	if (n < 0)
 	{
-		n = n * -1;
-		count++;
+		*str = '-';
+		n *= -1;
 	}
-	while (n >= 10)
+	while (n != 0)
 	{
-		n = n / 10;
-		count++;
+		--len;
+		*(str + len) = n % 10 + '0';
+		n /= 10;
 	}
-	return (count);
 }
 
-static char	*save_more_space(char *str, int size, int n, int i)
+static int	st_get_bff(int n)
 {
-	int	t;
-	int	count;
+	int	bff;
 
-	while (size != 0)
+	bff = (n == 0) + (n < 0);
+	while (n != 0)
 	{
-		t = n;
-		count = 1;
-		while (size != count)
-		{
-			t = t / 10;
-			count++;
-		}
-		if (t >= 10)
-			str[i] = t % 10 + '0';
-		else
-			str[i] = t + '0';
-		size--;
-		i++;
+		n /= 10;
+		++bff;
 	}
-	str[i] = '\0';
-	return (str);
-}
-
-static char	*save_space(char *str, int size, int n)
-{
-	int	i;
-
-	i = 0;
-	if (n == -2147483648)
-	{
-		str[0] = '-';
-		str[1] = '2';
-		n = 147483648;
-		size -= 2;
-		i += 2;
-	}
-	if (n < 0)
-	{
-		str[0] = '-';
-		n = n * -1;
-		size--;
-		i++;
-	}
-	str = save_more_space(str, size, n, i);
-	return (str);
+	return (bff);
 }
 
 char	*ft_itoa(int n)
 {
-	int		size;
-	char	*str;
+	char	*new;
+	int		bff;
 
-	size = check_size(n);
-	str = malloc(size + 1);
-	if (str == NULL)
-		return (NULL);
-	str = save_space(str, size, n);
-	return (str);
+	if (n == 0)
+		return (ft_strdup("0"));
+	else if (n == INT_MIN)
+		return (ft_strdup("-2147483648"));
+	bff = st_get_bff(n);
+	new = ft_calloc(bff + 1, sizeof(char));
+	if (new)
+		st_fll_str(new, n, bff);
+	return (new);
 }

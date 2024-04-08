@@ -3,50 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/26 11:31:34 by vkinaret          #+#    #+#             */
-/*   Updated: 2023/11/07 19:58:30 by vkinaret         ###   ########.fr       */
+/*   Created: 2023/11/08 15:52:59 by jmertane          #+#    #+#             */
+/*   Updated: 2024/02/08 15:43:17 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	check_size(char const *s, unsigned int start, size_t len)
-{
-	int	size;
-
-	size = (int)len;
-	if (len > (size_t)ft_strlen(s + start))
-		size = ft_strlen(s + start);
-	return (size);
-}
-
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	size_t		i;
-	char		*substr;
+	char	*new;
+	size_t	ln;
 
-	i = 0;
-	if (s == NULL)
+	if (!s)
 		return (NULL);
-	if ((size_t)start >= ft_strlen(s))
-	{
-		substr = malloc(1);
-		if (substr == NULL)
-			return (NULL);
-		substr[0] = '\0';
-		return (substr);
-	}
-	substr = malloc(check_size(s, start, len) + 1);
-	if (substr == NULL)
-		return (NULL);
-	while (i < len && s[start] != '\0')
-	{
-		substr[i] = s[start];
-		i++;
-		start++;
-	}
-	substr[i] = '\0';
-	return (substr);
+	ln = ft_strlen(s);
+	if (!*s || start >= ln)
+		return ((ft_strdup("")));
+	if (len > ln - start)
+		len = ln - start;
+	new = ft_calloc(len + 1, sizeof(char));
+	if (new)
+		ft_strlcpy(new, s + start, len + 1);
+	return (new);
 }

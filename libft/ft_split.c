@@ -3,100 +3,75 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/26 11:32:43 by vkinaret          #+#    #+#             */
-/*   Updated: 2023/10/30 10:59:52 by vkinaret         ###   ########.fr       */
+/*   Created: 2023/11/08 16:17:03 by jmertane          #+#    #+#             */
+/*   Updated: 2023/11/26 13:10:45 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	num_of_strings(char const *s, char c)
+static char	**st_mem_cln(char **arr, int wrd)
 {
-	int		i;
-	int		count;
-
-	i = 0;
-	count = 0;
-	if (s[i] != c && s[i] != '\0')
-		count = 1;
-	while (s[i] != '\0')
-	{
-		if (s[i] == c && s[i + 1] != c && s[i + 1] != '\0')
-			count++;
-		i++;
-	}
-	return (count);
+	while (--wrd >= 0)
+		free(arr[wrd]);
+	free(arr);
+	return (NULL);
 }
 
-static unsigned int	find_first_i(char const *s, char c, int i)
+static char	**st_fll_arr(char **arr, char const *s, char c, int cnt)
 {
-	int	j;
-	int	count;
+	int	stt;
+	int	end;
+	int	wrd;
 
-	j = 0;
-	count = -1;
-	if (s[j] != c)
-		count = 0;
-	if (s[j] != c && i == 0)
-		return (0);
-	while (s[j] != '\0')
+	wrd = 0;
+	end = 0;
+	while (wrd < cnt)
 	{
-		if (s[j] == c && s[j + 1] != c && s[j + 1] != '\0')
-			count++;
-		if (count == i)
-			return (j + 1);
-		j++;
+		while (s[end] == c)
+			++end;
+		stt = end;
+		while (s[end] && s[end] != c)
+			++end;
+		arr[wrd] = ft_substr(s, stt, end - stt);
+		if (!arr[wrd])
+			return (st_mem_cln(arr, wrd));
+		++end;
+		++wrd;
 	}
-	return (0);
+	arr[cnt] = NULL;
+	return (arr);
 }
 
-static void	free_array(char **array, int i)
+static int	st_wrd_cnt(char const *s, char c)
 {
-	while (i >= 0)
+	int	cnt;
+
+	cnt = 0;
+	while (*s)
 	{
-		free(array[i]);
-		i--;
+		while (*s == c)
+			++s;
+		if (*s)
+			++cnt;
+		while (*s && *s != c)
+			++s;
 	}
-	free(array);
-}
-
-static char	*create_substr(char const *s, char c, int i)
-{
-	size_t			len;
-	char			*substr;
-	unsigned int	start;
-
-	len = 0;
-	start = find_first_i(s, c, i);
-	while (s[start + len] != c && s[start + len] != '\0')
-		len++;
-	substr = ft_substr(s, start, len);
-	return (substr);
+	return (cnt);
 }
 
 char	**ft_split(char const *s, char c)
 {
-	int		i;
-	char	**array;
+	char	**arr;
+	int		cnt;
 
-	i = 0;
-	if (s == NULL)
+	if (!s)
 		return (NULL);
-	array = malloc((num_of_strings(s, c) + 1) * sizeof(char *));
-	if (array == NULL)
+	cnt = st_wrd_cnt(s, c);
+	arr = malloc(sizeof(char *) * (cnt + 1));
+	if (!arr)
 		return (NULL);
-	while (i < num_of_strings(s, c))
-	{
-		array[i] = create_substr(s, c, i);
-		if (array[i] == NULL)
-		{
-			free_array(array, i);
-			return (NULL);
-		}
-		i++;
-	}
-	array[i] = NULL;
-	return (array);
+	return (st_fll_arr(arr, s, c, cnt));
 }

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:37:46 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/01 17:50:48 by jmertane         ###   ########.fr       */
+/*   Created: 2023/11/08 15:30:21 by jmertane          #+#    #+#             */
+/*   Updated: 2024/02/08 23:40:01 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,12 @@
 
 size_t	ft_strlen(const char *s)
 {
-	int	i;
+	size_t	ln;
 
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
+	if (!s)
+		return (0);
+	ln = 0;
+	while (s[ln])
+		++ln;
+	return (ln);
 }
