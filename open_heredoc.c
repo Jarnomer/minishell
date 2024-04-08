@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <errno.h>
 
 static void	finish_heredoc(char **line, t_shell *ms)
 {
@@ -23,7 +24,7 @@ static void	finish_heredoc(char **line, t_shell *ms)
 static int	prepare_heredoc(char *eof, t_shell *ms)
 {
 	if (pipe(ms->pipefd) == FAILURE)
-		error_exit(-1, MSG_PIPE, ms);
+		error_fatal(errno, MSG_PIPE, ms);
 	safe_strjoin(&eof, eof, "\n", ms);
 	ft_putstr_fd("> ", STDOUT_FILENO);
 	return (ft_strlen(eof));

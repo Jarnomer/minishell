@@ -57,10 +57,6 @@ static void	free_modules(t_module **lst)
 			free_parser(&(*lst)->infiles);
 		if ((*lst)->outfiles != NULL)
 			free_parser(&(*lst)->outfiles);
-		if ((*lst)->infd != -1)
-			close((*lst)->infd);
-		if ((*lst)->outfd != -1)
-			close((*lst)->outfd);
 		free(*lst);
 		*lst = temp;
 	}

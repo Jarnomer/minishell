@@ -6,16 +6,27 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 20:16:23 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:28:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	parser_length(t_parser	*file)
+t_parser	*parser_last(t_parser *file)
+{
+	if (!file)
+		return (NULL);
+	while (file->next)
+		file = file->next;
+	return (file);
+}
+
+int	parser_length(t_parser *file)
 {
 	int	len;
 
+	if (!file)
+		return (0);
 	len = 0;
 	while (file)
 	{

@@ -38,8 +38,6 @@ static void	append_module(t_module **lst, t_module *new)
 			temp = temp->next;
 		temp->next = new;
 	}
-	new->outfd = -1;
-	new->infd = -1;
 }
 
 int	init_modules(char *input, t_shell *ms)
