@@ -137,4 +137,20 @@ void	fail_malloc(t_shell *ms);
 int		ft_isspace(char c);
 int		ft_issyntax(char c);
 
+// Envp functions
+void	envp_print(char **envp, int envp_size, int i, int flag);
+void	envp_update(t_shell *ms, char *content);
+void	envp_add(t_shell *ms, char *content);
+void	envp_remove(t_shell *ms, char *content);
+
+// Builtin functions
+int		is_builtin(t_shell *ms, char **cmd);
+int		name_exists(t_shell *ms, char *name);
+void	builtin_echo(t_shell *ms, char **cmd);
+void	builtin_cd(t_shell *ms, char **cmd);
+void 	builtin_env(char **envp, int i, int j);
+void	builtin_export(t_shell *ms, char **cmd, int i, int j);
+void	builtin_unset(t_shell *ms, char **cmd, int i, int j);
+void	builtin_pwd(t_shell *ms, char **envp);
+
 #endif
