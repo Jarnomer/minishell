@@ -6,24 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 12:25:45 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 19:05:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	close_fds(t_shell *ms)
-{
-	if (ms->pipefd[RD_END] != -1)
-		close(ms->pipefd[RD_END]);
-	if (ms->pipefd[WR_END] != -1)
-		close(ms->pipefd[WR_END]);
-	if (ms->tempfd != -1)
-		close(ms->tempfd);
-	ms->pipefd[RD_END] = -1;
-	ms->pipefd[WR_END] = -1;
-	ms->tempfd = -1;
-}
 
 static void	free_parser(t_parser **lst)
 {
@@ -63,15 +50,24 @@ static void	free_modules(t_module **lst)
 	*lst = NULL;
 }
 
+static inline void	reset_shell(t_shell *ms)
+{
+	ms->idx = 0;
+}
+
 void	free_runtime(t_shell *ms)
 {
 	if (!ms)
 		return ;
+	close_fds(ms);
 	if (ms->input != NULL)
 		free_single(&ms->input);
 	if (ms->pids != NULL)
+	{
 		free(ms->pids);
+		ms->pids = NULL;
+	}
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
-	close_fds(ms);
+	reset_shell(ms);
 }

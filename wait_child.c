@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   safe_allocs.c                                      :+:      :+:    :+:   */
+/*   wait_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 14:10:14 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/09 19:17:01 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	*safe_calloc(size_t n, t_shell *ms)
+static inline int	update_exitcode(int wstat)
 {
-	void	*p;
+	return (WEXITSTATUS(wstat));
+}
 
-	p = ft_calloc(1, n);
-	if (!p)
-		error_fatal(ENOMEM, MSG_MEM, ms);
-	return (p);
+void	wait_children(t_shell *ms)
+{
+	int	wstat;
+	int	i;
+
+	i = 0;
+	while (i < ms->idx)
+	{
+		waitpid(ms->pids[i], &wstat, 0);
+		ms->excode = update_exitcode(wstat);
+		i++;
+	}
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error_modules.c                                    :+:      :+:    :+:   */
+/*   error_syntax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:36:22 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:40:54 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	error_occured(int errcode, char *errmsg, char *token, t_shell *ms)
 {
-	error_logger(errmsg, " ", token);
+	error_logger(errmsg, " ", token, ms);
 	ms->excode = errcode;
 	return (FAILURE);
 }

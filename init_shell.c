@@ -6,11 +6,21 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 11:55:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:11:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	create_prompt(t_shell *ms)
+{
+	safe_strdup(&ms->prompt, "", ms);
+	safe_strjoin(&ms->prompt, V, "mini", ms);
+	safe_strjoin(&ms->prompt, ms->prompt, T, ms);
+	safe_strjoin(&ms->prompt, ms->prompt, G, ms);
+	safe_strjoin(&ms->prompt, ms->prompt, "$ ", ms);
+	safe_strjoin(&ms->prompt, ms->prompt, T, ms);
+}
 
 static void	init_envp(t_shell *ms)
 {
@@ -30,11 +40,9 @@ static void	init_envp(t_shell *ms)
 
 void	init_shell(t_shell *ms)
 {
-	extern char	**environ;
-
 	ft_bzero(ms, sizeof(*ms));
 	init_envp(ms);
-	safe_strdup(&ms->prompt, "mini$ ", ms);
+	create_prompt(ms);
 	ms->pipefd[RD_END] = -1;
 	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;

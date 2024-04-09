@@ -9,12 +9,15 @@ CFILES = 	minishell.c \
 			open_infile.c \
 			open_outfile.c \
 			open_heredoc.c \
-			child_exec.c \
-			child_wait.c \
+			exec_child.c \
+			exec_redirect.c \
+			exec_command.c \
+			wait_child.c \
 			error_syntax.c \
 			error_utils.c \
 			free_runtime.c \
 			free_utils.c \
+			close_fds.c \
 			safe_allocs.c \
 			safe_strings.c \
 			builtin_cd.c \
