@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 18:22:14 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/02 17:33:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:53:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	init_new_iter(t_gnl **lst, int fd)
 	int		bts;
 
 	new = *lst;
-	while (!aisjdfbiasdbfiaerubfwerub(new))
+	while (!found_new_line(new))
 	{
 		new = malloc(sizeof(t_gnl));
 		bff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
