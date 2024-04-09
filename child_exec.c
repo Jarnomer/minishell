@@ -6,38 +6,23 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 20:28:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:43:21 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <unistd.h>
-
-static int	argument_count(t_parser	*file)
-{
-	int	len;
-
-	len = 0;
-	while (file)
-	{
-		file = file->next;
-		len++;
-	}
-	return (len);
-}
 
 static char	**build_command(t_parser *command, t_shell *ms)
 {
 	char	**cmd;
 	int		i;
 
-	cmd = safe_calloc((argument_count(command) + 1) * sizeof(char *), ms);
+	cmd = safe_calloc((parser_length(command) + 1) * sizeof(char *), ms);
 	i = 0;
-	while (cmd[i])
+	while (command)
 	{
-		cmd[i] = command->content;
+		cmd[i++] = command->content;
 		command = command->next;
-		i++;
 	}
 	return (cmd);
 }
@@ -47,30 +32,47 @@ static void	execute_cmd(t_module *mod, t_shell *ms)
 	char	**cmd;
 	char	*exec;
 
-	// check if buildin
 	exec = mod->command->content;
 	exec = executable_path(exec, ms);
 	cmd = build_command(mod->command, ms);
 	execve(exec, cmd, ms->envp);
 }
 
-static void	replace_io(int input, int output, t_shell *ms)
+static int	verify_outdirect(t_module *mod, t_shell *ms)
 {
-	if (dup2(input, STDIN_FILENO) == FAILURE
-		|| (dup2(output, STDOUT_FILENO) == FAILURE))
-		error_exit(ERR_FILE, NULL, ms);
+	if (mod->outfiles != NULL)
+		return (open_outfile(mod));
+	else if (ms->cmds != 0 && ms->idx != ms->cmds)
+		return (ms->pipefd[WR_END]);
+	else
+		return (STDOUT_FILENO);
 }
 
-static void	redirect_fds(t_module *mod, t_shell *ms, int i)
+static int	verify_indirect(t_module *mod, t_shell *ms)
+{
+	if (mod->infiles != NULL)
+		return (open_infile(mod, ms));
+	else if (ms->cmds != 0)
+		return (ms->tempfd);
+	else
+		return (STDIN_FILENO);
+}
+
+static void	redirect_fds(t_module *mod, t_shell *ms)
 {
 	int	infd;
 	int	outfd;
-	if (!i && mod->infiles != NULL)
-		replace_io(open_infile(mod, ms), ms->pipefd[WR_END], ms);
-	else if (i != ms->cmds)
-		replace_io(ms->tempfd, ms->pipefd[WR_END], ms);
-	else if (mod->outfiles != NULL)
-		replace_io(ms->tempfd, open_outfile(mod), ms);
+
+	if (ms->cmds == 1)
+		return ;
+	infd = verify_indirect(mod,ms);
+	outfd = verify_outdirect(mod, ms);
+	if (dup2(infd, STDIN_FILENO) == FAILURE)
+		perror("Dup2 error");
+		// error_exit(ERR_FILE, ms);
+	if (dup2(outfd, STDOUT_FILENO) == FAILURE)
+		perror("Dup2 error");
+		// error_exit(ERR_FILE, ms);
 	if (infd != -1)
 		close(infd);
 	if (outfd != -1)
@@ -79,6 +81,8 @@ static void	redirect_fds(t_module *mod, t_shell *ms, int i)
 
 static void	prep_next_pipe(t_shell *ms)
 {
+	if (ms->cmds == 1)
+		return ;
 	close(ms->pipefd[WR_END]);
 	if (ms->tempfd != -1)
 		close(ms->tempfd);
@@ -89,27 +93,26 @@ static void	prep_next_pipe(t_shell *ms)
 void	execute_children(t_shell *ms)
 {
 	t_module	*mod;
-	int			i;
 
-	i = 0;
-	while (i <= ms->cmds)
+	while (ms->idx < ms->cmds)
 	{
-		if (i == 0)
+		if (ms->idx == 0)
 			mod = ms->mods;
-		if (i != ms->cmds && pipe(ms->pipefd) == FAILURE)
-			perror(MSG_PIPE); // fatal error
-		ms->pids[i] = fork();
-		if (ms->pids[i] == FAILURE)
-			perror(MSG_FORK); // fatal error
-		else if (ms->pids[i] != 0)
+		if (ms->idx != ms->cmds
+			&& pipe(ms->pipefd) == FAILURE)
+			error_fatal(errno, MSG_PIPE, ms);
+		ms->pids[ms->idx] = fork();
+		if (ms->pids[ms->idx] == FAILURE)
+			error_fatal(errno, MSG_FORK, ms);
+		else if (ms->pids[ms->idx] != 0)
 		{
 			prep_next_pipe(ms);
 			mod = mod->next;
-			i++;
+			ms->idx++;
 		}
-		else if (ms->pids[i] == 0)
+		else if (ms->pids[ms->idx] == 0)
 		{
-			redirect_fds(mod, ms, i);
+			redirect_fds(mod, ms);
 			close_fds(ms);
 			execute_cmd(mod, ms);
 		}

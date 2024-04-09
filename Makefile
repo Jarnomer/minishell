@@ -6,6 +6,14 @@ CFILES = 	minishell.c \
 			parse_inputs.c \
 			parse_utils.c \
 			parse_helpers.c \
+<<<<<<< HEAD
+=======
+			open_infile.c \
+			open_outfile.c \
+			open_heredoc.c \
+			child_exec.c \
+			child_wait.c \
+>>>>>>> e0d1cc17547bbc89b8acdff6b7e8a024b3b254c3
 			error_syntax.c \
 			error_utils.c \
 			free_runtime.c \

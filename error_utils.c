@@ -6,11 +6,18 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:13 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 12:01:31 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/08 20:31:51 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	error_child(char *s1, char *s2, t_module *mod)
+{
+	mod->errmsg[0] = s1;
+	mod->errmsg[1] = ": ";
+	mod->errmsg[2] = s2;
+}
 
 void	error_logger(char *msg1, char *msg2, char *msg3)
 {
@@ -24,12 +31,17 @@ void	error_logger(char *msg1, char *msg2, char *msg3)
 	ft_putstr_fd(T, STDERR_FILENO);
 }
 
-void	error_exit(int errcode, char *errmsg, t_shell *ms)
+void	error_fatal(int errcode, char *errmsg, t_shell *ms)
 {
 	if (errmsg != NULL)
-	{
-		error_logger(errmsg, ": ", strerror(errno));
-	}
+		perror(errmsg);
+	// if (ms->idx != 0)
+	// 	wait_children(ms);
+	error_exit(errcode, ms);
+}
+
+void	error_exit(int errcode, t_shell *ms)
+{
 	free_exit(ms);
 	exit(errcode);
 }

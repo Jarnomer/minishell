@@ -6,13 +6,13 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 18:22:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/02 17:33:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 12:59:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	aisjdfbiasdbfiaerubfwerub(t_gnl *lst)
+int	found_new_line(t_gnl *lst)
 {
 	int	i;
 
