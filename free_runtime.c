@@ -69,8 +69,8 @@ void	free_runtime(t_shell *ms)
 		return ;
 	if (ms->input != NULL)
 		free_single(&ms->input);
-	if (ms->pids != NULL)
-		free(ms->pids);
+	//if (ms->pids != NULL)
+	//	free(ms->pids);
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
 	close_fds(ms);

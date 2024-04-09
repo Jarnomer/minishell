@@ -94,11 +94,13 @@ void	execute_children(t_shell *ms)
 {
 	t_module	*mod;
 
+	ms->idx = 0;
+	//printf("idx: %d, cmds: %d\n", ms->idx, ms->cmds);
 	while (ms->idx < ms->cmds)
 	{
 		if (ms->idx == 0)
 			mod = ms->mods;
-		if (ms->idx != ms->cmds
+		if (ms->idx != ms->cmds 
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
 		ms->pids[ms->idx] = fork();
@@ -108,7 +110,6 @@ void	execute_children(t_shell *ms)
 		{
 			prep_next_pipe(ms);
 			mod = mod->next;
-			ms->idx++;
 		}
 		else if (ms->pids[ms->idx] == 0)
 		{
@@ -116,5 +117,6 @@ void	execute_children(t_shell *ms)
 			close_fds(ms);
 			execute_cmd(mod, ms);
 		}
+		ms->idx++;
 	}
 }
