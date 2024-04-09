@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/06 14:18:38 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:15:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	init_modules(char *input, t_shell *ms)
 			return (FAILURE);
 		input = temp + 1;
 	}
-	ms->cmds = command_count(ms->mods) - 1;
+	ms->cmds = command_count(ms->mods);
 	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
 	return (SUCCESS);
 }

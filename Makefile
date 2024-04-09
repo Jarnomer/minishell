@@ -10,6 +10,7 @@ CFILES = 	minishell.c \
 			open_outfile.c \
 			open_heredoc.c \
 			child_exec.c \
+			child_wait.c \
 			error_syntax.c \
 			error_utils.c \
 			free_runtime.c \
@@ -26,8 +27,6 @@ CFILES = 	minishell.c \
 			utils_path.c \
 			utils_envp.c \
 			utils_misc.c
-##			child_exec.c
-##			child_wait.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

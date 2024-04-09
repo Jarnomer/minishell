@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 20:28:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:43:21 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,6 @@ static void	execute_cmd(t_module *mod, t_shell *ms)
 	execve(exec, cmd, ms->envp);
 }
 
-// static void	replace_io(int input, int output, t_shell *ms)
-// {
-// 	if (dup2(input, STDIN_FILENO) == FAILURE
-// 		|| (dup2(output, STDOUT_FILENO) == FAILURE))
-// 		error_exit(ERR_FILE, ms);
-// }
-
 static int	verify_outdirect(t_module *mod, t_shell *ms)
 {
 	if (mod->outfiles != NULL)
@@ -70,22 +63,26 @@ static void	redirect_fds(t_module *mod, t_shell *ms)
 	int	infd;
 	int	outfd;
 
+	if (ms->cmds == 1)
+		return ;
 	infd = verify_indirect(mod,ms);
 	outfd = verify_outdirect(mod, ms);
-	if (infd != STDIN && dup2(infd, STDIN_FILENO) == FAILURE)
-		perror("FAIL!\n");
+	if (dup2(infd, STDIN_FILENO) == FAILURE)
+		perror("Dup2 error");
 		// error_exit(ERR_FILE, ms);
-	if (outfd != STDOUT && dup2(outfd, STDOUT_FILENO) == FAILURE)
-		perror("FAIL!\n");
+	if (dup2(outfd, STDOUT_FILENO) == FAILURE)
+		perror("Dup2 error");
 		// error_exit(ERR_FILE, ms);
-	if (infd != -1 && infd != STDIN_FILENO)
+	if (infd != -1)
 		close(infd);
-	if (outfd != -1 && outfd != STDOUT_FILENO)
+	if (outfd != -1)
 		close(outfd);
 }
 
 static void	prep_next_pipe(t_shell *ms)
 {
+	if (ms->cmds == 1)
+		return ;
 	close(ms->pipefd[WR_END]);
 	if (ms->tempfd != -1)
 		close(ms->tempfd);
@@ -97,7 +94,7 @@ void	execute_children(t_shell *ms)
 {
 	t_module	*mod;
 
-	while (ms->idx <= ms->cmds)
+	while (ms->idx < ms->cmds)
 	{
 		if (ms->idx == 0)
 			mod = ms->mods;
@@ -109,18 +106,14 @@ void	execute_children(t_shell *ms)
 			error_fatal(errno, MSG_FORK, ms);
 		else if (ms->pids[ms->idx] != 0)
 		{
-			if (ms->cmds != 0)
-				prep_next_pipe(ms);
+			prep_next_pipe(ms);
 			mod = mod->next;
 			ms->idx++;
 		}
 		else if (ms->pids[ms->idx] == 0)
 		{
-			if (ms->cmds != 0)
-			{
-				redirect_fds(mod, ms);
-				close_fds(ms);
-			}
+			redirect_fds(mod, ms);
+			close_fds(ms);
 			execute_cmd(mod, ms);
 		}
 	}

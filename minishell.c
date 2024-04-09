@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 20:26:49 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 13:15:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(void)
 		{
 			parse_inputs(&ms.mods, &ms);
 			execute_children(&ms);
-			// wait_children(&ms);
+			wait_children(&ms);
 		}
 		free_runtime(&ms);
 	}
