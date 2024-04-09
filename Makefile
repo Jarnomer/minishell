@@ -6,10 +6,6 @@ CFILES = 	minishell.c \
 			parse_inputs.c \
 			parse_utils.c \
 			parse_helpers.c \
-			open_infile.c \
-			open_outfile.c \
-			open_heredoc.c \
-			child_exec.c \
 			error_syntax.c \
 			error_utils.c \
 			free_runtime.c \
@@ -25,8 +21,12 @@ CFILES = 	minishell.c \
 			builtin_utils.c \
 			utils_path.c \
 			utils_envp.c \
-			utils_misc.c
-##			child_exec.c
+			utils_misc.c \
+			exec_test.c
+##			open_infile.c \
+##			open_outfile.c \
+##			open_heredoc.c \
+##			child_exec.c \
 ##			child_wait.c
 
 OFILES = ${CFILES:.c=.o}

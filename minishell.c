@@ -87,7 +87,8 @@ int	main(void)
 		{
 			parse_inputs(&ms.mods, &ms);
 			print_inputs(&ms.mods);
-			execute_children(&ms);
+			//execute_children(&ms);
+			//execute_test(&ms);
 			// wait_children(&ms);
 		}
 		free_runtime(&ms);
