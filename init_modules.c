@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 13:15:58 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 17:47:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@ static int	command_count(t_module *mod)
 		len++;
 	}
 	return (len);
+}
+
+static void	finalize_shell(t_shell *ms)
+{
+	ms->cmds = command_count(ms->mods);
+	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
+}
+
+static void	finalize_module(t_module *mod)
+{
+	mod->outfd = -1;
+	mod->infd = -1;
 }
 
 static void	append_module(t_module **lst, t_module *new)
@@ -43,7 +55,7 @@ static void	append_module(t_module **lst, t_module *new)
 int	init_modules(char *input, t_shell *ms)
 {
 	char		*temp;
-	t_module	*mod;
+	t_module	*new;
 
 	if (!input || !*input || error_syntax(input, '|', ms))
 		return (FAILURE);
@@ -54,14 +66,14 @@ int	init_modules(char *input, t_shell *ms)
 		temp = ft_strchr(input, '|');
 		if (!temp)
 			temp = input + ft_strlen(input);
-		mod = safe_calloc(sizeof(t_module), ms);
-		safe_substr(&mod->input, input, temp, ms);
-		append_module(&ms->mods, mod);
-		if (error_syntax(mod->input, 0, ms))
+		new = safe_calloc(sizeof(t_module), ms);
+		safe_substr(&new->input, input, temp, ms);
+		append_module(&ms->mods, new);
+		if (error_syntax(new->input, 0, ms))
 			return (FAILURE);
+		finalize_module(new);
 		input = temp + 1;
 	}
-	ms->cmds = command_count(ms->mods);
-	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
+	finalize_shell(ms);
 	return (SUCCESS);
 }

@@ -6,12 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:57:07 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/07 20:17:34 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 16:18:31 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <errno.h>
 
 static void	finish_heredoc(char **line, t_shell *ms)
 {
@@ -23,8 +22,10 @@ static void	finish_heredoc(char **line, t_shell *ms)
 
 static int	prepare_heredoc(char *eof, t_shell *ms)
 {
+	printf("Creating pipe to read hdoc\n");
 	if (pipe(ms->pipefd) == FAILURE)
-		error_fatal(errno, MSG_PIPE, ms);
+		perror(MSG_PIPE);
+		// error_fatal(errno, MSG_PIPE, ms);
 	safe_strjoin(&eof, eof, "\n", ms);
 	ft_putstr_fd("> ", STDOUT_FILENO);
 	return (ft_strlen(eof));
@@ -39,6 +40,7 @@ int	open_heredoc(char *eof, t_shell *ms)
 	len = prepare_heredoc(eof, ms);
 	while (true)
 	{
+		printf("Reading first heredoc\n");
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/08 16:21:14 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/09 15:59:33 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 
 # define MSG_SYNX		"syntax error near unexpected token"
 # define MSG_QUOT		"unexpected EOF while looking for matching"
+# define MSG_FDLMT		"cannot duplicate fd: Too many open files"
 # define MSG_CMD		"command not found"
 # define MSG_PERM		"Permission denied"
 # define MSG_FLDR		"Is a directory"
 # define MSG_FILE		"No such file or directory"
-# define MSG_MEM		"Out of memory"
+# define MSG_MEM		"Could not malloc"
 # define MSG_FORK		"Could not fork"
 # define MSG_PIPE		"Could not pipe"
 

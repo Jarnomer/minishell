@@ -1,31 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   child_wait.c                                       :+:      :+:    :+:   */
+/*   close_fds.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 13:46:58 by jmertane         ###   ########.fr       */
+/*   Created: 2024/04/09 17:39:53 by jmertane          #+#    #+#             */
+/*   Updated: 2024/04/09 19:24:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	update_exitcode(int wstat)
+static void	close_mod_fds(t_module **lst)
 {
-	return (WEXITSTATUS(wstat));
+	t_module	*mod;
+
+	mod = *lst;
+	while (mod)
+	{
+		if (mod->infd != -1)
+			close(mod->infd);
+		if (mod->outfd != -1)
+			close(mod->outfd);
+		mod = mod->next;
+	}
 }
 
-void	wait_children(t_shell *ms)
+void	close_fds(t_shell *ms)
 {
-	int	wstat;
-	int	i;
-
-	i = 0;
-	while (i < ms->cmds)
-	{
-		waitpid(ms->pids[i++], &wstat, 0);
-		ms->excode = update_exitcode(wstat);
-	}
+	if (ms->mods != NULL)
+		close_mod_fds(&ms->mods);
+	if (ms->pipefd[RD_END] != -1)
+		close(ms->pipefd[RD_END]);
+	if (ms->pipefd[WR_END] != -1)
+		close(ms->pipefd[WR_END]);
+	if (ms->tempfd != -1)
+		close(ms->tempfd);
 }
