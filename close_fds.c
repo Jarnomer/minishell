@@ -12,29 +12,36 @@
 
 #include "minishell.h"
 
-static void	close_mod_fds(t_module **lst)
+static inline void	reset_shell_fds(t_shell *ms)
 {
-	t_module	*mod;
-
-	mod = *lst;
-	while (mod)
-	{
-		if (mod->infd != -1)
-			close(mod->infd);
-		if (mod->outfd != -1)
-			close(mod->outfd);
-		mod = mod->next;
-	}
+	ms->pipefd[RD_END] = -1;
+	ms->pipefd[RD_END] = -1;
+	ms->tempfd = -1;
 }
 
-void	close_fds(t_shell *ms)
+static inline void	close_shell_fds(t_shell *ms)
 {
-	if (ms->mods != NULL)
-		close_mod_fds(&ms->mods);
 	if (ms->pipefd[RD_END] != -1)
 		close(ms->pipefd[RD_END]);
 	if (ms->pipefd[WR_END] != -1)
 		close(ms->pipefd[WR_END]);
 	if (ms->tempfd != -1)
 		close(ms->tempfd);
+	reset_shell_fds(ms);
+}
+
+static inline void	close_mod_fds(t_module *mod)
+{
+		if (mod->infd != -1)
+			close(mod->infd);
+		if (mod->outfd != -1)
+			close(mod->outfd);
+}
+
+void	close_fds(t_module *mod, t_shell *ms)
+{
+	if (mod != NULL)
+		close_mod_fds(mod);
+	if (ms != NULL)
+		close_shell_fds(ms);
 }

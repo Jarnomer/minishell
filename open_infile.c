@@ -12,69 +12,74 @@
 
 #include "minishell.h"
 
-static t_parser	*read_heredocs(t_parser	*file, int *infd, t_shell *ms)
-{
-	printf("Started reading heredocs\n");
-	while (file->next)
-	{
-		printf("Filemode is: %d\n", file->mode);
-		if (file->mode == HEREDOC)
-		{
-			printf("Detected heredoc!\n");
-			*infd = open_heredoc(file->content, ms);
-			if (*infd != -1 && file->next != NULL)
-				close(*infd);
-		}
-		file = file->next;
-	}
-	return (file);
-}
-
-static t_parser	*read_infiles(t_module *mod, t_shell *ms)
+static void	read_heredocs(t_module *mod, t_shell *ms)
 {
 	t_parser	*infile;
+	int			tempfd;
 
 	infile = mod->infiles;
-	while (infile->next)
+	while (infile)
 	{
 		if (infile->mode == HEREDOC)
 		{
-			infile = infile->next;
-			continue ;
+			tempfd = open_heredoc(infile->content, ms);
+			if (tempfd != -1 && infile->next)
+				close(tempfd);
+			else if (tempfd != -1 && !infile->next)
+			{
+				mod->infd = dup(tempfd);
+				close(tempfd);
+			}
 		}
-		else if (access(infile->content, F_OK) == FAILURE)
+		infile = infile->next;
+	}
+}
+
+static t_parser *error_occured(t_parser *infile, char *errmsg, t_shell *ms)
+{
+	error_logger(infile->content, ": ", errmsg, ms);
+	return (infile);
+}
+
+static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
+{
+	while (infile)
+	{
+		if (infile->mode != HEREDOC)
 		{
-			error_exit(ERR_FILE, infile->content, strerror(errno), ms);
-			break ;
-		}
-		else if (access(infile->content, F_OK) == SUCCESS
-			&& access(infile->content, R_OK) == FAILURE)
-		{
-			error_exit(ERR_FILE, infile->content, strerror(errno), ms);
-			break ;
+			if (access(infile->content, F_OK) == FAILURE)
+				return (error_occured(infile, strerror(errno), ms));
+			else if (access(infile->content, F_OK) == SUCCESS
+				&& access(infile->content, R_OK) == FAILURE)
+				return (error_occured(infile, strerror(errno), ms));
 		}
 		infile = infile->next;
 	}
 	return (infile);
 }
 
+static int	verify_infile(t_module *mod, t_parser *files, t_parser *last)
+{
+	if (files != NULL)
+		return (FAILURE);
+	else if (mod->infd != -1)
+		return (mod->infd);
+	else
+	{
+		mod->infd = (open(last->content, O_RDONLY));
+		return (mod->infd);
+	}
+}
+
 int	open_infile(t_module *mod, t_shell *ms)
 {
-	t_parser	*file;
+	t_parser	*files;
 	t_parser	*last;
-	int			infd;
 
-	if (!mod->infiles)
-		return (STDIN_FILENO);
-	file = mod->infiles;
-	if (parser_length(file) > FDLMT)
+	if (parser_length(mod->infiles) > FDLMT)
 		error_exit(0, "redirection error", MSG_FDLMT, ms);
-	last = read_heredocs(file, &infd, ms);
-	file = read_infiles(mod, ms);
-	if (file != last)
-		return (FAILURE);
-	else if (last->mode == INFILE)
-		return (open(file->content, O_RDONLY));
-	else
-		return (infd);
+	read_heredocs(mod, ms);
+	files = check_infiles(mod->infiles, ms);
+	last = parser_last(mod->infiles);
+	return (verify_infile(mod, files, last));
 }

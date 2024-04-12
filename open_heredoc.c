@@ -22,13 +22,11 @@ static void	finish_heredoc(char **line, t_shell *ms)
 
 static int	prepare_heredoc(char *eof, t_shell *ms)
 {
-	printf("Creating pipe to read hdoc\n");
 	if (pipe(ms->pipefd) == FAILURE)
-		perror(MSG_PIPE);
-		// error_fatal(errno, MSG_PIPE, ms);
+		error_fatal(errno, MSG_PIPE, ms);
 	safe_strjoin(&eof, eof, "\n", ms);
 	ft_putstr_fd("> ", STDOUT_FILENO);
-	return (ft_strlen(eof));
+	return (ft_strlen(eof) + 1);
 }
 
 int	open_heredoc(char *eof, t_shell *ms)
@@ -40,7 +38,6 @@ int	open_heredoc(char *eof, t_shell *ms)
 	len = prepare_heredoc(eof, ms);
 	while (true)
 	{
-		printf("Reading first heredoc\n");
 		line = get_next_line(STDIN_FILENO);
 		if (!line)
 			break ;

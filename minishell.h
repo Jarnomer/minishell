@@ -130,7 +130,7 @@ int			open_heredoc(char *eof, t_shell *ms);
 // Free memory
 void		free_runtime(t_shell *ms);
 void		free_exit(t_shell *ms);
-void		close_fds(t_shell *ms);
+void		close_fds(t_module *mod, t_shell *ms);
 void		free_double(char ***arr);
 void		free_single(char **str);
 
