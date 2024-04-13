@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:57:07 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 16:18:31 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 13:57:01 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,28 +20,28 @@ static void	finish_heredoc(char **line, t_shell *ms)
 	close(ms->pipefd[RD_END]);
 }
 
-static int	prepare_heredoc(char *eof, t_shell *ms)
+static void	prepare_heredoc(t_parser *hdoc, t_shell *ms)
 {
 	if (pipe(ms->pipefd) == FAILURE)
 		error_fatal(errno, MSG_PIPE, ms);
-	safe_strjoin(&eof, eof, "\n", ms);
-	ft_putstr_fd("> ", STDOUT_FILENO);
-	return (ft_strlen(eof) + 1);
+	safe_strjoin(&hdoc->content, hdoc->content, "\n", ms);
 }
 
-int	open_heredoc(char *eof, t_shell *ms)
+int	open_heredoc(t_parser *hdoc, t_shell *ms)
 {
 	char	*line;
+	char	*eof;
 	int		len;
 	int		fd;
 
-	len = prepare_heredoc(eof, ms);
+	prepare_heredoc(hdoc, ms);
+	eof = hdoc->content;
+	len = ft_strlen(eof);
 	while (true)
 	{
+		ft_putstr_fd("> ", STDOUT_FILENO);
 		line = get_next_line(STDIN_FILENO);
-		if (!line)
-			break ;
-		if (!ft_strncmp(line, eof, len))
+		if (!line || !ft_strncmp(line, eof, len))
 			break ;
 		ft_putstr_fd(line, ms->pipefd[WR_END]);
 		free(line);

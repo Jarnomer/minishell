@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:02 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 19:24:04 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:01:30 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static void	redirect_outfd(t_module *mod, t_shell *ms)
 	else if (!mod->outfiles && ms->idx != ms->cmds - 1
 		&& dup2(ms->pipefd[WR_END], STDOUT) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
-	else if (mod->infiles != NULL
-		&& dup2(open_infile(mod, ms), STDOUT) == FAILURE)
+	else if (mod->outfiles != NULL
+		&& dup2(open_outfile(mod, ms), STDOUT) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 }
 

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 17:39:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 19:24:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 13:59:07 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ static inline void	close_shell_fds(t_shell *ms)
 
 static inline void	close_mod_fds(t_module *mod)
 {
-		if (mod->infd != -1)
-			close(mod->infd);
-		if (mod->outfd != -1)
-			close(mod->outfd);
+	if (mod->infd != -1)
+		close(mod->infd);
+	if (mod->outfd != -1)
+		close(mod->outfd);
 }
 
 void	close_fds(t_module *mod, t_shell *ms)
