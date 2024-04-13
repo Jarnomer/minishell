@@ -16,8 +16,6 @@ static void	free_parser(t_parser **lst)
 {
 	t_parser	*temp;
 
-	if (!lst || !*lst)
-		return ;
 	while (*lst)
 	{
 		temp = (*lst)->next;
@@ -31,8 +29,6 @@ static void	free_modules(t_module **lst)
 {
 	t_module	*temp;
 
-	if (!lst || !*lst)
-		return ;
 	while (*lst)
 	{
 		temp = (*lst)->next;

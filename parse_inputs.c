@@ -59,7 +59,8 @@ static char	*append_argument(char *input, t_module *mod, t_shell *ms)
 		input = parse_argument(input, c, &mod->outfiles, ms);
 	else if (mode == INFILE || mode == HEREDOC)
 		input = parse_argument(input, c, &mod->infiles, ms);
-	assing_mode(mod, mode);
+	if (input != NULL)
+		assing_mode(mod, mode);
 	return (input);
 }
 
@@ -77,6 +78,8 @@ void	parse_inputs(t_module **lst, t_shell *ms)
 			while (ft_isspace(*input))
 				input++;
 			input = append_argument(input, mod, ms);
+			if (!input)
+				break ;
 		}
 		mod = mod->next;
 	}

@@ -44,41 +44,27 @@ static int	invalid_redirect(char *input, char c)
 			input += 2;
 		else
 			input += 1;
+		while (ft_isspace(*input))
+			input++;
 		if (!*input || ft_issyntax(*input))
 			return (FAILURE);
 	}
 	return (SUCCESS);
 }
 
-static int	unclosed_pipes(char *input, char c)
+int	error_syntax(char *input, t_shell *ms)
 {
-	int	len;
-
-	len = ft_strlen(input) - 1;
-	if (input[0] == c || input[len] == c)
-		return (FAILURE);
-	else
-		return (SUCCESS);
-}
-
-int	error_syntax(char *input, char c, t_shell *ms)
-{
-	if (c == PIPE && unclosed_pipes(input, PIPE))
+	if (!input || !*input)
 		return (error_occured(ERR_SYNX, MSG_SYNX, "`|'", ms));
-	else
-	{
-		if (!input || !*input)
-			return (error_occured(ERR_SYNX, MSG_SYNX, "`|'", ms));
-		else if (invalid_redirect(input, OUTDIRECT))
-			return (error_occured(ERR_SYNX, MSG_SYNX, "`>'", ms));
-		else if (invalid_redirect(input, INDIRECT))
-			return (error_occured(ERR_SYNX, MSG_SYNX, "`<'", ms));
-		else if (ft_strchr(input, SINGLEQUOTE)
-			&& unclosed_quotes(input, SINGLEQUOTE))
-			return (error_occured(ERR_SYNX, MSG_QUOT, "`\''", ms));
-		else if (ft_strchr(input, DOUBLEQUOTE)
-			&& unclosed_quotes(input, DOUBLEQUOTE))
-			return (error_occured(ERR_SYNX, MSG_QUOT, "`\"'", ms));
-	}
+	else if (invalid_redirect(input, OUTDIRECT))
+		return (error_occured(ERR_SYNX, MSG_SYNX, "`>'", ms));
+	else if (invalid_redirect(input, INDIRECT))
+		return (error_occured(ERR_SYNX, MSG_SYNX, "`<'", ms));
+	else if (ft_strchr(input, SINGLEQUOTE)
+		&& unclosed_quotes(input, SINGLEQUOTE))
+		return (error_occured(ERR_SYNX, MSG_QUOT, "`\''", ms));
+	else if (ft_strchr(input, DOUBLEQUOTE)
+		&& unclosed_quotes(input, DOUBLEQUOTE))
+		return (error_occured(ERR_SYNX, MSG_QUOT, "`\"'", ms));
 	return (SUCCESS);
 }

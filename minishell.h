@@ -137,7 +137,7 @@ void		free_single(char **str);
 //			Error handling
 void		error_exit(int errcode, char *msg1, char *msg2, t_shell *ms);
 void		error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms);
-int			error_syntax(char *input, char c, t_shell *ms);
+int			error_syntax(char *input, t_shell *ms);
 void		error_fatal(int errcode, char *errmsg, t_shell *ms);
 
 //				Safety wrappers

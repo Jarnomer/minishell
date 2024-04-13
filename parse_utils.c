@@ -58,6 +58,8 @@ char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms)
 
 	while (ft_isspace(*argv))
 		argv++;
+	if (!*argv)
+		return (NULL);
 	temp = find_breakpoint(argv, c);
 	new = safe_calloc(sizeof(t_parser), ms);
 	safe_substr(&new->content, argv, temp, ms);

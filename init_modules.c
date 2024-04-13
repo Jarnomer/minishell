@@ -57,19 +57,19 @@ int	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*new;
 
-	if (!input || !*input || error_syntax(input, '|', ms))
+	if (!input || !*input)
 		return (FAILURE);
 	while (*input)
 	{
 		while (ft_isspace(*input))
 			input++;
-		temp = ft_strchr(input, '|');
+		temp = ft_strchr(input, PIPE);
 		if (!temp)
 			temp = input + ft_strlen(input);
 		new = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);
-		if (error_syntax(new->input, 0, ms))
+		if (error_syntax(new->input, ms))
 			return (FAILURE);
 		finalize_module(new);
 		input = temp + 1;

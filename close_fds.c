@@ -15,7 +15,7 @@
 static void	reset_shell_fds(t_shell *ms)
 {
 	ms->pipefd[RD_END] = -1;
-	ms->pipefd[RD_END] = -1;
+	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;
 }
 
@@ -30,18 +30,16 @@ static void	close_shell_fds(t_shell *ms)
 	reset_shell_fds(ms);
 }
 
-static void	close_mod_fds(t_module **lst)
+static void	close_mod_fds(t_module *mod)
 {
-	t_module	*temp;
-
-	while (*lst)
+	return ; // this function breaks everything ❌
+	while (mod)
 	{
-		temp = (*lst)->next;
-		if ((*lst)->infd != -1)
-			close((*lst)->infd);
-		if ((*lst)->outfd != -1)
-			close((*lst)->outfd);
-		*lst = temp;
+		if (mod->infd != -1)
+			close(mod->infd);
+		if (mod->outfd != -1)
+			close(mod->outfd);
+		mod = mod->next;
 	}
 }
 
@@ -50,6 +48,6 @@ void	close_fds(t_shell *ms)
 	if (!ms)
 		return ;
 	if (ms->mods != NULL)
-		close_mod_fds(&ms->mods);
+		close_mod_fds(ms->mods);
 	close_shell_fds(ms);
 }

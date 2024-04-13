@@ -28,7 +28,7 @@
 // 	t_parser	*parse;
 // 	int			i;
 // 	int			j;
-
+//
 // 	j = 0;
 // 	module = *lst;
 // 	while (module)
@@ -93,13 +93,13 @@ int	main(void)
 		if (!ms.input)
 			break ;
 		add_history(ms.input);
-		if (init_modules(ms.input, &ms) == SUCCESS)
+		if (!init_modules(ms.input, &ms))
 		{
 			parse_inputs(&ms.mods, &ms);
-			// check_files(&ms);
 			// print_inputs(&ms.mods);
-			execute_children(&ms);
-			wait_children(&ms);
+			// check_files(&ms);
+			// execute_children(&ms);
+			// wait_children(&ms);
 		}
 		free_runtime(&ms);
 	}
