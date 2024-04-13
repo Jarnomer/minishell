@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/13 14:12:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:54:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int			open_heredoc(t_parser *hdoc, t_shell *ms);
 //			Free memory
 void		free_runtime(t_shell *ms);
 void		free_exit(t_shell *ms);
-void		close_fds(t_module *mod, t_shell *ms);
+void		close_fds(t_shell *ms);
 void		free_double(char ***arr);
 void		free_single(char **str);
 

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 19:18:48 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 15:15:59 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	child_process(t_module *mod, t_shell *ms)
 {
 	redirect_fds(mod, ms);
-	close_fds(mod, ms);
+	close_fds(ms);
 	execute_command(mod, ms);
 }
 
@@ -30,7 +30,7 @@ static void	parent_process(t_shell *ms)
 
 static void	fork_process(t_module *mod, t_shell *ms, int process_limit)
 {
-	if (ms->idx <= process_limit
+	if (ms->idx <= process_limit - 1
 		&& pipe(ms->pipefd) == FAILURE)
 		error_fatal(errno, MSG_PIPE, ms);
 	ms->pids[ms->idx] = fork();
