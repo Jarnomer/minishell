@@ -4,6 +4,7 @@ CFILES = 	minishell.c \
 			init_shell.c \
 			init_modules.c \
 			parse_inputs.c \
+			parse_envp.c \
 			parse_utils.c \
 			parse_helpers.c \
 			open_infile.c \

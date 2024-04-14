@@ -6,13 +6,13 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/06 15:10:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/14 14:12:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	assing_mode(t_module *mod, int mode)
+static void	assing_mode(t_module *mod, int mode)
 {
 	t_parser	*temp;
 
