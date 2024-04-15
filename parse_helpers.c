@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*   parse_helpers.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/04 18:25:48 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/14 13:32:31 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,5 +90,5 @@ char	assign_delimiter(char *argv)
 	else if (single_qt)
 		return (SINGLEQUOTE);
 	else
-		return (' ');
+		return (SPACE);
 }

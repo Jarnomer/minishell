@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 13:56:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:44:57 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	error_limit(int len, t_shell *ms)
 			"Too many open files", ms);
 		len--;
 	}
-	error_exit(0, NULL, NULL, ms);
 }
 
 static void	read_heredocs(t_module *mod, t_shell *ms)
@@ -73,21 +72,18 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 
 int	open_infile(t_module *mod, t_shell *ms)
 {
-	t_parser	*files;
 	t_parser	*last;
 	int			len;
 
 	read_heredocs(mod, ms);
-	files = check_infiles(mod->infiles, ms);
-	if (files != NULL)
+	if (check_infiles(mod->infiles, ms) != NULL)
 		return (FAILURE);
 	len = parser_length(mod->infiles);
 	if (len > FDLMT)
 		error_limit(len, ms);
-	last = parser_last(mod->infiles);
 	if (mod->infd != -1)
 		return (mod->infd);
-	else
-		mod->infd = open(last->content, O_RDONLY);
+	last = parser_last(mod->infiles);
+	mod->infd = open(last->content, O_RDONLY);
 	return (mod->infd);
 }

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 13:56:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:42:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,11 @@ static t_parser	*error_occured(t_parser *outfile, char *errmsg, t_shell *ms)
 	return (outfile);
 }
 
-static t_parser	*check_outfiles(t_parser *outfile, t_shell *ms)
+static t_parser	*check_outfiles(t_module *mod, t_shell *ms)
 {
+	t_parser	*outfile;
+
+	outfile = mod->outfiles;
 	while (outfile)
 	{
 		if (opendir(outfile->content) != NULL)
@@ -46,6 +49,8 @@ static t_parser	*check_outfiles(t_parser *outfile, t_shell *ms)
 		else if (access(outfile->content, F_OK) == SUCCESS
 			&& access(outfile->content, W_OK) == FAILURE)
 			return (error_occured(outfile, strerror(errno), ms));
+		else
+			close(read_outfile(outfile->content, outfile->mode));
 		outfile = outfile->next;
 	}
 	return (outfile);
@@ -53,12 +58,10 @@ static t_parser	*check_outfiles(t_parser *outfile, t_shell *ms)
 
 int	open_outfile(t_module *mod, t_shell *ms)
 {
-	t_parser	*files;
 	t_parser	*last;
 	int			len;
 
-	files = check_outfiles(mod->outfiles, ms);
-	if (files != NULL)
+	if (check_outfiles(mod, ms) != NULL)
 		return (FAILURE);
 	len = parser_length(mod->outfiles);
 	if (len > FDLMT)

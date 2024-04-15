@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/13 14:12:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/14 19:23:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ typedef enum e_redirect
 	INFILE,
 	HEREDOC,
 	OUTFILE,
-	APPEND
+	APPEND,
+	AMBIGUOUS
 }	t_redirect;
 
 typedef enum e_syntax
@@ -108,8 +109,9 @@ int			init_modules(char *input, t_shell *ms);
 
 //			Parser
 void		parse_inputs(t_module **lst, t_shell *ms);
-void		parse_files(t_module **lst, t_shell *ms);
+void		parse_envp(t_module *mod, t_shell *ms);
 char		*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
+void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser	*file);
 t_parser	*parser_last(t_parser *file);
 char		assign_delimiter(char *argv);
@@ -130,17 +132,17 @@ int			open_heredoc(t_parser *hdoc, t_shell *ms);
 //			Free memory
 void		free_runtime(t_shell *ms);
 void		free_exit(t_shell *ms);
-void		close_fds(t_module *mod, t_shell *ms);
+void		close_fds(t_shell *ms);
 void		free_double(char ***arr);
 void		free_single(char **str);
 
 //			Error handling
 void		error_exit(int errcode, char *msg1, char *msg2, t_shell *ms);
 void		error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms);
-int			error_syntax(char *input, char c, t_shell *ms);
+int			error_syntax(char *input, t_shell *ms);
 void		error_fatal(int errcode, char *errmsg, t_shell *ms);
 
-//				Safety wrappers
+//			Safety wrappers
 void		*safe_calloc(size_t n, t_shell *ms);
 void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);

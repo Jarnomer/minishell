@@ -6,20 +6,20 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 17:39:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 13:59:07 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:54:04 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static inline void	reset_shell_fds(t_shell *ms)
+static void	reset_shell_fds(t_shell *ms)
 {
 	ms->pipefd[RD_END] = -1;
-	ms->pipefd[RD_END] = -1;
+	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;
 }
 
-static inline void	close_shell_fds(t_shell *ms)
+static void	close_shell_fds(t_shell *ms)
 {
 	if (ms->pipefd[RD_END] != -1)
 		close(ms->pipefd[RD_END]);
@@ -30,18 +30,24 @@ static inline void	close_shell_fds(t_shell *ms)
 	reset_shell_fds(ms);
 }
 
-static inline void	close_mod_fds(t_module *mod)
+static void	close_mod_fds(t_module *mod)
 {
-	if (mod->infd != -1)
-		close(mod->infd);
-	if (mod->outfd != -1)
-		close(mod->outfd);
+	return ; // this function breaks everything ❌
+	while (mod)
+	{
+		if (mod->infd != -1)
+			close(mod->infd);
+		if (mod->outfd != -1)
+			close(mod->outfd);
+		mod = mod->next;
+	}
 }
 
-void	close_fds(t_module *mod, t_shell *ms)
+void	close_fds(t_shell *ms)
 {
-	if (mod != NULL)
-		close_mod_fds(mod);
-	if (ms != NULL)
-		close_shell_fds(ms);
+	if (!ms)
+		return ;
+	if (ms->mods != NULL)
+		close_mod_fds(ms->mods);
+	close_shell_fds(ms);
 }
