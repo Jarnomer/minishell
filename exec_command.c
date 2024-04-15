@@ -37,5 +37,7 @@ void	execute_command(t_module *mod, t_shell *ms)
 	exec = mod->command->content;
 	exec = executable_path(exec, ms);
 	cmd = build_command(mod->command, ms);
-	execve(exec, cmd, ms->envp);
+	if (is_builtin(ms, cmd) == false)
+		execve(exec, cmd, ms->envp);
+	exit(0);
 }

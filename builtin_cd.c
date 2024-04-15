@@ -20,6 +20,7 @@ void	builtin_cd(t_shell *ms, char **cmd)
 	path = NULL;
 	if (chdir(cmd[1]) == 0)
 	{
+		printf("test code: #1");
 		safe_strjoin(&path, "PWD=", getcwd(buf, 1000), ms);
 		builtin_export(ms, &path, 0, 0);
 	}

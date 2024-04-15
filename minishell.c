@@ -82,11 +82,30 @@
 // 	}
 // }
 
+static void sigint_handler(int sign)
+{
+	if (sign == SIGINT)
+	{
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		//printf("Control-C detected!\n");
+		signal(SIGINT, SIG_IGN);
+	}
+}
+
+static void init_signals(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 int	main(void)
 {
 	t_shell	ms;
 
 	init_shell(&ms);
+	init_signals();
 	while (true)
 	{
 		ms.input = readline(ms.prompt);

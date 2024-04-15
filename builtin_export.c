@@ -21,11 +21,16 @@ void builtin_export(t_shell *ms, char **cmd, int i, int j)
 		j = 0;
 		while (cmd[i][j] != '=' && cmd[i][j] != '\0')
 			j++;
-		if (cmd[i][j] == '=' && name_exists(ms, cmd[i]) == 0) 
+		if (cmd[i][j] == '=' && name_exists(ms, cmd[i]) == 0)
+		{
+			//doesnt work
 			envp_update(ms, cmd[i]);
+		}
 		else if (name_exists(ms, cmd[i]) == 1)
+		{
+			//doesnt work
 			envp_add(ms, cmd[i]);
+		}
 		i++;
 	}
 }
-

@@ -12,23 +12,29 @@
 
 #include "minishell.h"
 
-void	builtin_echo(t_shell *ms, char **cmd)
+void	builtin_echo(char **cmd)
 {
 	int i;
 
 	i = 1;
-	if (ms == NULL)
-		return ;
 	if (ft_strncmp("-n", cmd[i], 3) == 0)
 	{
 		while (cmd[++i] != NULL)
+		{
 			ft_putstr_fd(cmd[i], 1);
+			if (cmd[i + 1] != NULL)
+				ft_putchar_fd(' ', 1);
+		}
 	}
 	else
 	{
 		while(cmd[i] != NULL)
 		{
 			ft_putstr_fd(cmd[i], 1);
+			if (cmd[i + 1] == NULL)
+				ft_putchar_fd('\n', 1);
+			else
+				ft_putchar_fd(' ', 1);
 			i++;
 		}
 	}
