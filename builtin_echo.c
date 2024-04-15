@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+//works with echo and echo -n, consider how to handle other cases
+
 void	builtin_echo(char **cmd)
 {
 	int i;

@@ -122,6 +122,7 @@ void		filter_quotes(char *content, char c, t_shell *ms);
 void		execute_children(t_shell *ms);
 void		redirect_fds(t_module *mod, t_shell *ms);
 void		execute_command(t_module *mod, t_shell *ms);
+char		**build_command(t_parser *command, t_shell *ms);
 void		wait_children(t_shell *ms);
 
 //			Open files
@@ -159,9 +160,11 @@ void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
 void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
+char		*envp_exists(t_shell *ms, char *name);
 
 //			Builtin functions
-int			is_builtin(t_shell *ms, char **cmd);
+int			is_builtin(char *cmd);
+void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
 void		builtin_echo(char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd);
@@ -169,8 +172,5 @@ void		builtin_env(char **envp, int i, int j);
 void		builtin_export(t_shell *ms, char **cmd, int i, int j);
 void		builtin_unset(t_shell *ms, char **cmd, int i, int j);
 void		builtin_pwd(t_shell *ms, char **envp);
-
-//Exec test
-void	execute_test(t_shell *ms);
 
 #endif

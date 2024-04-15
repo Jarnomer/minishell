@@ -56,10 +56,10 @@ void	execute_children(t_shell *ms)
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
 		// parse_envp(mod, ms);
-		// if (ms->cmds == 1 && is_builtin(XXX))
-		// 	execute_builtin(XXX);
-		// else
-		fork_process(mod, ms);
+		if (ms->cmds == 1 && is_builtin(mod->command->content))
+		 	execute_builtin(ms, mod);
+		else
+			fork_process(mod, ms);
 		mod = mod->next;
 		ms->idx++;
 	}

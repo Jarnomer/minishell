@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	**build_command(t_parser *command, t_shell *ms)
+char	**build_command(t_parser *command, t_shell *ms)
 {
 	char	**cmd;
 	int		i;
@@ -37,7 +37,5 @@ void	execute_command(t_module *mod, t_shell *ms)
 	exec = mod->command->content;
 	exec = executable_path(exec, ms);
 	cmd = build_command(mod->command, ms);
-	if (is_builtin(ms, cmd) == false)
-		execve(exec, cmd, ms->envp);
-	exit(0);
+	execve(exec, cmd, ms->envp);
 }

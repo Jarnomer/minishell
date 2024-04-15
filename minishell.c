@@ -22,7 +22,7 @@
 // 		printf("Failed saving outfd, %s, exit with ERR_FILE\n", strerror(errno));
 // }
 
-static void	print_inputs(t_module **lst)
+/*static void	print_inputs(t_module **lst)
 {
 	t_module	*module;
 	t_parser	*parse;
@@ -92,7 +92,7 @@ static void envp_imitation(t_shell *ms)
 		parse_envp(mod, ms);
 		mod = mod->next;
 	}
-}
+}*/
 
 static void sigint_handler(int sign)
 {
@@ -127,11 +127,11 @@ int	main(void)
 		if (!init_modules(ms.input, &ms))
 		{
 			parse_inputs(&ms.mods, &ms);
-			envp_imitation(&ms);
-			print_inputs(&ms.mods);
+			//envp_imitation(&ms);
+			//print_inputs(&ms.mods);
 			//check_files(&ms);
-			//execute_children(&ms);
-			//wait_children(&ms);
+			execute_children(&ms);
+			wait_children(&ms);
 		}
 		free_runtime(&ms);
 	}

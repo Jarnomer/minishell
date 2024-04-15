@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*envp_exists(t_shell *ms, char *name)
+char	*envp_exists(t_shell *ms, char *name)
 {
 	char	*temp;
 	int		len;
