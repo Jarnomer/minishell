@@ -66,7 +66,7 @@ typedef enum e_syntax
 	OUTDIRECT = 62,
 	SINGLEQUOTE = 39,
 	DOUBLEQUOTE = 34,
-	SPACEE = 32
+	EMPTY = 32
 }	t_syntax;
 
 typedef struct s_parser
