@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/09 19:18:09 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:12:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,11 @@ typedef struct s_shell
 	t_module		*mods;
 }	t_shell;
 
-// Initialization
+//			Initialization
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
 
-// Parser
+//			Parser
 void		parse_inputs(t_module **lst, t_shell *ms);
 void		parse_files(t_module **lst, t_shell *ms);
 char		*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
@@ -116,49 +116,49 @@ char		assign_delimiter(char *argv);
 char		*find_breakpoint(char *input, char c);
 void		filter_quotes(char *content, char c, t_shell *ms);
 
-// Child processes
+//			Child processes
 void		execute_children(t_shell *ms);
 void		redirect_fds(t_module *mod, t_shell *ms);
 void		execute_command(t_module *mod, t_shell *ms);
 void		wait_children(t_shell *ms);
 
-// Open files
+//			Open files
 int			open_infile(t_module *mod, t_shell *ms);
 int			open_outfile(t_module *mod, t_shell *ms);
-int			open_heredoc(char *eof, t_shell *ms);
+int			open_heredoc(t_parser *hdoc, t_shell *ms);
 
-// Free memory
+//			Free memory
 void		free_runtime(t_shell *ms);
 void		free_exit(t_shell *ms);
-void		close_fds(t_shell *ms);
+void		close_fds(t_module *mod, t_shell *ms);
 void		free_double(char ***arr);
 void		free_single(char **str);
 
-// Error handling
+//			Error handling
 void		error_exit(int errcode, char *msg1, char *msg2, t_shell *ms);
 void		error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms);
 int			error_syntax(char *input, char c, t_shell *ms);
 void		error_fatal(int errcode, char *errmsg, t_shell *ms);
 
-// Safety wrappers
+//				Safety wrappers
 void		*safe_calloc(size_t n, t_shell *ms);
 void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
-// Utility functions
+//			Utility functions
 char		*executable_path(char *exec, t_shell *ms);
 int			ft_isspace(char c);
 int			ft_issyntax(char c);
 
-// Envp functions
+//			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
 void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
 
-// Builtin functions
+//			Builtin functions
 int			is_builtin(t_shell *ms, char **cmd);
 int			name_exists(t_shell *ms, char *name);
 void		builtin_echo(char **cmd);

@@ -15,7 +15,7 @@
 static void	child_process(t_module *mod, t_shell *ms)
 {
 	redirect_fds(mod, ms);
-	close_fds(ms);
+	close_fds(mod, ms);
 	execute_command(mod, ms);
 }
 

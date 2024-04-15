@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:59:33 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 14:03:52 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define MSG_SYNX		"syntax error near unexpected token"
 # define MSG_QUOT		"unexpected EOF while looking for matching"
-# define MSG_FDLMT		"cannot duplicate fd: Too many open files"
+# define MSG_REDIR		"ambiguous redirect"
 # define MSG_CMD		"command not found"
 # define MSG_PERM		"Permission denied"
 # define MSG_FLDR		"Is a directory"
@@ -26,6 +26,7 @@
 
 enum e_errcodes
 {
+	NOERROR = 0,
 	ERR_FILE = 1,
 	ERR_PERM = 126,
 	ERR_CMD = 127,

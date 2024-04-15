@@ -6,52 +6,65 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 19:04:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/13 13:56:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_parser	*read_heredocs(t_parser	*file, int *infd, t_shell *ms)
+static void	error_limit(int len, t_shell *ms)
 {
-	printf("Started reading heredocs\n");
-	while (file->next)
+	while (len >= FDLMT)
 	{
-		printf("Filemode is: %d\n", file->mode);
-		if (file->mode == HEREDOC)
-		{
-			printf("Detected heredoc!\n");
-			*infd = open_heredoc(file->content, ms);
-			if (*infd != -1 && file->next != NULL)
-				close(*infd);
-		}
-		file = file->next;
+		error_logger("redirection error: ",
+			"cannot duplicate fd: ",
+			"Too many open files", ms);
+		len--;
 	}
-	return (file);
+	error_exit(0, NULL, NULL, ms);
 }
 
-static t_parser	*read_infiles(t_module *mod, t_shell *ms)
+static void	read_heredocs(t_module *mod, t_shell *ms)
 {
 	t_parser	*infile;
+	int			tempfd;
 
 	infile = mod->infiles;
-	while (infile->next)
+	while (infile)
 	{
 		if (infile->mode == HEREDOC)
 		{
-			infile = infile->next;
-			continue ;
+			tempfd = open_heredoc(infile, ms);
+			if (tempfd != -1 && infile->next)
+				close(tempfd);
+			else if (tempfd != -1 && !infile->next)
+			{
+				mod->infd = dup(tempfd);
+				close(tempfd);
+				return ;
+			}
 		}
-		else if (access(infile->content, F_OK) == FAILURE)
+		infile = infile->next;
+	}
+}
+
+static t_parser	*error_occured(t_parser *infile, char *errmsg, t_shell *ms)
+{
+	error_logger(infile->content, ": ", errmsg, ms);
+	return (infile);
+}
+
+static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
+{
+	while (infile)
+	{
+		if (infile->mode != HEREDOC)
 		{
-			error_exit(ERR_FILE, infile->content, strerror(errno), ms);
-			break ;
-		}
-		else if (access(infile->content, F_OK) == SUCCESS
-			&& access(infile->content, R_OK) == FAILURE)
-		{
-			error_exit(ERR_FILE, infile->content, strerror(errno), ms);
-			break ;
+			if (access(infile->content, F_OK) == FAILURE)
+				return (error_occured(infile, strerror(errno), ms));
+			else if (access(infile->content, F_OK) == SUCCESS
+				&& access(infile->content, R_OK) == FAILURE)
+				return (error_occured(infile, strerror(errno), ms));
 		}
 		infile = infile->next;
 	}
@@ -60,21 +73,21 @@ static t_parser	*read_infiles(t_module *mod, t_shell *ms)
 
 int	open_infile(t_module *mod, t_shell *ms)
 {
-	t_parser	*file;
+	t_parser	*files;
 	t_parser	*last;
-	int			infd;
+	int			len;
 
-	if (!mod->infiles)
-		return (STDIN_FILENO);
-	file = mod->infiles;
-	if (parser_length(file) > FDLMT)
-		error_exit(0, "redirection error", MSG_FDLMT, ms);
-	last = read_heredocs(file, &infd, ms);
-	file = read_infiles(mod, ms);
-	if (file != last)
+	read_heredocs(mod, ms);
+	files = check_infiles(mod->infiles, ms);
+	if (files != NULL)
 		return (FAILURE);
-	else if (last->mode == INFILE)
-		return (open(file->content, O_RDONLY));
+	len = parser_length(mod->infiles);
+	if (len > FDLMT)
+		error_limit(len, ms);
+	last = parser_last(mod->infiles);
+	if (mod->infd != -1)
+		return (mod->infd);
 	else
-		return (infd);
+		mod->infd = open(last->content, O_RDONLY);
+	return (mod->infd);
 }

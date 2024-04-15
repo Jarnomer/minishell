@@ -90,5 +90,5 @@ char	assign_delimiter(char *argv)
 	else if (single_qt)
 		return (SINGLEQUOTE);
 	else
-		return (SPACEE);
+		return (' ');
 }

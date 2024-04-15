@@ -59,7 +59,7 @@ void	free_runtime(t_shell *ms)
 {
 	if (!ms)
 		return ;
-	close_fds(ms);
+	close_fds(NULL, ms);
 	if (ms->input != NULL)
 		free_single(&ms->input);
 	if (ms->pids != NULL)
