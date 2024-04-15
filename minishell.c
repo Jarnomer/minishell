@@ -94,20 +94,22 @@ static void envp_imitation(t_shell *ms)
 	}
 }*/
 
-static void sigint_handler(int sign)
+static void sigint_handler(int sig)
 {
-	if (sign == SIGINT)
-	{
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
-		//printf("Control-C detected!\n");
-		signal(SIGINT, SIG_IGN);
-	}
+	(void)sig;
+	ft_putchar_fd('\n', 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 static void init_signals(void)
 {
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDERR_FILENO, TCSANOW, &term);
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -120,9 +122,15 @@ int	main(void)
 	init_signals();
 	while (true)
 	{
+		
 		ms.input = readline(ms.prompt);
 		if (!ms.input)
+		{
+			rl_replace_line("exit\n", 0);
+			//ft_putstr_fd("EOF detected!\n", 1);
 			break ;
+		}
+			
 		add_history(ms.input);
 		if (!init_modules(ms.input, &ms))
 		{

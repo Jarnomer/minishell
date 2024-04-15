@@ -19,7 +19,7 @@ void	builtin_echo(char **cmd)
 	int i;
 
 	i = 1;
-	if (ft_strncmp("-n", cmd[i], 3) == 0)
+	if (cmd[i] && ft_strncmp("-n", cmd[i], 3) == 0)
 	{
 		while (cmd[++i] != NULL)
 		{

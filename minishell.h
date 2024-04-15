@@ -26,6 +26,7 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <termios.h>
 
 # define BR		"\033[1;31m"
 # define Y		"\033[0;33m"
