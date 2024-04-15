@@ -56,7 +56,7 @@ char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms)
 	t_parser	*new;
 	char		*temp;
 
-	while (ft_isspace(*argv))
+	while (ft_isspace(*argv) && *argv != '$')
 		argv++;
 	if (!*argv)
 		return (NULL);

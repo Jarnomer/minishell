@@ -153,7 +153,6 @@ void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 char		*executable_path(char *exec, t_shell *ms);
 int			ft_isspace(char c);
 int			ft_issyntax(char c);
-int			ft_isenvp(char *input);
 
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 13:26:07 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 19:30:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/15 16:39:37 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,45 +30,47 @@ static char	*envp_exists(t_shell *ms, char *name)
 	return (NULL);
 }
 
-static void	expand_envps(t_parser **lst, t_shell *ms)
+static char	*ft_isenvp(char *input)
 {
-	t_parser	*node;
-	char		*argv;
-	int			len;
-
-	node = *lst;
-	argv = NULL;
-	while (node)
-	{
-		while (node != NULL && ft_isenvp(node->content))
-			node = node->next;
-		if (node)
-		{
-			argv = envp_exists(ms, node->content + 1);
-			len = ft_strlen(argv);
-			printf("Found envp [%s] which expanded into: %s", node->content, argv);
-
-			// if (argv != NULL)
-			// {
-			// 	ft_substr(argv, 0, len);
-			// 	safe_substr(&argv, argv, argv + len, ms);
-			// 	printf("Found envp [%s] which expanded into: %s", node->content, argv);
-			// 	free(argv);
-			// }
-			node = node->next;
-		}
-	}
+	if (!input)
+		return (NULL);
+	while (*input && *input != '$')
+		input++;
+	if (!*input)
+		return (NULL);
+	return (input);
 }
 
 static int	expand_found(t_parser *node)
 {
 	while (node)
 	{
-		if (!ft_isenvp(node->content))
+		if (ft_isenvp(node->content))
 			return (SUCCESS);
 		node = node->next;
 	}
 	return (FAILURE);
+}
+
+static void	expand_envps(t_parser **lst, t_shell *ms)
+{
+	t_parser	*node;
+	t_parser	*next;
+	char		*argv;
+
+	node = *lst;
+	while (node)
+	{
+		while (node && !ft_isenvp(node->content))
+			node = node->next;
+		if (node)
+		{
+			next = node->next;
+			argv = ft_isenvp(node->content);
+			argv = envp_exists(ms, argv + 1);
+			node = next;
+		}
+	}
 }
 
 void	parse_envp(t_module *mod, t_shell *ms)
