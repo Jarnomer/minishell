@@ -12,15 +12,15 @@
 
 #include "minishell.h"
 
-// static void	check_files(t_shell *ms)
-// {
-// 	int infd = open_infile(ms->mods, ms);
-// 	int outfd = open_outfile(ms->mods, ms);
-// 	if (infd == -1)
-// 		printf("Failed saving infd, %s, exit with ERR_FILE\n", strerror(errno));
-// 	if (outfd == -1)
-// 		printf("Failed saving outfd, %s, exit with ERR_FILE\n", strerror(errno));
-// }
+/*static void	check_files(t_shell *ms)
+{
+	int infd = open_infile(ms->mods, ms);
+	int outfd = open_outfile(ms->mods, ms);
+	if (infd == -1)
+		printf("Failed saving infd, %s, exit with ERR_FILE\n", strerror(errno));
+	if (outfd == -1)
+		printf("Failed saving outfd, %s, exit with ERR_FILE\n", strerror(errno));
+}*/
 
 /*static void	print_inputs(t_module **lst)
 {
@@ -80,9 +80,9 @@
 		module = module->next;
 		j++;
 	}
-}
+}*/
 
-static void envp_imitation(t_shell *ms)
+/*static void envp_imitation(t_shell *ms)
 {
 	t_module	*mod;
 
@@ -94,38 +94,19 @@ static void envp_imitation(t_shell *ms)
 	}
 }*/
 
-static void sigint_handler(int sig)
-{
-	(void)sig;
-	ft_putchar_fd('\n', 1);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-static void init_signals(void)
-{
-	struct termios	term;
-
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(STDERR_FILENO, TCSANOW, &term);
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-}
-
 int	main(void)
 {
 	t_shell	ms;
 
 	init_shell(&ms);
-	init_signals();
 	while (true)
 	{
-		
 		ms.input = readline(ms.prompt);
 		if (!ms.input)
+		{
+			printf("exit\n");
 			break ;
+		}
 		add_history(ms.input);
 		if (!init_modules(ms.input, &ms))
 		{
@@ -138,7 +119,6 @@ int	main(void)
 		}
 		free_runtime(&ms);
 	}
-	ft_putstr_fd("exit\n", 1);
 	free_exit(&ms);
-	return (NOERROR);
+	return (ms.excode);
 }

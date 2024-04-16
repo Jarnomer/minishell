@@ -47,4 +47,5 @@ void	init_shell(t_shell *ms)
 	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;
 	ms->excode = SUCCESS;
+	init_signals();
 }

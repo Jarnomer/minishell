@@ -1,41 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_echo.c                                     :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/08 13:37:18 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/08 13:37:19 by vkinaret         ###   ########.fr       */
+/*   Created: 2024/04/16 21:01:06 by vkinaret          #+#    #+#             */
+/*   Updated: 2024/04/16 21:01:08 by vkinaret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	builtin_echo(char **cmd)
+static void sigint_handler(int sig)
 {
-	int i;
+	(void)sig;
+	ft_putchar_fd('\n', 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
-	i = 1;
-	if (cmd[i] && ft_strncmp("-n", cmd[i], 3) == 0)
-	{
-		while (cmd[++i] != NULL)
-		{
-			ft_putstr_fd(cmd[i], 1);
-			if (cmd[i + 1] != NULL)
-				ft_putchar_fd(' ', 1);
-		}
-	}
-	else
-	{
-		while(cmd[i] != NULL)
-		{
-			ft_putstr_fd(cmd[i], 1);
-			if (cmd[i + 1] == NULL)
-				ft_putchar_fd('\n', 1);
-			else
-				ft_putchar_fd(' ', 1);
-			i++;
-		}
-	}
+void	init_signals(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDERR_FILENO, TCSANOW, &term);
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

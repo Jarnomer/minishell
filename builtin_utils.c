@@ -34,12 +34,14 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	char **cmd;
 
-	redirect_fds(mod, ms);
-	close_fds(ms);
+	if (ms->cmds == 1)
+	{
+		redirect_fds(mod, ms);
+		close_fds(ms);
+	}
 	cmd = build_command(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(cmd);
-	//cd: DOES NOT WORK
 	else if (ft_strncmp("cd", cmd[0], 2) == 0)
 		builtin_cd(ms, cmd);
 	else if (ft_strncmp("env", cmd[0], 3) == 0)

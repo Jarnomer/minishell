@@ -31,12 +31,7 @@ CFILES = 	minishell.c \
 			utils_path.c \
 			utils_envp.c \
 			utils_misc.c \
-##			exec_test.c
-##			open_infile.c \
-##			open_outfile.c \
-##			open_heredoc.c \
-##			child_exec.c \
-##			child_wait.c
+			signal.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a

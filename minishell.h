@@ -156,6 +156,9 @@ char		*executable_path(char *exec, t_shell *ms);
 int			ft_isspace(char c);
 int			ft_issyntax(char c);
 
+//			Signal functions
+void		init_signals(void);
+
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
