@@ -125,12 +125,7 @@ int	main(void)
 		
 		ms.input = readline(ms.prompt);
 		if (!ms.input)
-		{
-			rl_replace_line("exit\n", 0);
-			//ft_putstr_fd("EOF detected!\n", 1);
 			break ;
-		}
-			
 		add_history(ms.input);
 		if (!init_modules(ms.input, &ms))
 		{
@@ -143,6 +138,7 @@ int	main(void)
 		}
 		free_runtime(&ms);
 	}
+	ft_putstr_fd("exit\n", 1);
 	free_exit(&ms);
 	return (NOERROR);
 }
