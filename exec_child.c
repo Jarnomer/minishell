@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 19:01:13 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:32:45 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@ static void	child_process(t_module *mod, t_shell *ms)
 	close_fds(ms);
 	if (!mod->command)
 		error_exit(NOERROR, NULL, NULL, ms);
-	execute_command(mod, ms);
+	// else if (cant_run_cmd == FAILURE)
+	// 	error_exit(ms->excode, NULL, NULL, ms);
+	else if (is_builtin(mod->command->content))
+		execute_builtin(ms, mod);
+	else
+		execute_command(mod, ms);
+	exit(0);
 }
 
 static void	parent_process(t_shell *ms)
@@ -55,10 +61,10 @@ void	execute_children(t_shell *ms)
 		if (ms->idx <= pipe_limit
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
-		// if (ms->cmds == 1 && is_builtin(XXX))
-		// 	execute_builtin(XXX);
-		// else
-		fork_process(mod, ms);
+		if (ms->cmds == 1 && is_builtin2(mod->command->content))
+			execute_builtin(ms, mod);
+		else
+			fork_process(mod, ms);
 		mod = mod->next;
 		ms->idx++;
 	}

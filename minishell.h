@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/17 17:16:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:35:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <termios.h>
 
 # define BR		"\033[1;31m"
 # define Y		"\033[0;33m"
@@ -131,6 +132,7 @@ void		filter_quotes(char *content, char c, t_shell *ms);
 void		execute_children(t_shell *ms);
 void		redirect_fds(t_module *mod, t_shell *ms);
 void		execute_command(t_module *mod, t_shell *ms);
+char		**build_command(t_parser *command, t_shell *ms);
 void		wait_children(t_shell *ms);
 
 //			Open files
@@ -163,6 +165,9 @@ void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 int			ft_isspace(char c);
 int			ft_isredirect(char c);
 
+//			Signal functions
+void		init_signals(void);
+
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
@@ -170,10 +175,14 @@ void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
 char		*envp_exists(t_shell *ms, char *name);
 
-//			Builtin functions
-int			is_builtin(t_shell *ms, char **cmd);
+//			Builtin utils
+int			is_builtin(char *cmd);
+int 		is_builtin2(char *cmd);
+void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
-void		builtin_echo(t_shell *ms, char **cmd);
+
+//			Builtin functions
+void		builtin_echo(char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd);
 void		builtin_env(char **envp, int i, int j);
 void		builtin_export(t_shell *ms, char **cmd, int i, int j);

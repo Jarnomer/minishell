@@ -14,13 +14,17 @@
 
 void	builtin_cd(t_shell *ms, char **cmd)
 {
-	char	*path;
+	char	*pwd;
+	char	*oldpwd;
 	char	buf[1000];
 
-	path = NULL;
+	pwd = NULL;
+	oldpwd = NULL;
+	safe_strjoin(&oldpwd, "OLDPWD=", envp_exists(ms, "PWD"), ms);
 	if (chdir(cmd[1]) == 0)
 	{
-		safe_strjoin(&path, "PWD=", getcwd(buf, 1000), ms);
-		builtin_export(ms, &path, 0, 0);
+		safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);
+		envp_update(ms, pwd);
+		envp_update(ms, oldpwd);
 	}
 }

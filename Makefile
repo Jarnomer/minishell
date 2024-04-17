@@ -29,10 +29,14 @@ CFILES = 	minishell.c \
 			builtin_pwd.c \
 			builtin_utils.c \
 			utils_envp.c \
-			utils_misc.c
+			utils_misc.c \
+			signal.c
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a
+FLAGS = -Wall -Wextra -Werror
+READLINE_LIB = ~/.brew/Cellar/readline/8.2.10/lib
+READLINE_HEADER = ~/.brew/Cellar/readline/8.2.10/include
 
 all: ${LIBFT} ${NAME}
 
@@ -40,10 +44,10 @@ ${LIBFT}:
 	make -C libft
 
 ${NAME}: ${OFILES}
-	cc ${OFILES} ${LIBFT} -lreadline -g -fsanitize=address -o ${NAME}
+	cc ${OFILES} ${LIBFT} -L ${READLINE_LIB} -lreadline -I ${READLINE_HEADER} -g -fsanitize=address -o ${NAME}
 
 ${OFILES}: ${CFILES}
-	cc -Wall -Wextra -Werror -c ${CFILES} -I minishell.h
+	cc ${FLAGS} -I ${READLINE_HEADER} -c ${CFILES} -I minishell.h
 
 clean:
 	rm -f ${OFILES}

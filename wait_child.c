@@ -23,6 +23,8 @@ void	wait_children(t_shell *ms)
 	int	i;
 
 	i = 0;
+	if (ms->cmds == 1 && is_builtin2(ms->mods->command->content))
+		return ;
 	while (i < ms->idx)
 	{
 		waitpid(ms->pids[i], &wstat, 0);

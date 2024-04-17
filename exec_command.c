@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:15:10 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:33:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static char	*executable_path(char *exec, t_shell *ms)
 	return (find_executable(paths, temp));
 }
 
-static char	**build_command(t_parser *command, t_shell *ms)
+char	**build_command(t_parser *command, t_shell *ms)
 {
 	char	**cmd;
 	int		len;
