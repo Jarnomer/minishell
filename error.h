@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 14:03:52 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:06:45 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define MSG_SYNX		"syntax error near unexpected token"
 # define MSG_QUOT		"unexpected EOF while looking for matching"
-# define MSG_REDIR		"ambiguous redirect"
+# define MSG_AMB		"ambiguous redirect"
 # define MSG_CMD		"command not found"
 # define MSG_PERM		"Permission denied"
 # define MSG_FLDR		"Is a directory"

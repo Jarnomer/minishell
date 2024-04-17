@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 14:44:57 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:10:02 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 	{
 		if (infile->mode != HEREDOC)
 		{
+			if (ft_strchr(infile->content, DOLLAR))
+				return (error_occured(infile, MSG_AMB, ms));
 			if (access(infile->content, F_OK) == FAILURE)
 				return (error_occured(infile, strerror(errno), ms));
 			else if (access(infile->content, F_OK) == SUCCESS

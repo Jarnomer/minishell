@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 14:42:23 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:19:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ static t_parser	*check_outfiles(t_module *mod, t_shell *ms)
 	outfile = mod->outfiles;
 	while (outfile)
 	{
+		if (ft_strchr(outfile->content, DOLLAR))
+			return (error_occured(outfile, MSG_AMB, ms));
 		if (opendir(outfile->content) != NULL)
 			return (error_occured(outfile, MSG_FLDR, ms));
 		else if (access(outfile->content, F_OK) == SUCCESS
