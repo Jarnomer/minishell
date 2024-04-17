@@ -55,7 +55,6 @@ void	execute_children(t_shell *ms)
 		if (ms->idx <= pipe_limit
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
-		// parse_envp(mod, ms);
 		// if (ms->cmds == 1 && is_builtin(XXX))
 		// 	execute_builtin(XXX);
 		// else

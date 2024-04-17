@@ -12,56 +12,20 @@
 
 #include "minishell.h"
 
-static void	assing_mode(t_module *mod, int mode)
+void	parse_envp(t_parser *lst, int mode, t_shell *ms)
 {
-	t_parser	*temp;
+	char	*envp;
 
-	if (mode == -1)
-		temp = mod->command;
-	else if (mode == OUTFILE || mode == APPEND)
-		temp = mod->outfiles;
+	if (!ft_strncmp(lst->content, "$?", 3))
+		envp = safe_trash(ft_itoa(ms->excode), ALLOCATED, ms);
 	else
-		temp = mod->infiles;
-	while (temp->next)
-		temp = temp->next;
-	temp->mode = mode;
-}
-
-static char	*append_file(char *input, int *mode)
-{
-	if (*(input + 1) == OUTDIRECT)
-		*mode = APPEND;
-	else if (*(input + 1) == INDIRECT)
-		*mode = HEREDOC;
-	else if (*input == OUTDIRECT)
-		*mode = OUTFILE;
-	else if (*input == INDIRECT)
-		*mode = INFILE;
-	if (*mode == APPEND || *mode == HEREDOC)
-		input += 2;
-	else
-		input += 1;
-	return (input);
-}
-
-static char	*append_argument(char *input, t_module *mod, t_shell *ms)
-{
-	int		mode;
-	char	c;
-
-	mode = -1;
-	if (ft_issyntax(*input))
-		input = append_file(input, &mode);
-	c = assign_delimiter(input);
-	if (mode == -1)
-		input = parse_argument(input, c, &mod->command, ms);
-	else if (mode == OUTFILE || mode == APPEND)
-		input = parse_argument(input, c, &mod->outfiles, ms);
-	else if (mode == INFILE || mode == HEREDOC)
-		input = parse_argument(input, c, &mod->infiles, ms);
-	if (input != NULL)
-		assing_mode(mod, mode);
-	return (input);
+	{
+		envp = envp_exists(ms, lst->content + 1);
+		if (!envp && mode != -1)
+			return ;
+	}
+	free_single(&lst->content);
+	safe_strdup(&lst->content, envp, ms);
 }
 
 void	parse_inputs(t_module **lst, t_shell *ms)
@@ -77,9 +41,9 @@ void	parse_inputs(t_module **lst, t_shell *ms)
 		{
 			while (ft_isspace(*input))
 				input++;
-			input = append_argument(input, mod, ms);
-			if (!input)
+			if (!*input)
 				break ;
+			input = parse_argv(input, mod, ms);
 		}
 		mod = mod->next;
 	}

@@ -49,23 +49,26 @@ void	filter_quotes(char *content, char c, t_shell *ms)
 
 static char	*opposing_quote(char *input, char c)
 {
-	while (*input && *input != c && !ft_issyntax(c))
+	while (*input && *input != c && !ft_isredirect(c))
 		input++;
 	return (++input);
 }
 
-char	*find_breakpoint(char *input, char c)
+char	*find_breakpoint(char *input, char c, int hdoc_flag)
 {
 	int	quotes;
 
 	quotes = 0;
-	while (*input && !ft_isspace(*input) && !ft_issyntax(*input))
+	if (*input == '$')
+		input++;
+	while (*input && *input != hdoc_flag
+		&& !ft_isspace(*input) && !ft_isredirect(*input))
 	{
 		if (*input == c && !ft_isspace(*input))
 			quotes++;
 		input++;
 	}
-	if (ft_issyntax(*input))
+	if (ft_isredirect(*input))
 		return (input);
 	else if (quotes == 1)
 		return (opposing_quote(input, c));
@@ -90,5 +93,5 @@ char	assign_delimiter(char *argv)
 	else if (single_qt)
 		return (SINGLEQUOTE);
 	else
-		return (SPACE);
+		return (EMPTY);
 }

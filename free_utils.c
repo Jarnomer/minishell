@@ -28,16 +28,15 @@ void	free_double(char ***arr)
 		return ;
 	i = 0;
 	while ((*arr)[i])
-	{
-		free((*arr)[i]);
-		i++;
-	}
+		free_single(&(*arr)[i++]);
 	free(*arr);
 	*arr = NULL;
 }
 
 void	free_exit(t_shell *ms)
 {
+	if (!ms)
+		return ;
 	if (ms->prompt != NULL)
 		free_single(&ms->prompt);
 	if (ms->envp != NULL)

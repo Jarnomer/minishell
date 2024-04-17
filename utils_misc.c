@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-int	ft_issyntax(char c)
+int	ft_isredirect(char c)
 {
-	return (c == '>' || c == '<' || c == '|');
+	return (c == '>' || c == '<');
 }
 
 int	ft_isspace(char c)

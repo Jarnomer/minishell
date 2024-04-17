@@ -6,41 +6,52 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 15:50:50 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:17:37 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_parser	*parser_last(t_parser *file)
+t_parser	*parser_last(t_parser *lst)
 {
-	if (!file)
+	if (!lst)
 		return (NULL);
-	while (file->next)
-		file = file->next;
-	return (file);
+	while (lst->next)
+		lst = lst->next;
+	return (lst);
 }
 
-int	parser_length(t_parser *file)
+int	parser_length(t_parser *lst)
 {
 	int	len;
 
-	if (!file)
+	if (!lst)
 		return (0);
 	len = 0;
-	while (file)
+	while (lst)
 	{
-		file = file->next;
+		lst = lst->next;
 		len++;
 	}
 	return (len);
+}
+
+void	parser_delone(t_parser *lst)
+{
+	if (!lst)
+		return ;
+	free_single(&lst->content);
+	free(lst);
+	lst = NULL;
 }
 
 void	parser_append(t_parser **lst, t_parser *new)
 {
 	t_parser	*temp;
 
-	if (!*lst)
+	if (!lst || !new)
+		return ;
+	else if (!*lst)
 		*lst = new;
 	else
 	{
@@ -49,22 +60,4 @@ void	parser_append(t_parser **lst, t_parser *new)
 			temp = temp->next;
 		temp->next = new;
 	}
-}
-
-char	*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms)
-{
-	t_parser	*new;
-	char		*temp;
-
-	while (ft_isspace(*argv) && *argv != '$')
-		argv++;
-	if (!*argv)
-		return (NULL);
-	temp = find_breakpoint(argv, c);
-	new = safe_calloc(sizeof(t_parser), ms);
-	safe_substr(&new->content, argv, temp, ms);
-	if (ft_strchr(new->content, c))
-		filter_quotes(new->content, c, ms);
-	parser_append(lst, new);
-	return (temp);
 }

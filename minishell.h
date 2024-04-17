@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/14 19:23:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:16:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,16 @@
 
 typedef enum e_checker
 {
-	SUCCESS = 0,
-	FAILURE = -1
+	FAILURE = -1,
+	SUCCESS,
+	ALLOCATE,
+	ALLOCATED
 }	t_checker;
 
 typedef enum e_pipe
 {
-	RD_END = 0,
-	WR_END = 1
+	RD_END,
+	WR_END
 }	t_pipe;
 
 typedef enum e_redirect
@@ -56,18 +58,19 @@ typedef enum e_redirect
 	INFILE,
 	HEREDOC,
 	OUTFILE,
-	APPEND,
-	AMBIGUOUS
+	APPEND
 }	t_redirect;
 
 typedef enum e_syntax
 {
 	PIPE = 124,
+	DOLLAR = 36,
 	INDIRECT = 60,
 	OUTDIRECT = 62,
 	SINGLEQUOTE = 39,
 	DOUBLEQUOTE = 34,
-	SPACE = 32
+	QUESTIONMARK = 63,
+	EMPTY = 32
 }	t_syntax;
 
 typedef struct s_parser
@@ -101,21 +104,27 @@ typedef struct s_shell
 	int				idx;
 	pid_t			*pids;
 	t_module		*mods;
+	t_parser		*trash;
 }	t_shell;
 
 //			Initialization
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
 
-//			Parser
+//			Parsers
 void		parse_inputs(t_module **lst, t_shell *ms);
-void		parse_envp(t_module *mod, t_shell *ms);
-char		*parse_argument(char *argv, char c, t_parser **lst, t_shell *ms);
+char		*parse_argv(char *input, t_module *mod, t_shell *ms);
+void		parse_envp(t_parser *lst, int mode, t_shell *ms);
+
+//			Parser utils
 void		parser_append(t_parser **lst, t_parser *new);
-int			parser_length(t_parser	*file);
-t_parser	*parser_last(t_parser *file);
+int			parser_length(t_parser *lst);
+t_parser	*parser_last(t_parser *lst);
+void		parser_delone(t_parser *lst);
+
+//			Parser helpers
 char		assign_delimiter(char *argv);
-char		*find_breakpoint(char *input, char c);
+char		*find_breakpoint(char *input, char c, int hdoc_flag);
 void		filter_quotes(char *content, char c, t_shell *ms);
 
 //			Child processes
@@ -144,21 +153,22 @@ void		error_fatal(int errcode, char *errmsg, t_shell *ms);
 
 //			Safety wrappers
 void		*safe_calloc(size_t n, t_shell *ms);
+char		*safe_trash(char *str, int alloc_flag, t_shell *ms);
 void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
 //			Utility functions
-char		*executable_path(char *exec, t_shell *ms);
 int			ft_isspace(char c);
-int			ft_issyntax(char c);
+int			ft_isredirect(char c);
 
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
 void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
+char		*envp_exists(t_shell *ms, char *name);
 
 //			Builtin functions
 int			is_builtin(t_shell *ms, char **cmd);

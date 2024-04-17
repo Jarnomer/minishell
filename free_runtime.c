@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 14:55:12 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 17:14:19 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	free_parser(t_parser **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		free(*lst);
+		parser_delone(*lst);
 		*lst = temp;
 	}
 	*lst = NULL;
@@ -65,5 +65,7 @@ void	free_runtime(t_shell *ms)
 	}
 	if (ms->mods != NULL)
 		free_modules(&ms->mods);
+	if (ms->trash != NULL)
+		free_parser(&ms->trash);
 	reset_shell(ms);
 }

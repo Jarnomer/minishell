@@ -12,6 +12,24 @@
 
 #include "minishell.h"
 
+char	*envp_exists(t_shell *ms, char *name)
+{
+	char	*temp;
+	int		len;
+	int		i;
+
+	i = 0;
+	temp = NULL;
+	safe_strjoin(&temp, name, "=", ms);
+	len = ft_strlen(temp);
+	while (ms->envp[i] && !ft_strnstr(ms->envp[i], temp, len))
+		i++;
+	free_single(&temp);
+	if (ms->envp[i] != NULL)
+		return (ms->envp[i] + len);
+	return (NULL);
+}
+
 void	envp_print(char **envp, int envp_size, int i, int flag)
 {
 	int j;

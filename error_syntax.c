@@ -46,7 +46,7 @@ static int	invalid_redirect(char *input, char c)
 			input += 1;
 		while (ft_isspace(*input))
 			input++;
-		if (!*input || ft_issyntax(*input))
+		if (!*input || ft_isredirect(*input))
 			return (FAILURE);
 	}
 	return (SUCCESS);

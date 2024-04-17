@@ -12,6 +12,19 @@
 
 #include "minishell.h"
 
+char	*safe_trash(char *str, int alloc_flag, t_shell *ms)
+{
+	t_parser	*new;
+
+	new = safe_calloc(sizeof(t_parser), ms);
+	parser_append(&ms->trash, new);
+	if (alloc_flag == ALLOCATED)
+		new->content = str;
+	else if (alloc_flag == ALLOCATE)
+		safe_strdup(&new->content, str, ms);
+	return (new->content);
+}
+
 void	*safe_calloc(size_t n, t_shell *ms)
 {
 	void	*p;
