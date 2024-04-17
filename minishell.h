@@ -166,10 +166,13 @@ void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
 char		*envp_exists(t_shell *ms, char *name);
 
-//			Builtin functions
+//			Builtin utils
 int			is_builtin(char *cmd);
+int 		is_builtin2(char *cmd);
 void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
+
+//			Builtin functions
 void		builtin_echo(char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd);
 void		builtin_env(char **envp, int i, int j);

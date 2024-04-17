@@ -34,11 +34,6 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	char **cmd;
 
-	if (ms->cmds == 1)
-	{
-		redirect_fds(mod, ms);
-		close_fds(ms);
-	}
 	cmd = build_command(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(cmd);
@@ -57,6 +52,16 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 		ft_putstr_fd("exit\n", 1);
 		exit(0);
 	}
+}
+
+int is_builtin2(char *cmd)
+{
+	if ((ft_strncmp("cd", cmd, 3) == 0 && ft_strlen(cmd) == 2)
+		|| (ft_strncmp("export", cmd, 7) == 0 && ft_strlen(cmd) == 6)
+		|| (ft_strncmp("unset", cmd, 6) == 0 && ft_strlen(cmd) == 5)
+		|| (ft_strncmp("exit", cmd, 5) == 0 && ft_strlen(cmd) == 4))
+		return (true);
+	return (false);
 }
 
 int	is_builtin(char *cmd)

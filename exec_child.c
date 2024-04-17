@@ -61,7 +61,7 @@ void	execute_children(t_shell *ms)
 		if (ms->idx <= pipe_limit
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
-		if (ms->cmds == 1 && is_builtin(mod->command->content))
+		if (ms->cmds == 1 && is_builtin2(mod->command->content))
 			execute_builtin(ms, mod);
 		else
 			fork_process(mod, ms);
