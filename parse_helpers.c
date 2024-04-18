@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 13:32:31 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 20:28:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	filter_quotes(char *content, char c, bool *checker, t_shell *ms)
 	int		i;
 	int		j;
 
-	safe_strdup(&temp, content, ms);
+	temp = safe_trash(content, ALLOCATE, ms);
 	i = ft_strlen(content) - 1;
 	j = i - count_quotes(content, checker, c);
 	ft_bzero(content, i);
@@ -47,7 +47,6 @@ void	filter_quotes(char *content, char c, bool *checker, t_shell *ms)
 			content[j--] = temp[i];
 		i--;
 	}
-	free(temp);
 }
 
 static char	*opposing_quote(char *input, char c)
