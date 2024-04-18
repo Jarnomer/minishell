@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 14:12:23 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:55:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	parse_envp(t_parser *lst, int mode, t_shell *ms)
 		envp = safe_trash(ft_itoa(ms->excode), ALLOCATED, ms);
 	else
 	{
-		envp = envp_exists(ms, lst->content + 1);
+		envp = envp_exists(lst->content + 1, ms);
 		if (!envp && mode != -1)
 			return ;
 	}

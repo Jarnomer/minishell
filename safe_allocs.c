@@ -6,11 +6,29 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 14:10:14 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 19:08:33 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char	**safe_double(t_parser *lst, t_shell *ms)
+{
+	char	**arr;
+	int		len;
+	int		i;
+
+	len = parser_length(lst) + 1;
+	arr = safe_calloc(len * sizeof(char *), ms);
+	i = 0;
+	while (lst)
+	{
+		arr[i] = lst->content;
+		lst = lst->next;
+		i++;
+	}
+	return (arr);
+}
 
 char	*safe_trash(char *str, int alloc_flag, t_shell *ms)
 {

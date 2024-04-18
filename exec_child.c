@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:32:45 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ static void	parent_process(t_shell *ms)
 
 static void	fork_process(t_module *mod, t_shell *ms)
 {
-	ms->pids[ms->idx] = fork();
-	if (ms->pids[ms->idx] == FAILURE)
+	ms->pids[ms->index] = fork();
+	if (ms->pids[ms->index] == FAILURE)
 		error_fatal(errno, MSG_FORK, ms);
-	else if (ms->pids[ms->idx] != 0)
+	else if (ms->pids[ms->index] != 0)
 		parent_process(ms);
-	else if (ms->pids[ms->idx] == 0)
+	else if (ms->pids[ms->index] == 0)
 		child_process(mod, ms);
 }
 
@@ -54,18 +54,18 @@ void	execute_children(t_shell *ms)
 	int			pipe_limit;
 
 	mod = ms->mods;
-	process_limit = ms->cmds - 1;
+	process_limit = ms->forks - 1;
 	pipe_limit = process_limit - 1;
-	while (ms->idx <= process_limit)
+	while (ms->index <= process_limit)
 	{
-		if (ms->idx <= pipe_limit
+		if (ms->index <= pipe_limit
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
-		if (ms->cmds == 1 && is_builtin2(mod->command->content))
+		if (ms->forks == 1 && is_builtin2(mod->command->content))
 			execute_builtin(ms, mod);
 		else
 			fork_process(mod, ms);
 		mod = mod->next;
-		ms->idx++;
+		ms->index++;
 	}
 }

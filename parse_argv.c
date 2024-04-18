@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 16:56:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ static char	*append_file(char *input, int *mode)
 		input += 2;
 	else
 		input += 1;
+	while (ft_isspace(*input))
+		input++;
 	return (input);
 }
 

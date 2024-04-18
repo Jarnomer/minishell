@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/30 12:12:16 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/04/17 19:09:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	char **cmd;
 
-	cmd = build_command(mod->command, ms);
+	cmd = safe_double(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(cmd);
 	else if (ft_strncmp("cd", cmd[0], 2) == 0)

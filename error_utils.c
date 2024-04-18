@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:13 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:40:01 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	error_fatal(int errcode, char *errmsg, t_shell *ms)
 {
 	if (errmsg != NULL)
 		perror(errmsg);
-	if (ms->idx != 0)
+	if (ms->index != 0)
 		wait_children(ms);
 	error_exit(errcode, NULL, NULL, ms);
 }

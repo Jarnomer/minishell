@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp_utils.c                                       :+:      :+:    :+:   */
+/*   utils_envp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 13:09:20 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/03/30 13:09:22 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:58:25 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*envp_exists(t_shell *ms, char *name)
+char	*envp_exists(char *name, t_shell *ms)
 {
 	char	*temp;
 	int		len;
