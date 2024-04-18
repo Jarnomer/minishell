@@ -6,72 +6,69 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:33:23 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/17 20:24:51 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*find_executable(char **paths, char *temp)
+static void	error_occured(int errcode, char ***arr, t_module *mod, t_shell *ms)
 {
+	char	*exec;
+
+	if (*arr != NULL)
+		free(*arr);
+	exec = mod->command->content;
+	if (errcode == ENOMEM)
+		error_fatal(ENOMEM, MSG_MEM, ms);
+	else if (errcode == ERR_CMD)
+		error_exit(ERR_CMD, exec, MSG_CMD, ms);
+}
+
+// static char	*check_command_errors(char *exec, t_module *mod, t_shell *ms)
+// {
+
+// }
+
+static char	*find_executable(char *temp, char *path_envp, t_module *mod, t_shell *ms)
+{
+	char	**paths;
 	char	*exec;
 	int		i;
 
+	paths = ft_split(path_envp, ':');
+	if (!paths)
+		error_fatal(ENOMEM, MSG_MEM, ms);
 	i = 0;
 	while (paths[i])
 	{
 		exec = ft_strjoin(paths[i++], temp);
-		if (access(exec, F_OK) == 0)
+		if (!exec)
+			error_occured(ENOMEM, &paths, mod, ms);
+		if (access(exec, F_OK) == SUCCESS)
 			return (exec);
 		free(exec);
 	}
 	return (NULL);
 }
 
-static char	**path_envp_found(char **envp)
+static char	*build_executable(t_module *mod, t_shell *ms)
 {
-	int	i;
+	char	*path;
+	char	*exec;
 
-	i = 0;
-	while (envp[i] != NULL && !ft_strnstr(envp[i], "PATH=", 5))
-		i++;
-	if (envp[i] != NULL)
-		return (ft_split(envp[i] + 5, ':'));
-	return (NULL);
-}
-
-static char	*executable_path(char *exec, t_shell *ms)
-{
-	char	**paths;
-	char	*temp;
-
-	if (!exec || !*exec)
-		return (NULL);
-	else if (ft_strchr(exec, '/'))
-		return (exec);
-	paths = path_envp_found(ms->envp);
-	temp = ft_strjoin("/", exec);
-	if (!paths || !temp)
-		return (NULL);
-	return (find_executable(paths, temp));
-}
-
-char	**build_command(t_parser *command, t_shell *ms)
-{
-	char	**cmd;
-	int		len;
-	int		i;
-
-	len = parser_length(command) + 1;
-	cmd = safe_calloc(len * sizeof(char *), ms);
-	i = 0;
-	while (command)
+	path = NULL;
+	exec = safe_trash(mod->command->content, ALLOCATE, ms);
+	if (!ft_strchr(exec, '/'))
 	{
-		cmd[i] = command->content;
-		command = command->next;
-		i++;
+		safe_strjoin(&exec, "/", exec, ms);
+		path = envp_exists("PATH", ms);
+		if (!path)
+			return (NULL);
+		else
+			return (find_executable(exec, path, mod, ms));
 	}
-	return (cmd);
+	return (exec);
 }
 
 void	execute_command(t_module *mod, t_shell *ms)
@@ -79,11 +76,9 @@ void	execute_command(t_module *mod, t_shell *ms)
 	char	**cmd;
 	char	*exec;
 
-	exec = mod->command->content;
-	exec = executable_path(exec, ms);
-	// TODO add command error handling here
-	cmd = build_command(mod->command, ms);
-	execve(exec, cmd, ms->envp);
-	free(cmd);
-	error_exit(NOERROR, NULL, NULL, ms);
+	exec = build_executable(mod, ms);
+	cmd = safe_double(mod->command, ms);
+	// check_command_errors(exec, mod, ms);
+	if (execve(exec, cmd, ms->envp) == FAILURE)
+		error_occured(ERR_CMD, &cmd, mod, ms);
 }

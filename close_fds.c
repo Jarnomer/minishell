@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 17:39:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:02:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:59:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static void	close_shell_fds(t_shell *ms)
 
 static void	close_mod_fds(t_module *mod)
 {
-	// return ; // this function breaks everything ❌
 	while (mod)
 	{
 		if (mod->infd != -1)

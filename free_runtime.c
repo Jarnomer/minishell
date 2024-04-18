@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:14:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static void	free_modules(t_module **lst)
 
 static void	reset_shell(t_shell *ms)
 {
-	ms->idx = 0;
+	ms->index = 0;
 }
 
 void	free_runtime(t_shell *ms)

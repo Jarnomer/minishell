@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 17:47:38 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:55:19 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ static int	command_count(t_module *mod)
 
 static void	finalize_shell(t_shell *ms)
 {
-	ms->cmds = command_count(ms->mods);
-	ms->pids = safe_calloc(ms->cmds * sizeof(pid_t), ms);
+	ms->forks = command_count(ms->mods);
+	ms->pids = safe_calloc(ms->forks * sizeof(pid_t), ms);
 }
 
 static void	finalize_module(t_module *mod)

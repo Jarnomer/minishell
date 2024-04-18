@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/17 17:35:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:58:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ typedef struct s_shell
 	int				envp_size;
 	int				pipefd[2];
 	int				tempfd;
-	int				cmds;
-	int				idx;
+	int				forks;
+	int				index;
 	pid_t			*pids;
 	t_module		*mods;
 	t_parser		*trash;
@@ -132,7 +132,6 @@ void		filter_quotes(char *content, char c, t_shell *ms);
 void		execute_children(t_shell *ms);
 void		redirect_fds(t_module *mod, t_shell *ms);
 void		execute_command(t_module *mod, t_shell *ms);
-char		**build_command(t_parser *command, t_shell *ms);
 void		wait_children(t_shell *ms);
 
 //			Open files
@@ -156,6 +155,7 @@ void		error_fatal(int errcode, char *errmsg, t_shell *ms);
 //			Safety wrappers
 void		*safe_calloc(size_t n, t_shell *ms);
 char		*safe_trash(char *str, int alloc_flag, t_shell *ms);
+char		**safe_double(t_parser *lst, t_shell *ms);
 void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
@@ -173,11 +173,11 @@ void		envp_print(char **envp, int envp_size, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
 void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
-char		*envp_exists(t_shell *ms, char *name);
+char		*envp_exists(char *name, t_shell *ms);
 
 //			Builtin utils
 int			is_builtin(char *cmd);
-int 		is_builtin2(char *cmd);
+int		is_builtin2(char *cmd);
 void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
 

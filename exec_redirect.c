@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:02 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 14:01:30 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void	redirect_outfd(t_module *mod, t_shell *ms)
 {
-	if (!mod->outfiles && ms->cmds == 1)
+	if (!mod->outfiles && ms->forks == 1)
 		return ;
-	else if (!mod->outfiles && ms->idx != ms->cmds - 1
+	else if (!mod->outfiles && ms->index != ms->forks - 1
 		&& dup2(ms->pipefd[WR_END], STDOUT) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->outfiles != NULL
@@ -26,9 +26,9 @@ static void	redirect_outfd(t_module *mod, t_shell *ms)
 
 static void	redirect_infd(t_module *mod, t_shell *ms)
 {
-	if (!mod->infiles && ms->cmds == 1)
+	if (!mod->infiles && ms->forks == 1)
 		return ;
-	else if (!mod->infiles && ms->idx != 0
+	else if (!mod->infiles && ms->index != 0
 		&& dup2(ms->tempfd, STDIN) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->infiles != NULL
