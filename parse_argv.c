@@ -41,6 +41,8 @@ static char	*append_file(char *input, int *mode)
 		input += 2;
 	else
 		input += 1;
+	while (ft_isspace(*input))
+		input++;
 	return (input);
 }
 
