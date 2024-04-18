@@ -126,7 +126,7 @@ void		parser_delone(t_parser *lst);
 //			Parser helpers
 char		assign_delimiter(char *argv);
 char		*find_breakpoint(char *input, char c, int hdoc_flag);
-void		filter_quotes(char *content, char c, t_shell *ms);
+void		filter_quotes(char *content, char c, bool *checker, t_shell *ms);
 
 //			Child processes
 void		execute_children(t_shell *ms);

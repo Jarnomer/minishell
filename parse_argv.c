@@ -61,15 +61,18 @@ static char	*append_argv(char *argv, t_parser **lst, int mode, t_shell *ms)
 	t_parser	*new;
 	char		*end;
 	char		delim;
+	bool		expand_checker;
 
+	expand_checker = true;
 	delim = assign_delimiter(argv);
 	end = find_endpoint(argv, delim, mode);
 	new = safe_calloc(sizeof(t_parser), ms);
 	parser_append(lst, new);
 	safe_substr(&new->content, argv, end, ms);
 	if (ft_strchr(new->content, delim))
-		filter_quotes(new->content, delim, ms);
-	if (ft_strchr(new->content, DOLLAR) && mode != HEREDOC)
+		filter_quotes(new->content, delim, &expand_checker, ms);
+	if (expand_checker == true && mode != HEREDOC
+		&& ft_strchr(new->content, DOLLAR))
 		parse_envp(new, mode, ms);
 	return (end);
 }

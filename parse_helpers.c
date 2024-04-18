@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	count_quotes(char *content, char c)
+static int	count_quotes(char *content, bool *checker, char c)
 {
 	int	cnt;
 	int	i;
@@ -25,10 +25,13 @@ static int	count_quotes(char *content, char c)
 			cnt++;
 		++i;
 	}
+	if (cnt % 2 != 0 && c == SINGLEQUOTE)
+		*checker = false;
+	// printf("cnt is %d result %d checker %d\n", cnt, (cnt / 2) % 2, *checker);
 	return (cnt);
 }
 
-void	filter_quotes(char *content, char c, t_shell *ms)
+void	filter_quotes(char *content, char c, bool *checker, t_shell *ms)
 {
 	char	*temp;
 	int		i;
@@ -36,7 +39,7 @@ void	filter_quotes(char *content, char c, t_shell *ms)
 
 	safe_strdup(&temp, content, ms);
 	i = ft_strlen(content) - 1;
-	j = i - count_quotes(content, c);
+	j = i - count_quotes(content, checker, c);
 	ft_bzero(content, i);
 	while (i >= 0)
 	{
