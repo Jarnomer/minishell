@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_echo.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:18 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/08 13:37:19 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:19:20 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

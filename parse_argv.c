@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:38 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:27:20 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ static char	*append_file(char *input, int *mode)
 		input += 2;
 	else
 		input += 1;
-	while (ft_isspace(*input))
-		input++;
 	return (input);
 }
 
@@ -84,6 +82,8 @@ char	*parse_argv(char *input, t_module *mod, t_shell *ms)
 	mode = -1;
 	if (ft_isredirect(*input))
 		input = append_file(input, &mode);
+	while (ft_isspace(*input))
+		input++;
 	if (mode == -1)
 		input = append_argv(input, &mod->command, mode, ms);
 	else if (mode == OUTFILE || mode == APPEND)

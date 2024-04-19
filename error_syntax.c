@@ -6,41 +6,47 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:40:54 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:54:59 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	error_occured(int errcode, char *errmsg, char *token, t_shell *ms)
+static int	error_occured(char *token, t_shell *ms)
 {
-	error_logger(errmsg, " ", token, ms);
-	ms->excode = errcode;
+	char	c;
+
+	c = *(token + 1);
+	if (c == SINGLEQUOTE || c == DOUBLEQUOTE)
+		error_logger(MSG_QUOT, " ", token, ms);
+	else
+		error_logger(MSG_SYNX, " ", token, ms);
+	ms->excode = ERR_SYNX;
 	return (FAILURE);
 }
 
-static int	unclosed_quotes(char *input, char c)
+static int	unclosed_quotes(char *input, char delim)
 {
-	int	cnt;
+	int	quotes;
 	int	i;
 
 	i = 0;
-	cnt = 0;
+	quotes = 0;
 	while (input[i])
 	{
-		if (input[i] == c)
-			cnt++;
+		if (input[i] == delim)
+			quotes++;
 		++i;
 	}
-	return (cnt % 2);
+	return (quotes % 2);
 }
 
-static int	invalid_redirect(char *input, char c)
+static int	invalid_redirect(char *input, char delim)
 {
-	while (ft_strchr(input, c))
+	while (ft_strchr(input, delim))
 	{
-		input = ft_strchr(input, c);
-		if (*(input + 1) == c)
+		input = ft_strchr(input, delim);
+		if (*(input + 1) == delim)
 			input += 2;
 		else
 			input += 1;
@@ -54,17 +60,18 @@ static int	invalid_redirect(char *input, char c)
 
 int	error_syntax(char *input, t_shell *ms)
 {
+	char	c;
+
 	if (!input || !*input)
-		return (error_occured(ERR_SYNX, MSG_SYNX, "`|'", ms));
+		return (error_occured("`|'", ms));
 	else if (invalid_redirect(input, OUTDIRECT))
-		return (error_occured(ERR_SYNX, MSG_SYNX, "`>'", ms));
+		return (error_occured("`>'", ms));
 	else if (invalid_redirect(input, INDIRECT))
-		return (error_occured(ERR_SYNX, MSG_SYNX, "`<'", ms));
-	else if (ft_strchr(input, SINGLEQUOTE)
-		&& unclosed_quotes(input, SINGLEQUOTE))
-		return (error_occured(ERR_SYNX, MSG_QUOT, "`\''", ms));
-	else if (ft_strchr(input, DOUBLEQUOTE)
-		&& unclosed_quotes(input, DOUBLEQUOTE))
-		return (error_occured(ERR_SYNX, MSG_QUOT, "`\"'", ms));
+		return (error_occured("`<'", ms));
+	c = assign_delimiter(input);
+	if (c == SINGLEQUOTE && unclosed_quotes(input, c))
+		return (error_occured("`\''", ms));
+	else if (c == DOUBLEQUOTE && unclosed_quotes(input, c))
+		return (error_occured("`\"'", ms));
 	return (SUCCESS);
 }

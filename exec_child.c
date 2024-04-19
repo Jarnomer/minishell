@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:15:05 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ static void	child_process(t_module *mod, t_shell *ms)
 	close_fds(ms);
 	if (!mod->command)
 		error_exit(NOERROR, NULL, NULL, ms);
-	// else if (cant_run_cmd == FAILURE)
-	// 	error_exit(ms->excode, NULL, NULL, ms);
-	else if (is_builtin(mod->command->content))
+	else if (is_builtin(mod))
 		execute_builtin(ms, mod);
 	else
 		execute_command(mod, ms);
@@ -50,18 +48,18 @@ static void	fork_process(t_module *mod, t_shell *ms)
 void	execute_children(t_shell *ms)
 {
 	t_module	*mod;
-	int			process_limit;
+	int			fork_limit;
 	int			pipe_limit;
 
 	mod = ms->mods;
-	process_limit = ms->forks - 1;
-	pipe_limit = process_limit - 1;
-	while (ms->index <= process_limit)
+	fork_limit = ms->forks - 1;
+	pipe_limit = fork_limit - 1;
+	while (ms->index <= fork_limit)
 	{
 		if (ms->index <= pipe_limit
 			&& pipe(ms->pipefd) == FAILURE)
 			error_fatal(errno, MSG_PIPE, ms);
-		if (ms->forks == 1 && is_builtin2(mod->command->content))
+		if (ms->forks == 1 && is_builtin2(mod))
 			execute_builtin(ms, mod);
 		else
 			fork_process(mod, ms);

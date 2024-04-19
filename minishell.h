@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/18 15:58:50 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:14:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,8 +176,8 @@ void		envp_remove(t_shell *ms, char *content);
 char		*envp_exists(char *name, t_shell *ms);
 
 //			Builtin utils
-int			is_builtin(char *cmd);
-int		is_builtin2(char *cmd);
+bool		is_builtin(t_module *mod);
+bool		is_builtin2(t_module *mod);
 void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
 

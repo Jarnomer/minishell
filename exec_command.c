@@ -6,45 +6,46 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 20:24:51 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:30:33 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	error_occured(int errcode, char ***arr, t_module *mod, t_shell *ms)
+static void	error_occured(char *exec, char ***arr, t_module *mod, t_shell *ms)
 {
-	char	*exec;
-
 	if (*arr != NULL)
 		free(*arr);
-	exec = mod->command->content;
-	if (errcode == ENOMEM)
+	if (!mod)
 		error_fatal(ENOMEM, MSG_MEM, ms);
-	else if (errcode == ERR_CMD)
+	if (!exec)
+		error_exit(ERR_CMD, mod->command->content, MSG_CMD, ms);
+	else if (opendir(exec) != NULL)
+		error_exit(ERR_FLDR, exec, MSG_FLDR, ms);
+	else if (access(exec, F_OK) == SUCCESS
+		&& access(exec, X_OK) == FAILURE)
+		error_exit(ERR_PERM, exec, MSG_PERM, ms);
+	else if (ft_strchr(exec, '/'))
+		error_exit(ERR_CMD, exec, MSG_FILE, ms);
+	else
 		error_exit(ERR_CMD, exec, MSG_CMD, ms);
 }
 
-// static char	*check_command_errors(char *exec, t_module *mod, t_shell *ms)
-// {
-
-// }
-
-static char	*find_executable(char *temp, char *path_envp, t_module *mod, t_shell *ms)
+static char	*find_executable(char *exe, char *env, t_shell *ms)
 {
 	char	**paths;
 	char	*exec;
 	int		i;
 
-	paths = ft_split(path_envp, ':');
+	paths = ft_split(env, ':');
 	if (!paths)
 		error_fatal(ENOMEM, MSG_MEM, ms);
 	i = 0;
 	while (paths[i])
 	{
-		exec = ft_strjoin(paths[i++], temp);
+		exec = ft_strjoin(paths[i++], exe);
 		if (!exec)
-			error_occured(ENOMEM, &paths, mod, ms);
+			error_occured(NULL, &paths, NULL, ms);
 		if (access(exec, F_OK) == SUCCESS)
 			return (exec);
 		free(exec);
@@ -66,7 +67,7 @@ static char	*build_executable(t_module *mod, t_shell *ms)
 		if (!path)
 			return (NULL);
 		else
-			return (find_executable(exec, path, mod, ms));
+			return (find_executable(exec, path, ms));
 	}
 	return (exec);
 }
@@ -78,7 +79,6 @@ void	execute_command(t_module *mod, t_shell *ms)
 
 	exec = build_executable(mod, ms);
 	cmd = safe_double(mod->command, ms);
-	// check_command_errors(exec, mod, ms);
-	if (execve(exec, cmd, ms->envp) == FAILURE)
-		error_occured(ERR_CMD, &cmd, mod, ms);
+	if (!exec || execve(exec, cmd, ms->envp) == FAILURE)
+		error_occured(exec, &cmd, mod, ms);
 }

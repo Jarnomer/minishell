@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/17 19:09:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 19:27:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,32 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	}
 }
 
-int is_builtin2(char *cmd)
+bool	is_builtin2(t_module *mod)
 {
-	if ((ft_strncmp("cd", cmd, 3) == 0 && ft_strlen(cmd) == 2)
-		|| (ft_strncmp("export", cmd, 7) == 0 && ft_strlen(cmd) == 6)
-		|| (ft_strncmp("unset", cmd, 6) == 0 && ft_strlen(cmd) == 5)
-		|| (ft_strncmp("exit", cmd, 5) == 0 && ft_strlen(cmd) == 4))
+	char	*cmd;
+
+	if (!mod || !mod->command)
+		return (false);
+	cmd = mod->command->content;
+	if (ft_strncmp("cd", cmd, 3) == SUCCESS
+		|| ft_strncmp("export", cmd, 7) == SUCCESS
+		|| ft_strncmp("unset", cmd, 6) == SUCCESS
+		|| ft_strncmp("exit", cmd, 5) == SUCCESS)
 		return (true);
 	return (false);
 }
 
-int	is_builtin(char *cmd)
+bool	is_builtin(t_module *mod)
 {
-	if ((ft_strncmp("echo", cmd, 5) == 0 && ft_strlen(cmd) == 4)
-		|| (ft_strncmp("cd", cmd, 3) == 0 && ft_strlen(cmd) == 2)
-		|| (ft_strncmp("env", cmd, 4) == 0 && ft_strlen(cmd) == 3)
-		|| (ft_strncmp("export", cmd, 7) == 0 && ft_strlen(cmd) == 6)
-		|| (ft_strncmp("unset", cmd, 6) == 0 && ft_strlen(cmd) == 5)
-		|| (ft_strncmp("pwd", cmd, 4) == 0 && ft_strlen(cmd) == 3)
-		|| (ft_strncmp("exit", cmd, 5) == 0 && ft_strlen(cmd) == 4))
+	char	*cmd;
+
+	if (!mod || !mod->command)
+		return (false);
+	cmd = mod->command->content;
+	if (ft_strncmp("echo", cmd, 5) == SUCCESS
+		|| ft_strncmp("env", cmd, 4) == SUCCESS
+		|| ft_strncmp("pwd", cmd, 4) == SUCCESS
+		|| is_builtin2(mod))
 		return (true);
 	return (false);
 }

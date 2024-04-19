@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:34:39 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:35:59 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@ int	main(void)
 		ms.input = readline(ms.prompt);
 		if (!ms.input)
 		{
-			printf("exit\n");
+			ft_putendl_fd("exit", STDOUT);
 			break ;
 		}
-		add_history(ms.input);
+		if (ms.input && *ms.input)
+			add_history (ms.input);
 		if (!init_modules(ms.input, &ms))
 		{
 			parse_inputs(&ms.mods, &ms);
