@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 16:30:33 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 19:18:13 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static void	error_occured(char *exec, char ***arr, t_module *mod, t_shell *ms)
 		error_exit(ERR_CMD, exec, MSG_CMD, ms);
 }
 
-static char	*find_executable(char *exe, char *env, t_shell *ms)
+static char	*find_executable(char *binary, char *env, t_shell *ms)
 {
 	char	**paths;
 	char	*exec;
@@ -43,7 +43,7 @@ static char	*find_executable(char *exe, char *env, t_shell *ms)
 	i = 0;
 	while (paths[i])
 	{
-		exec = ft_strjoin(paths[i++], exe);
+		exec = ft_strjoin(paths[i++], binary);
 		if (!exec)
 			error_occured(NULL, &paths, NULL, ms);
 		if (access(exec, F_OK) == SUCCESS)
@@ -56,20 +56,22 @@ static char	*find_executable(char *exe, char *env, t_shell *ms)
 static char	*build_executable(t_module *mod, t_shell *ms)
 {
 	char	*path;
-	char	*exec;
+	char	*binary;
 
 	path = NULL;
-	exec = safe_trash(mod->command->content, ALLOCATE, ms);
-	if (!ft_strchr(exec, '/'))
+	if (!mod->command->content)
+		return (NULL);
+	binary = safe_trash(mod->command->content, ALLOCATE, ms);
+	if (!ft_strchr(binary, '/'))
 	{
-		safe_strjoin(&exec, "/", exec, ms);
+		safe_strjoin(&binary, "/", binary, ms);
 		path = envp_exists("PATH", ms);
 		if (!path)
 			return (NULL);
 		else
-			return (find_executable(exec, path, ms));
+			return (find_executable(binary, path, ms));
 	}
-	return (exec);
+	return (binary);
 }
 
 void	execute_command(t_module *mod, t_shell *ms)

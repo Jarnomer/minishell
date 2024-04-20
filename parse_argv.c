@@ -6,40 +6,27 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 18:27:20 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 19:47:54 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	assing_mode(t_module *mod, int mode)
-{
-	t_parser	*temp;
-
-	if (mode == -1)
-		temp = mod->command;
-	else if (mode == OUTFILE || mode == APPEND)
-		temp = mod->outfiles;
-	else
-		temp = mod->infiles;
-	while (temp->next)
-		temp = temp->next;
-	temp->mode = mode;
-}
-
-static char	*append_file(char *input, int *mode)
+static char	*check_redirection(char *input, t_parser *new)
 {
 	if (*(input + 1) == OUTDIRECT)
-		*mode = APPEND;
+		new->mode = APPEND;
 	else if (*(input + 1) == INDIRECT)
-		*mode = HEREDOC;
+		new->mode = HEREDOC;
 	else if (*input == OUTDIRECT)
-		*mode = OUTFILE;
+		new->mode = OUTFILE;
 	else if (*input == INDIRECT)
-		*mode = INFILE;
-	if (*mode == APPEND || *mode == HEREDOC)
-		input += 2;
+		new->mode = INFILE;
 	else
+		new->mode = -1;
+	if (new->mode == APPEND || new->mode == HEREDOC)
+		input += 2;
+	else if (new->mode == INFILE || new->mode == OUTFILE)
 		input += 1;
 	return (input);
 }
@@ -47,49 +34,46 @@ static char	*append_file(char *input, int *mode)
 static char	*find_endpoint(char *argv, char delim, int mode)
 {
 	if (mode == HEREDOC)
-		return (find_breakpoint(argv, delim, EMPTY));
-	else if (*(argv + 1) != QUESTIONMARK)
-		return (find_breakpoint(argv, delim, DOLLAR));
-	else
+		return (find_breakpoint(argv, delim, '\0'));
+	else if (*argv == DOLLAR && *(argv + 1) == QUESTIONMARK)
 		return (argv + 2);
+	else
+		return (find_breakpoint(argv, delim, DOLLAR));
 }
 
-static char	*append_argv(char *argv, t_parser **lst, int mode, t_shell *ms)
+static char	*append_argv(char *argv, \
+	t_parser **lst, t_parser *new, t_shell *ms)
 {
-	t_parser	*new;
 	char		*end;
 	char		delim;
 	bool		expand_checker;
 
 	expand_checker = true;
-	delim = assign_delimiter(argv);
-	end = find_endpoint(argv, delim, mode);
-	new = safe_calloc(sizeof(t_parser), ms);
 	parser_append(lst, new);
+	delim = assign_delimiter(argv);
+	end = find_endpoint(argv, delim, new->mode);
 	safe_substr(&new->content, argv, end, ms);
 	if (ft_strchr(new->content, delim))
 		filter_quotes(new->content, delim, &expand_checker, ms);
-	if (expand_checker == true && mode != HEREDOC
+	if (expand_checker == true && new->mode != HEREDOC
 		&& ft_strchr(new->content, DOLLAR))
-		parse_envp(new, mode, ms);
+		parse_envp(new, new->mode, ms);
 	return (end);
 }
 
 char	*parse_argv(char *input, t_module *mod, t_shell *ms)
 {
-	int		mode;
+	t_parser	*new;
 
-	mode = -1;
-	if (ft_isredirect(*input))
-		input = append_file(input, &mode);
+	new = safe_calloc(sizeof(t_parser), ms);
+	input = check_redirection(input, new);
 	while (ft_isspace(*input))
 		input++;
-	if (mode == -1)
-		input = append_argv(input, &mod->command, mode, ms);
-	else if (mode == OUTFILE || mode == APPEND)
-		input = append_argv(input, &mod->outfiles, mode, ms);
-	else if (mode == INFILE || mode == HEREDOC)
-		input = append_argv(input, &mod->infiles, mode, ms);
-	assing_mode(mod, mode);
+	if (new->mode == -1)
+		input = append_argv(input, &mod->command, new, ms);
+	else if (new->mode == OUTFILE || new->mode == APPEND)
+		input = append_argv(input, &mod->outfiles, new, ms);
+	else if (new->mode == INFILE || new->mode == HEREDOC)
+		input = append_argv(input, &mod->infiles, new, ms);
 	return (input);
 }

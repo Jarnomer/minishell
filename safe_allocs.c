@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 19:08:33 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 18:06:02 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char	**safe_double(t_parser *lst, t_shell *ms)
 	int		len;
 	int		i;
 
+	if (!lst)
+		return (NULL);
 	len = parser_length(lst) + 1;
 	arr = safe_calloc(len * sizeof(char *), ms);
 	i = 0;
@@ -34,6 +36,8 @@ char	*safe_trash(char *str, int alloc_flag, t_shell *ms)
 {
 	t_parser	*new;
 
+	if (!str)
+		return (NULL);
 	new = safe_calloc(sizeof(t_parser), ms);
 	parser_append(&ms->trash, new);
 	if (alloc_flag == ALLOCATED)

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 15:54:59 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:56:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	error_syntax(char *input, t_shell *ms)
 {
 	char	c;
 
-	if (!input || !*input)
+	if (!input || !*input || *(input + ft_strlen(input) - 1) == PIPE)
 		return (error_occured("`|'", ms));
 	else if (invalid_redirect(input, OUTDIRECT))
 		return (error_occured("`>'", ms));

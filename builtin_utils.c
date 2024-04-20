@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/19 19:27:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:56:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,15 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 bool	is_builtin2(t_module *mod)
 {
 	char	*cmd;
+	int		args;
 
-	if (!mod || !mod->command)
+	if (!mod || !mod->command || !mod->command->content)
 		return (false);
+	args = parser_length(mod->command);
 	cmd = mod->command->content;
-	if (ft_strncmp("cd", cmd, 3) == SUCCESS
-		|| ft_strncmp("export", cmd, 7) == SUCCESS
+	if ((ft_strncmp("export", cmd, 7) == SUCCESS && args != 1)
 		|| ft_strncmp("unset", cmd, 6) == SUCCESS
+		|| ft_strncmp("cd", cmd, 3) == SUCCESS
 		|| ft_strncmp("exit", cmd, 5) == SUCCESS)
 		return (true);
 	return (false);
@@ -72,11 +74,14 @@ bool	is_builtin2(t_module *mod)
 bool	is_builtin(t_module *mod)
 {
 	char	*cmd;
+	int		args;
 
-	if (!mod || !mod->command)
+	if (!mod || !mod->command || !mod->command->content)
 		return (false);
+	args = parser_length(mod->command);
 	cmd = mod->command->content;
-	if (ft_strncmp("echo", cmd, 5) == SUCCESS
+	if ((ft_strncmp("export", cmd, 7) == SUCCESS && args == 1)
+		|| ft_strncmp("echo", cmd, 5) == SUCCESS
 		|| ft_strncmp("env", cmd, 4) == SUCCESS
 		|| ft_strncmp("pwd", cmd, 4) == SUCCESS
 		|| is_builtin2(mod))

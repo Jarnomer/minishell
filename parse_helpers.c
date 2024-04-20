@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 18:10:11 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 19:51:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ char	*find_breakpoint(char *input, char delim, int hdoc_flag)
 	quotes = 0;
 	if (*input == '$')
 		input++;
-	while (*input && *input != hdoc_flag
-		&& !ft_isspace(*input) && !ft_isredirect(*input))
+	while (*input && *input != hdoc_flag &&
+		!ft_isspace(*input) && !ft_isredirect(*input))
 	{
 		if (*input == delim && !ft_isspace(*input))
 			quotes++;

@@ -40,6 +40,10 @@ void	parser_delone(t_parser *lst)
 {
 	if (!lst)
 		return ;
+	if (lst->next != NULL)
+		lst->next->prev = lst->prev;
+	if (lst->prev != NULL)
+		lst->prev->next = lst->next;
 	free_single(&lst->content);
 	free(lst);
 	lst = NULL;
@@ -47,7 +51,7 @@ void	parser_delone(t_parser *lst)
 
 void	parser_append(t_parser **lst, t_parser *new)
 {
-	t_parser	*temp;
+	t_parser	*last;
 
 	if (!lst || !new)
 		return ;
@@ -55,9 +59,8 @@ void	parser_append(t_parser **lst, t_parser *new)
 		*lst = new;
 	else
 	{
-		temp = *lst;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new;
+		last = parser_last(*lst);
+		last->next = new;
+		new->prev = last;
 	}
 }

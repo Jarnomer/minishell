@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/19 18:14:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:57:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@
 typedef enum e_checker
 {
 	FAILURE = -1,
-	SUCCESS,
-	ALLOCATE,
-	ALLOCATED
+	SUCCESS = 0,
+	ALLOCATE = 10,
+	ALLOCATED,
 }	t_checker;
 
 typedef enum e_pipe
@@ -79,6 +79,7 @@ typedef struct s_parser
 	char			*content;
 	int				mode;
 	struct s_parser	*next;
+	struct s_parser	*prev;
 }	t_parser;
 
 typedef struct s_module

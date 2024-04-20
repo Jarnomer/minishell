@@ -57,7 +57,7 @@ int	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*new;
 
-	if (!input || !*input)
+	if (!input || !*input || error_syntax(ms->input, ms))
 		return (FAILURE);
 	while (*input)
 	{
