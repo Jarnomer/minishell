@@ -12,6 +12,14 @@
 
 #include "minishell.h"
 
+void	parser_join(t_parser *prev, t_parser *lst, t_shell *ms)
+{
+	if (!prev)
+		return ;
+	safe_strjoin(&lst->content, prev->content, lst->content, ms);
+	parser_delone(&prev);
+}
+
 t_parser	*parser_last(t_parser *lst)
 {
 	if (!lst)
@@ -36,17 +44,17 @@ int	parser_length(t_parser *lst)
 	return (len);
 }
 
-void	parser_delone(t_parser *lst)
+void	parser_delone(t_parser **lst)
 {
-	if (!lst)
+	if (!lst || !*lst)
 		return ;
-	if (lst->next != NULL)
-		lst->next->prev = lst->prev;
-	if (lst->prev != NULL)
-		lst->prev->next = lst->next;
-	free_single(&lst->content);
-	free(lst);
-	lst = NULL;
+	if ((*lst)->next != NULL)
+		(*lst)->next->prev = (*lst)->prev;
+	if ((*lst)->prev != NULL)
+		(*lst)->prev->next = (*lst)->next;
+	free_single(&(*lst)->content);
+	free(*lst);
+	*lst = NULL;
 }
 
 void	parser_append(t_parser **lst, t_parser *new)

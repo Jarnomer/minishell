@@ -57,16 +57,18 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 bool	is_builtin2(t_module *mod)
 {
 	char	*cmd;
+	int		len;
 	int		args;
 
 	if (!mod || !mod->command || !mod->command->content)
 		return (false);
 	args = parser_length(mod->command);
 	cmd = mod->command->content;
-	if ((ft_strncmp("export", cmd, 7) == SUCCESS && args != 1)
-		|| ft_strncmp("unset", cmd, 6) == SUCCESS
-		|| ft_strncmp("cd", cmd, 3) == SUCCESS
-		|| ft_strncmp("exit", cmd, 5) == SUCCESS)
+	len = ft_strlen(cmd);
+	if ((len == 6 && !ft_strncmp("export", cmd, len + 1) && args != 1)
+		|| (len == 5 && !ft_strncmp("unset", cmd, len + 1))
+		|| (len == 2 && !ft_strncmp("cd", cmd, len + 1))
+		|| (len == 4 && !ft_strncmp("exit", cmd, len + 1)))
 		return (true);
 	return (false);
 }
@@ -74,16 +76,18 @@ bool	is_builtin2(t_module *mod)
 bool	is_builtin(t_module *mod)
 {
 	char	*cmd;
+	int		len;
 	int		args;
 
 	if (!mod || !mod->command || !mod->command->content)
 		return (false);
 	args = parser_length(mod->command);
 	cmd = mod->command->content;
-	if ((ft_strncmp("export", cmd, 7) == SUCCESS && args == 1)
-		|| ft_strncmp("echo", cmd, 5) == SUCCESS
-		|| ft_strncmp("env", cmd, 4) == SUCCESS
-		|| ft_strncmp("pwd", cmd, 4) == SUCCESS
+	len = ft_strlen(cmd);
+	if ((len == 6 && !ft_strncmp("export", cmd, len + 1) && args == 1)
+		|| (len == 4 && !ft_strncmp("echo", cmd, len + 1))
+		|| (len == 3 && !ft_strncmp("env", cmd, len + 1))
+		|| (len == 3 && !ft_strncmp("pwd", cmd, len + 1))
 		|| is_builtin2(mod))
 		return (true);
 	return (false);

@@ -122,7 +122,8 @@ void		parse_envp(t_parser *lst, int mode, t_shell *ms);
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
-void		parser_delone(t_parser *lst);
+void		parser_delone(t_parser **lst);
+void		parser_join(t_parser *prev, t_parser *lst, t_shell *ms);
 
 //			Parser helpers
 char		assign_delimiter(char *argv);

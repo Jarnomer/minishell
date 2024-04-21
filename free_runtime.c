@@ -19,7 +19,7 @@ static void	free_parser(t_parser **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		parser_delone(*lst);
+		parser_delone(lst);
 		*lst = temp;
 	}
 	*lst = NULL;
