@@ -12,33 +12,43 @@
 
 #include "minishell.h"
 
-static void	check_joining(char *start, t_parser *new, t_shell *ms)
-{
-	char	delim;
-	char	*end;
-
-	if (!new->prev)
-		return ;
-	end = start;
-	delim = assign_delimiter(start);
-	if (delim == EMPTY)
-		delim = DOLLAR;
-	ft_printf("debug print: delim = %c | start = %c | end = %c\n", delim, *start, *end);
-	while (*end && *end != delim && !ft_isredirect(*end))
-		end++;
-	while (*start && *start != delim && !ft_isredirect(*start)
-		&& !ft_isspace(*start))
-		start++;
-	printf("debug print: start = %c | end = %c\n", *start, *end);
-	if (!*start && !*end)
-		return ;
-	if (start == end && !ft_isredirect(*start))
-	{
-		ft_printf("JOINING ARGUMENTS!\n");
-		return ;
-		parser_join(new->prev, new, ms);
-	}
-}
+// static void	check_joining(char *start, t_parser *new, t_shell *ms)
+// {
+// 	static bool	checker = false;
+// 	// char		delim;
+// 	// char		*end;
+//
+// 	// if (!ms) {
+// 	// 	return;
+// 	// }
+//
+//
+// 	// end = start;
+// 	if (!new->prev || !start || !*start)
+// 		return ;
+// 	if (checker == true)
+// 	{
+// 		// ft_printf("JOINING ARGUMENTS!\n");
+// 		// return ;
+// 		ft_printf("Joining argumets: %s | %s\n", new->prev->content, new->content);
+// 		parser_join(new->prev, new, ms);
+// 		checker = false;
+//
+// 	}
+// 	else
+// 	{
+// 		printf("START IS: %s\n", start);
+// 		while (*start && !ft_isspace(*start))
+// 		{
+// 			if (*start == DOLLAR)
+// 			{
+// 				printf("DETECTED JOINABLE ARGUMENT\n");
+// 				checker = true;
+// 			}
+// 			start++;
+// 		}
+// 	}
+// }
 
 static char	*check_redirection(char *input, t_parser *new)
 {
@@ -105,6 +115,6 @@ char	*parse_argv(char *input, t_module *mod, t_shell *ms)
 		input = append_argv(input, &mod->outfiles, new, ms);
 	else if (new->mode == INFILE || new->mode == HEREDOC)
 		input = append_argv(input, &mod->infiles, new, ms);
-	check_joining(start, new, ms);
+	// check_joining(start, new, ms);
 	return (input);
 }
