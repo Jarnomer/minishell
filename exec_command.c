@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/20 19:18:13 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:11:12 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ static char	*build_executable(t_module *mod, t_shell *ms)
 	path = NULL;
 	if (!mod->command->content)
 		return (NULL);
-	binary = safe_trash(mod->command->content, ALLOCATE, ms);
+	binary = mod->command->content;
 	if (!ft_strchr(binary, '/'))
 	{
-		safe_strjoin(&binary, "/", binary, ms);
+		binary = safe_trash(ft_strjoin("/", binary), ALLOCATED, ms);
 		path = envp_exists("PATH", ms);
 		if (!path)
 			return (NULL);

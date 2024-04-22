@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/21 19:23:43 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:04:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ static int	count_quotes(char *content, bool *checker, char delim)
 			quotes++;
 		++i;
 	}
-	if (delim == SINGLEQUOTE && quotes % 2 != 0)
+	// if (delim == SINGLEQUOTE && quotes % 2 != 0)
+	if (delim == SINGLEQUOTE)
 		*checker = false;
 	return (quotes);
 }
@@ -62,8 +63,6 @@ char	*find_breakpoint(char *input, char delim, int hdoc_flag)
 	int	quotes;
 
 	quotes = 0;
-	if (*input == '$')
-		input++;
 	while (*input && *input != hdoc_flag
 		&& !ft_isspace(*input) && !ft_isredirect(*input))
 	{

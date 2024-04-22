@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:17:37 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:29:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	parser_join(t_parser *prev, t_parser *lst, t_shell *ms)
 {
-	if (!prev)
+	if (!prev || !lst)
 		return ;
 	safe_strjoin(&lst->content, prev->content, lst->content, ms);
 	parser_delone(&prev);

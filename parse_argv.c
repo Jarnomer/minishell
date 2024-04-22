@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/21 19:24:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/22 19:13:21 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@
 // 		return ;
 // 	if (checker == true)
 // 	{
-// 		// ft_printf("JOINING ARGUMENTS!\n");
-// 		// return ;
-// 		ft_printf("Joining argumets: %s | %s\n", new->prev->content, new->content);
+//
+// 		ft_printf("Joining arguments: %s | %s\n", new->prev->content, new->content);
+//			 return ;
 // 		parser_join(new->prev, new, ms);
 // 		checker = false;
 //
@@ -40,17 +40,18 @@
 // 		printf("START IS: %s\n", start);
 // 		while (*start && !ft_isspace(*start))
 // 		{
-// 			if (*start == DOLLAR)
+// 			if (*start == DOLLAR || *start == SINGLEQUOTE || *start == DOUBLEQUOTE)
 // 			{
 // 				printf("DETECTED JOINABLE ARGUMENT\n");
-// 				checker = true;
+// 				checker = true
+//				break ;
 // 			}
 // 			start++;
 // 		}
 // 	}
 // }
 
-static char	*check_redirection(char *input, t_parser *new)
+static char	*check_metachr(char *input, t_parser *new)
 {
 	if (*(input + 1) == OUTDIRECT)
 		new->mode = APPEND;
@@ -62,9 +63,11 @@ static char	*check_redirection(char *input, t_parser *new)
 		new->mode = INFILE;
 	else
 		new->mode = -1;
-	if (new->mode == APPEND || new->mode == HEREDOC)
+	if (new->mode == APPEND
+		|| new->mode == HEREDOC)
 		input += 2;
-	else if (new->mode == INFILE || new->mode == OUTFILE)
+	else if (new->mode == INFILE
+		|| new->mode == OUTFILE)
 		input += 1;
 	return (input);
 }
@@ -72,7 +75,7 @@ static char	*check_redirection(char *input, t_parser *new)
 static char	*find_endpoint(char *argv, char delim, int mode)
 {
 	if (mode == HEREDOC)
-		return (find_breakpoint(argv, delim, '\0'));
+		return (find_breakpoint(argv, delim, EMPTY));
 	else if (*argv == DOLLAR && *(argv + 1) == QUESTIONMARK)
 		return (argv + 2);
 	else
@@ -105,7 +108,7 @@ char	*parse_argv(char *input, t_module *mod, t_shell *ms)
 	char		*start;
 
 	new = safe_calloc(sizeof(t_parser), ms);
-	input = check_redirection(input, new);
+	input = check_metachr(input, new);
 	while (ft_isspace(*input))
 		input++;
 	start = input;
