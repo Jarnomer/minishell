@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/22 19:04:29 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/23 11:41:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ char	*find_breakpoint(char *input, char delim, int hdoc_flag)
 	}
 	if (ft_isredirect(*input))
 		return (input);
-	else if (quotes == 1)
+	if (quotes == 1)
 		return (opposing_quote(input, delim));
 	else
 		return (input);

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/22 19:13:21 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/23 11:42:07 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ char	*parse_argv(char *input, t_module *mod, t_shell *ms)
 
 	new = safe_calloc(sizeof(t_parser), ms);
 	input = check_metachr(input, new);
-	while (ft_isspace(*input))
+	while (*input && ft_isspace(*input))
 		input++;
 	start = input;
 	if (new->mode == -1)
