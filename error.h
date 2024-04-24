@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 18:06:45 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 16:22:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ enum e_errcodes
 {
 	NOERROR = 0,
 	ERR_FILE = 1,
+	ERR_FLDR = 126,
 	ERR_PERM = 126,
 	ERR_CMD = 127,
 	ERR_SIG = 128,

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:00 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:41:33 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:59:25 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	safe_strtrim(char **src, char *set, t_shell *ms)
 	if (!src || !*src || !set)
 		return ;
 	s = ft_strtrim(*src, set);
-	if (src != NULL)
+	if (*src != NULL)
 		free_single(src);
 	if (!s)
 		error_fatal(ENOMEM, MSG_MEM, ms);
@@ -45,7 +45,7 @@ void	safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms)
 	if (!dst || !s1 || !s2)
 		return ;
 	s = ft_strjoin(s1, s2);
-	if (dst != NULL)
+	if (*dst != NULL)
 		free_single(dst);
 	if (!s)
 		error_fatal(ENOMEM, MSG_MEM, ms);
@@ -59,7 +59,7 @@ void	safe_substr(char **dst, char *stt, char *end, t_shell *ms)
 	if (!dst)
 		return ;
 	s = ft_substr(stt, 0, end - stt);
-	if (dst != NULL)
+	if (*dst != NULL)
 		free_single(dst);
 	if (!s)
 		error_fatal(ENOMEM, MSG_MEM, ms);

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 18:16:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	wait_children(t_shell *ms)
 	int	i;
 
 	i = 0;
-	if (ms->forks == 1 && is_builtin2(ms->mods->command->content))
+	if (ms->forks == 1 && is_builtin2(ms->mods))
 		return ;
 	while (i < ms->index)
 	{

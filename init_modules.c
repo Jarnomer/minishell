@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:55:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:41:27 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*new;
 
-	if (!input || !*input)
+	if (!input || !*input || error_syntax(ms->input, ms))
 		return (FAILURE);
 	while (*input)
 	{

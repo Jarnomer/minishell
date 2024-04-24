@@ -6,11 +6,19 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 17:17:37 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/22 18:29:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	parser_join(t_parser *prev, t_parser *lst, t_shell *ms)
+{
+	if (!prev || !lst)
+		return ;
+	safe_strjoin(&lst->content, prev->content, lst->content, ms);
+	parser_delone(&prev);
+}
 
 t_parser	*parser_last(t_parser *lst)
 {
@@ -36,18 +44,22 @@ int	parser_length(t_parser *lst)
 	return (len);
 }
 
-void	parser_delone(t_parser *lst)
+void	parser_delone(t_parser **lst)
 {
-	if (!lst)
+	if (!lst || !*lst)
 		return ;
-	free_single(&lst->content);
-	free(lst);
-	lst = NULL;
+	if ((*lst)->next != NULL)
+		(*lst)->next->prev = (*lst)->prev;
+	if ((*lst)->prev != NULL)
+		(*lst)->prev->next = (*lst)->next;
+	free_single(&(*lst)->content);
+	free(*lst);
+	*lst = NULL;
 }
 
 void	parser_append(t_parser **lst, t_parser *new)
 {
-	t_parser	*temp;
+	t_parser	*last;
 
 	if (!lst || !new)
 		return ;
@@ -55,9 +67,8 @@ void	parser_append(t_parser **lst, t_parser *new)
 		*lst = new;
 	else
 	{
-		temp = *lst;
-		while (temp->next)
-			temp = temp->next;
-		temp->next = new;
+		last = parser_last(*lst);
+		last->next = new;
+		new->prev = last;
 	}
 }

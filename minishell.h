@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/18 15:58:50 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 17:57:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@
 typedef enum e_checker
 {
 	FAILURE = -1,
-	SUCCESS,
-	ALLOCATE,
-	ALLOCATED
+	SUCCESS = 0,
+	ALLOCATE = 10,
+	ALLOCATED,
 }	t_checker;
 
 typedef enum e_pipe
@@ -79,6 +79,7 @@ typedef struct s_parser
 	char			*content;
 	int				mode;
 	struct s_parser	*next;
+	struct s_parser	*prev;
 }	t_parser;
 
 typedef struct s_module
@@ -121,12 +122,13 @@ void		parse_envp(t_parser *lst, int mode, t_shell *ms);
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
-void		parser_delone(t_parser *lst);
+void		parser_delone(t_parser **lst);
+void		parser_join(t_parser *prev, t_parser *lst, t_shell *ms);
 
 //			Parser helpers
 char		assign_delimiter(char *argv);
 char		*find_breakpoint(char *input, char c, int hdoc_flag);
-void		filter_quotes(char *content, char c, t_shell *ms);
+void		filter_quotes(char *content, char c, bool *checker, t_shell *ms);
 
 //			Child processes
 void		execute_children(t_shell *ms);
@@ -176,8 +178,8 @@ void		envp_remove(t_shell *ms, char *content);
 char		*envp_exists(char *name, t_shell *ms);
 
 //			Builtin utils
-int			is_builtin(char *cmd);
-int		is_builtin2(char *cmd);
+bool		is_builtin(t_module *mod);
+bool		is_builtin2(t_module *mod);
 void		execute_builtin(t_shell *ms, t_module *mod);
 int			name_exists(t_shell *ms, char *name);
 

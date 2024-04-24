@@ -6,72 +6,74 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:45 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/14 13:32:31 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/23 11:41:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	count_quotes(char *content, char c)
+static int	count_quotes(char *content, bool *checker, char delim)
 {
-	int	cnt;
+	int	quotes;
 	int	i;
 
 	i = 0;
-	cnt = 0;
+	quotes = 0;
 	while (content[i])
 	{
-		if (content[i] == c)
-			cnt++;
+		if (content[i] == delim)
+			quotes++;
 		++i;
 	}
-	return (cnt);
+	// if (delim == SINGLEQUOTE && quotes % 2 != 0)
+	if (delim == SINGLEQUOTE)
+		*checker = false;
+	return (quotes);
 }
 
-void	filter_quotes(char *content, char c, t_shell *ms)
+void	filter_quotes(char *content, char delim, bool *checker, t_shell *ms)
 {
 	char	*temp;
 	int		i;
 	int		j;
 
-	safe_strdup(&temp, content, ms);
+	temp = safe_trash(content, ALLOCATE, ms);
 	i = ft_strlen(content) - 1;
-	j = i - count_quotes(content, c);
+	j = i - count_quotes(content, checker, delim);
 	ft_bzero(content, i);
 	while (i >= 0)
 	{
-		if (temp[i] != c)
+		if (temp[i] != delim)
 			content[j--] = temp[i];
 		i--;
 	}
-	free(temp);
 }
 
-static char	*opposing_quote(char *input, char c)
+static char	*opposing_quote(char *input, char delim)
 {
-	while (*input && *input != c && !ft_isredirect(c))
+	while (*input && *input != delim && !ft_isredirect(delim))
 		input++;
-	return (++input);
+	if (input != NULL)
+		input++;
+	return (input);
 }
 
-char	*find_breakpoint(char *input, char c, int hdoc_flag)
+char	*find_breakpoint(char *input, char delim, int hdoc_flag)
 {
 	int	quotes;
 
 	quotes = 0;
-	if (*input == '$')
-		input++;
 	while (*input && *input != hdoc_flag
 		&& !ft_isspace(*input) && !ft_isredirect(*input))
 	{
-		if (*input == c && !ft_isspace(*input))
+		if (*input == delim && !ft_isspace(*input))
 			quotes++;
 		input++;
 	}
 	if (ft_isredirect(*input))
 		return (input);
-	else if (quotes == 1)
-		return (opposing_quote(input, c));
+	if (quotes == 1)
+		return (opposing_quote(input, delim));
 	else
 		return (input);
 }

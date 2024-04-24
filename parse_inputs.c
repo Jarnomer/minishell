@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 18:55:56 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/20 19:48:01 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ void	parse_envp(t_parser *lst, int mode, t_shell *ms)
 {
 	char	*envp;
 
-	if (!ft_strncmp(lst->content, "$?", 3))
+	if (!lst || ft_strlen(lst->content) == 1)
+		return ;
+	else if (!ft_strncmp(lst->content, "$?", 3))
 		envp = safe_trash(ft_itoa(ms->excode), ALLOCATED, ms);
 	else
 	{
