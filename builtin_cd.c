@@ -24,7 +24,10 @@ void	builtin_cd(t_shell *ms, char **cmd)
 	if (chdir(cmd[1]) == 0)
 	{
 		safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);
-		envp_update(ms, pwd);
-		envp_update(ms, oldpwd);
+		if (name_exists(ms, "PWD") == 0)
+			envp_update(ms, pwd);
+		if (name_exists(ms, "OLDPWD") == 0)
+			envp_update(ms, oldpwd);
 	}
+	//error: 'minishell: cd: cmd[1]: No such file or directory
 }

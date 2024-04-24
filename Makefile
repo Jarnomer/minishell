@@ -27,6 +27,7 @@ CFILES = 	minishell.c \
 			builtin_export.c \
 			builtin_unset.c \
 			builtin_pwd.c \
+			builtin_exit.c \
 			builtin_utils.c \
 			utils_envp.c \
 			utils_misc.c \

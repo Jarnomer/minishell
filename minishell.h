@@ -190,5 +190,6 @@ void		builtin_env(char **envp, int i, int j);
 void		builtin_export(t_shell *ms, char **cmd, int i, int j);
 void		builtin_unset(t_shell *ms, char **cmd, int i, int j);
 void		builtin_pwd(t_shell *ms, char **envp);
+void		builtin_exit(t_shell *ms, char **cmd, int i, int j);
 
 #endif
