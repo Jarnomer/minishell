@@ -48,7 +48,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("pwd", cmd[0], 3) == 0)
 		builtin_pwd(ms, ms->envp);
 	else if (ft_strncmp("exit", cmd[0], 4) == 0)
-		builtin_exit(ms, cmd, 1, 0);
+		builtin_exit(ms, cmd);
 }
 
 bool	is_builtin2(t_module *mod)
