@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	builtin_pwd(t_shell *ms)
+void	builtin_pwd(void)
 {
 	char	buf[1000];
 

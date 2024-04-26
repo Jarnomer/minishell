@@ -42,5 +42,5 @@ void	builtin_cd(t_shell *ms, char **cmd)
 		update_envp_values(ms, pwd, oldpwd);
 	}
 	else
-		error_logger(cmd[0], ": ", MSG_FILE, ms);
+		error_logger("echo :", cmd[1], ": No such file or directory", ms);
 }
