@@ -6,22 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 18:19:42 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:08:43 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	error_limit(int len, t_shell *ms)
-{
-	while (len >= FDLMT)
-	{
-		error_logger("redirection error: ",
-			"cannot duplicate fd: ",
-			"Too many open files", ms);
-		len--;
-	}
-}
 
 static inline int	read_outfile(char *file, int mode)
 {
@@ -61,13 +50,9 @@ static t_parser	*check_outfiles(t_module *mod, t_shell *ms)
 int	open_outfile(t_module *mod, t_shell *ms)
 {
 	t_parser	*last;
-	int			len;
 
 	if (check_outfiles(mod, ms) != NULL)
 		return (FAILURE);
-	len = parser_length(mod->outfiles);
-	if (len > FDLMT)
-		error_limit(len, ms);
 	last = parser_last(mod->outfiles);
 	mod->outfd = read_outfile(last->content, last->mode);
 	return (mod->outfd);

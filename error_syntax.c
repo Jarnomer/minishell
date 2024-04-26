@@ -41,6 +41,26 @@ static int	unclosed_quotes(char *input, char delim)
 	return (quotes % 2);
 }
 
+static char	assign_delimiter(char *argv)
+{
+	char	*single_qt;
+	char	*double_qt;
+
+	single_qt = ft_strchr(argv, SINGLEQUOTE);
+	double_qt = ft_strchr(argv, DOUBLEQUOTE);
+	if ((single_qt && double_qt)
+		&& (single_qt > double_qt))
+		return (DOUBLEQUOTE);
+	else if (single_qt && double_qt)
+		return (SINGLEQUOTE);
+	else if (double_qt)
+		return (DOUBLEQUOTE);
+	else if (single_qt)
+		return (SINGLEQUOTE);
+	else
+		return (EMPTY);
+}
+
 static int	invalid_redirect(char *input, char delim)
 {
 	while (ft_strchr(input, delim))

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:08:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static void	free_parser(t_parser **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		parser_delone(lst);
+		parser_delone(*lst);
 		*lst = temp;
 	}
 	*lst = NULL;

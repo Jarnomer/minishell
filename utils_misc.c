@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+char	*find_breakpoint(char *argv)
+{
+	while (*argv != '\0'
+		&& !ft_ismeta(*argv)
+		&& !ft_isredirect(*argv)
+		&& !ft_isspace(*argv))
+		argv++;
+	return (argv);
+}
+
+int	ft_ismeta(char c)
+{
+	return (c == '\'' || c == '\"' || c == '$');
+}
+
 int	ft_isredirect(char c)
 {
 	return (c == '>' || c == '<');

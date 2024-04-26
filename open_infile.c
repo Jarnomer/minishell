@@ -6,22 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/17 18:10:02 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:44:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static void	error_limit(int len, t_shell *ms)
-{
-	while (len >= FDLMT)
-	{
-		error_logger("redirection error: ",
-			"cannot duplicate fd: ",
-			"Too many open files", ms);
-		len--;
-	}
-}
 
 static void	read_heredocs(t_module *mod, t_shell *ms)
 {
@@ -75,14 +64,10 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 int	open_infile(t_module *mod, t_shell *ms)
 {
 	t_parser	*last;
-	int			len;
 
 	read_heredocs(mod, ms);
 	if (check_infiles(mod->infiles, ms) != NULL)
 		return (FAILURE);
-	len = parser_length(mod->infiles);
-	if (len > FDLMT)
-		error_limit(len, ms);
 	if (mod->infd != -1)
 		return (mod->infd);
 	last = parser_last(mod->infiles);
