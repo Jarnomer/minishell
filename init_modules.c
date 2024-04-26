@@ -61,8 +61,6 @@ int	init_modules(char *input, t_shell *ms)
 		return (FAILURE);
 	while (*input)
 	{
-		while (ft_isspace(*input))
-			input++;
 		temp = ft_strchr(input, PIPE);
 		if (!temp)
 			temp = input + ft_strlen(input);
