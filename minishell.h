@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/20 17:57:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:40:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 # define V		"\033[35m"
 # define G		"\033[32m"
 
-# define FDLMT	241
 # define PERMS	0664
 
 typedef enum e_checker
@@ -77,6 +76,8 @@ typedef enum e_syntax
 typedef struct s_parser
 {
 	char			*content;
+	bool			joinable;
+	int				meta;
 	int				mode;
 	struct s_parser	*next;
 	struct s_parser	*prev;
@@ -113,22 +114,18 @@ typedef struct s_shell
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
 
-//			Parsers
-void		parse_inputs(t_module **lst, t_shell *ms);
-char		*parse_argv(char *input, t_module *mod, t_shell *ms);
-void		parse_envp(t_parser *lst, int mode, t_shell *ms);
+//			Parsing
+void		parse_modules(t_module **lst, t_shell *ms);
+char		*parse_input(char *argv, t_parser *new);
+void		parse_argv(t_parser *new, t_shell *ms);
+void		parse_envps(t_parser *new, t_shell *ms);
 
 //			Parser utils
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
-void		parser_delone(t_parser **lst);
+void		parser_delone(t_parser *lst);
 void		parser_join(t_parser *prev, t_parser *lst, t_shell *ms);
-
-//			Parser helpers
-char		assign_delimiter(char *argv);
-char		*find_breakpoint(char *input, char c, int hdoc_flag);
-void		filter_quotes(char *content, char c, bool *checker, t_shell *ms);
 
 //			Child processes
 void		execute_children(t_shell *ms);
@@ -164,8 +161,10 @@ void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
 //			Utility functions
+char		*find_breakpoint(char *argv);
 int			ft_isspace(char c);
 int			ft_isredirect(char c);
+int			ft_ismeta(char c);
 
 //			Signal functions
 void		init_signals(void);

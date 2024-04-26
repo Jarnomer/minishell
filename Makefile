@@ -3,10 +3,10 @@ NAME = minishell
 CFILES = 	minishell.c \
 			init_shell.c \
 			init_modules.c \
-			parse_inputs.c \
-			parse_argv.c \
-			parse_utils.c \
-			parse_helpers.c \
+			parse_mods.c \
+			parse_input.c \
+			parse_envps.c \
+			parser_utils.c \
 			open_infile.c \
 			open_outfile.c \
 			open_heredoc.c \
