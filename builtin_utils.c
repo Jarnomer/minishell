@@ -46,7 +46,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("unset", cmd[0], 5) == 0)
 		builtin_unset(ms, cmd, 1, 0);
 	else if (ft_strncmp("pwd", cmd[0], 3) == 0)
-		builtin_pwd(ms, ms->envp);
+		builtin_pwd(ms);
 	else if (ft_strncmp("exit", cmd[0], 4) == 0)
 		builtin_exit(ms, cmd);
 }

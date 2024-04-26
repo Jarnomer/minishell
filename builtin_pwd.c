@@ -12,17 +12,9 @@
 
 #include "minishell.h"
 
-void	builtin_pwd(t_shell *ms, char **envp)
+void	builtin_pwd(t_shell *ms)
 {
-	int i;
+	char	buf[1000];
 
-	i = 0;
-	if (ms == NULL)
-		return ;
-	while (envp[i])
-	{
-		if (ft_strncmp("PWD=", envp[i], 4) == 0)
-			ft_putendl_fd(envp[i] + 4, 1);
-		i++;
-	}
+	ft_putendl_fd(getcwd(buf, 1000), 1);
 }
