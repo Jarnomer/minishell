@@ -12,36 +12,37 @@
 
 #include "minishell.h"
 
-/*static void is_sign(char c)
+static int	symbol_check(char *str, int i)
 {
-	//check if char is a sign and that there is no more signs and that they're at the start
-}*/
+	if ((str[0] == '-' || str[0] == '+') && ft_isdigit(str[1]))
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (1);
+		i++;
+	}
+	if (str[0] != '+' && ft_strncmp(str, "9223372036854775807", 20) > 0)
+		return (1);
+	if (str[0] == '+' && ft_strncmp(str, "+9223372036854775807", 21) > 0)
+		return (1);
+	if (str[0] == '-' && ft_strncmp(str, "-9223372036854775808", 21) > 0)
+		return (1);
+	return (0);
+}
 
 void	builtin_exit(t_shell *ms, char **cmd)
 {
 	int exit_code;
 
 	exit_code = 0;
+	if (cmd[1] && symbol_check(cmd[1], 0) == 1)
+		error_exit(255, cmd[0], "numeric argument required", ms);
+	if (cmd[2])
+		error_exit(1, cmd[0], "too many arguments", ms);
+	if (cmd[1] && ft_atoi(cmd[1]) > -1)
+		exit_code = (ft_atoi(cmd[1]) % 256);
 	if (ms->forks == 1)
 		ft_putstr_fd("exit\n", 1);
-	/*if (cmd[i])
-	{
-		if (i >= 2)
-			//return error: too many arguments
-		while (cmd[i][j])
-		{
-			if (ft_isdigit(cmd[i][j]) != 0 
-				&& cmd[i][j] != '+' && cmd[i][j] != '-')
-				//return error: is not a digit or sign
-			j++;
-		}
-		//check if arguments only contain digits and signs
-		//check if there is only one sign and it is at the start
-		//check if number is greater than long_max
-		//check if number is smaller than long_min
-		i++;
-	}*/
-	if (cmd[1])
-		exit_code = ft_atoi(cmd[1]);
 	exit(exit_code);
 }
