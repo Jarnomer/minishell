@@ -12,30 +12,43 @@
 
 #include "minishell.h"
 
-void	builtin_echo(char **cmd)
+static int	check_flags(char *str)
 {
 	int i;
 
-	i = 1;
-	if (cmd[i] && ft_strncmp("-n", cmd[i], 3) == 0)
-	{
-		while (cmd[++i] != NULL)
-		{
-			ft_putstr_fd(cmd[i], 1);
-			if (cmd[i + 1] != NULL)
-				ft_putchar_fd(' ', 1);
-		}
-	}
+	i = 0;
+	if (str[i] != '-')
+		return (1);
 	else
+		i++;
+	while (str[i])
 	{
-		while(cmd[i] != NULL)
-		{
-			ft_putstr_fd(cmd[i], 1);
-			if (cmd[i + 1] == NULL)
-				ft_putchar_fd('\n', 1);
-			else
-				ft_putchar_fd(' ', 1);
-			i++;
-		}
+		if (str[i] != 'n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	builtin_echo(char **cmd)
+{
+	int		i;
+	bool	n_flag;
+
+	i = 1;
+	n_flag = false;
+	while (cmd[i] && check_flags(cmd[i]) == 0)
+	{
+		n_flag = true;
+		i++;
+	}
+	while (cmd[i])
+	{
+		ft_putstr_fd(cmd[i], 1);
+		if (cmd[i + 1] == NULL && n_flag == false)
+			ft_putchar_fd('\n', 1);
+		else if (cmd[i + 1] != NULL)
+			ft_putchar_fd(' ', 1);
+		i++;
 	}
 }
