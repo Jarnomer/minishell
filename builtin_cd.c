@@ -29,5 +29,6 @@ void	builtin_cd(t_shell *ms, char **cmd)
 		if (name_exists(ms, "OLDPWD") == 0)
 			envp_update(ms, oldpwd);
 	}
-	//error: 'minishell: cd: cmd[1]: No such file or directory
+	else
+		error_exit(ERR_FILE, cmd[0], MSG_FILE, ms);
 }
