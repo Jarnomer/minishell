@@ -6,21 +6,32 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:03:40 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 15:20:05 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 18:35:34 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*expand_envp(char *buffer, char *temp, t_shell *ms)
+// static char	*non_expanded_envp(t_parser *new,
+// 	char *buffer, char *start, char *temp)
+// {
+
+// }
+
+static char	*expand_envp(char *buffer, char *temp, t_parser *new, t_shell *ms)
 {
 	char	*envp;
+	char	*start;
 	int		len;
 
-	envp = temp;
+	if (!new)
+		return (NULL);
+	start = temp;
 	temp = find_breakpoint(temp);
-	envp = safe_trash(ft_substr(envp, 0, temp - envp), ALLOCATED, ms);
+	envp = safe_trash(ft_substr(start, 0, temp - start), ALLOCATED, ms);
 	envp = envp_exists(envp, ms);
+	// if (new->mode = HEREDOC || (!envp && new->mode != -1))
+	// 	return (non_expanded_envp(new, buffer, start, temp));
 	if (!envp)
 		return (temp);
 	len = ft_strlen(buffer) + ft_strlen(envp) + 1;
@@ -39,7 +50,7 @@ static char	*expand_excode(char *buffer, char *temp, t_shell *ms)
 	return (temp + 1);
 }
 
-static char	*parse_dollar(char *buffer, char *temp, t_shell *ms)
+static char	*parse_dollar(char *buffer, char *temp, t_parser *new, t_shell *ms)
 {
 	if (!*temp || ft_isredirect(*temp) || ft_ismeta(*temp))
 	{
@@ -51,7 +62,7 @@ static char	*parse_dollar(char *buffer, char *temp, t_shell *ms)
 	else if (*temp == QUESTIONMARK)
 		return (expand_excode(buffer, temp, ms));
 	else
-		return (expand_envp(buffer, temp, ms));
+		return (expand_envp(buffer, temp, new, ms));
 }
 
 void	parse_envps(t_parser *new, t_shell *ms)
@@ -75,7 +86,7 @@ void	parse_envps(t_parser *new, t_shell *ms)
 		if (!*temp)
 			break ;
 		else
-			temp = parse_dollar(buffer, ++temp, ms);
+			temp = parse_dollar(buffer, ++temp, new, ms);
 	}
 	free_single(&new->content);
 	safe_strdup(&new->content, buffer, ms);

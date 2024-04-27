@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/27 15:40:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 18:34:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-
 
 # define BR		"\033[1;31m"
 # define Y		"\033[0;33m"
@@ -126,7 +125,7 @@ void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
-void		parser_join(t_parser **prev, t_parser *lst, t_shell *ms);
+void		parser_join(t_parser **prev, t_parser **lst, t_shell *ms);
 
 //			Child processes
 void		execute_children(t_shell *ms);

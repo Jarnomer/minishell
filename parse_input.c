@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 15:39:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 18:32:51 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	parse_argv(t_parser *new, t_shell *ms)
 		&& new->mode != HEREDOC)
 		parse_envps(new, ms);
 	if (new->prev != NULL && new->prev->joinable == true)
-		parser_join(&new->prev, new, ms);
+		parser_join(&new->prev, &new, ms);
 }
 
 static void	check_joinable(t_parser *new, char c)

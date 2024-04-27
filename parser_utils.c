@@ -6,17 +6,17 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 15:51:54 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 18:34:32 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	parser_join(t_parser **prev, t_parser *lst, t_shell *ms)
+void	parser_join(t_parser **prev, t_parser **lst, t_shell *ms)
 {
 	if (!prev || !lst)
 		return ;
-	safe_strjoin(&lst->content, (*prev)->content, lst->content, ms);
+	safe_strjoin(&(*lst)->content, (*prev)->content, (*lst)->content, ms);
 	parser_delone(*prev);
 }
 
