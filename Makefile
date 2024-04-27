@@ -31,6 +31,7 @@ CFILES = 	minishell.c \
 			builtin_utils.c \
 			utils_envp.c \
 			utils_misc.c \
+			print_envp.c \
 			signal.c
 
 OFILES = ${CFILES:.c=.o}
