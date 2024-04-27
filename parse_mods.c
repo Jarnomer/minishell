@@ -6,23 +6,23 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 15:39:20 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 19:17:48 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*build_argument(char *input, t_parser *new, t_shell *ms)
+static char	*build_argument(char *s, t_parser *new, t_module *mod, t_shell *ms)
 {
 	char	*start;
 
-	while (*input && ft_isspace(*input))
-		input++;
-	start = input;
-	input = parse_input(input, new);
-	safe_substr(&new->content, start, input, ms);
-	parse_argv(new, ms);
-	return (input);
+	while (*s && ft_isspace(*s))
+		s++;
+	start = s;
+	s = parse_input(s, new);
+	safe_substr(&new->content, start, s, ms);
+	parse_argv(new, mod, ms);
+	return (s);
 }
 
 static void	append_argument(t_parser *new, t_parser *prev, t_module *mod)
@@ -81,7 +81,7 @@ void	parse_modules(t_module **lst, t_shell *ms)
 			new = safe_calloc(sizeof(t_parser), ms);
 			input = check_redirect(input, new);
 			append_argument(new, prev, mod);
-			input = build_argument(input, new, ms);
+			input = build_argument(input, new, mod, ms);
 			prev = new;
 		}
 		mod = mod->next;

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/27 18:34:58 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 19:17:52 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int			init_modules(char *input, t_shell *ms);
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);
 char		*parse_input(char *argv, t_parser *new);
-void		parse_argv(t_parser *new, t_shell *ms);
+void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
 
 //			Parser utils
@@ -125,7 +125,7 @@ void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
-void		parser_join(t_parser **prev, t_parser **lst, t_shell *ms);
+void		parser_join(t_parser *p, t_parser *new, t_module *mod, t_shell *ms);
 
 //			Child processes
 void		execute_children(t_shell *ms);
