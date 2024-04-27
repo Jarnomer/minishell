@@ -63,7 +63,7 @@ int	init_modules(char *input, t_shell *ms)
 	{
 		temp = ft_strchr(input, PIPE);
 		if (!temp)
-			temp = input + ft_strlen(input);
+			temp = input + ft_strlen(input) + 1;
 		new = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);

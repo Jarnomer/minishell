@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-//export without arguments must have an algorithm
-
 static int	error_check(char *str)
 {
 	int i;
