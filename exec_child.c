@@ -19,8 +19,9 @@ static void	child_process(t_module *mod, t_shell *ms)
 	redirect_fds(mod, ms);
 	close_fds(ms);
 	cmd = mod->command;
-	if (!cmd || (!*cmd->content && cmd->meta == DOLLAR
-		&& parser_length(cmd) == 1))
+	if (!cmd || (!*cmd->content
+			&& cmd->meta == DOLLAR
+			&& parser_length(cmd) == 1))
 		error_exit(NOERROR, NULL, NULL, ms);
 	else if (is_builtin(mod))
 		execute_builtin(ms, mod);
@@ -56,6 +57,7 @@ void	execute_children(t_shell *ms)
 	int			pipe_limit;
 
 	mod = ms->mods;
+	open_heredocs(mod, ms);
 	fork_limit = ms->forks - 1;
 	pipe_limit = fork_limit - 1;
 	while (ms->index <= fork_limit)

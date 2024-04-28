@@ -21,6 +21,12 @@ void	parser_join(t_parser *p, t_parser *new, t_module *mod, t_shell *ms)
 	mode = 0;
 	if (!p->prev)
 		mode = new->mode;
+	if (*p->content == DOLLAR && new->meta != DOLLAR
+		&& new->mode != HEREDOC && new->mode != -1)
+		ft_bzero(p->content, ft_strlen(p->content));
+	else if (new->mode != HEREDOC && new->mode != -1 && ft_strlen(new->content) != 1
+		&& ft_strchr(new->content, DOLLAR) && *p->content != DOLLAR)
+		ft_bzero(new->content, ft_strlen(new->content));
 	safe_strjoin(&new->content, p->content, new->content, ms);
 	parser_delone(p);
 	if (mode != 0)

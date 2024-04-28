@@ -83,7 +83,8 @@ int	error_syntax(char *input, t_shell *ms)
 {
 	char	quote;
 
-	if (!input || !*input || *(input + ft_strlen(input) - 1) == PIPE)
+	if (!input || !*input || *input == PIPE
+		|| *(input + ft_strlen(input) - 1) == PIPE)
 		return (error_occured("`|'", ms));
 	else if (invalid_redirect(input, OUTDIRECT))
 		return (error_occured("`>'", ms));

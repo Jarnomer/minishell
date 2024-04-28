@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static char	*non_expand(char *buffer, char *start)
+static char	*no_expand(char *buffer, char *start)
 {
 	char	*end;
 	int		len;
@@ -33,8 +33,8 @@ static char	*expand_envp(char *buffer, char *temp, t_parser *new, t_shell *ms)
 	temp = find_breakpoint(temp);
 	envp = safe_trash(ft_substr(start, 0, temp - start), ALLOCATED, ms);
 	envp = envp_exists(envp, ms);
-	if (!envp && new->mode != -1)
-		return (non_expand(buffer, start - 1));
+	if (!envp && new->mode != -1 && new->meta == DOLLAR)
+		return (no_expand(buffer, start - 1));
 	else if (!envp)
 		return (temp);
 	len = ft_strlen(buffer) + ft_strlen(envp) + 1;

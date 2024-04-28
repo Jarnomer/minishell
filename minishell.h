@@ -136,7 +136,7 @@ void		wait_children(t_shell *ms);
 //			Open files
 int			open_infile(t_module *mod, t_shell *ms);
 int			open_outfile(t_module *mod, t_shell *ms);
-int			open_heredoc(t_parser *hdoc, t_shell *ms);
+void		open_heredocs(t_module *mod, t_shell *ms);
 
 //			Free memory
 void		free_runtime(t_shell *ms);
