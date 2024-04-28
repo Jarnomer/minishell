@@ -12,14 +12,14 @@
 
 #include "minishell.h"
 
-static void	error_occured(char *exec, char ***arr, t_module *mod, t_shell *ms)
+static void	error_occured(char *exec, char ***arr, t_parser *lst, t_shell *ms)
 {
 	if (*arr != NULL)
 		free(*arr);
-	if (!mod)
+	if (!lst)
 		error_fatal(ENOMEM, MSG_MEM, ms);
 	if (!exec)
-		error_exit(ERR_CMD, mod->command->content, MSG_CMD, ms);
+		error_exit(ERR_CMD, lst->content, MSG_CMD, ms);
 	else if (opendir(exec) != NULL)
 		error_exit(ERR_FLDR, exec, MSG_FLDR, ms);
 	else if (access(exec, F_OK) == SUCCESS
@@ -53,15 +53,14 @@ static char	*find_executable(char *binary, char *env, t_shell *ms)
 	return (NULL);
 }
 
-static char	*build_executable(t_module *mod, t_shell *ms)
+static char	*build_executable(t_parser *lst, t_shell *ms)
 {
 	char	*path;
 	char	*binary;
 
-	path = NULL;
-	if (!mod->command->content)
+	if (!lst->content || !*lst->content)
 		return (NULL);
-	binary = mod->command->content;
+	binary = lst->content;
 	if (!ft_strchr(binary, '/'))
 	{
 		binary = safe_trash(ft_strjoin("/", binary), ALLOCATED, ms);
@@ -76,11 +75,15 @@ static char	*build_executable(t_module *mod, t_shell *ms)
 
 void	execute_command(t_module *mod, t_shell *ms)
 {
-	char	**cmd;
-	char	*exec;
+	t_parser	*temp;
+	char		**cmd;
+	char		*exec;
 
-	exec = build_executable(mod, ms);
-	cmd = safe_double(mod->command, ms);
+	temp = mod->command;
+	while (temp->next && !*temp->content && temp->meta == DOLLAR)
+		temp = temp->next;
+	exec = build_executable(temp, ms);
+	cmd = safe_double(temp, ms);
 	if (!exec || execve(exec, cmd, ms->envp) == FAILURE)
-		error_occured(exec, &cmd, mod, ms);
+		error_occured(exec, &cmd, temp, ms);
 }

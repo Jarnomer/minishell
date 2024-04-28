@@ -12,11 +12,16 @@
 
 #include "minishell.h"
 
-// static char	*non_expanded_envp(t_parser *new,
-// 	char *buffer, char *start, char *temp)
-// {
+static char	*non_expand(char *buffer, char *start)
+{
+	char	*end;
+	int		len;
 
-// }
+	end = find_breakpoint(start + 1);
+	len = ft_strlen(buffer) + (end - start + 1);
+	ft_strlcat(buffer, start, len);
+	return (end + 1);
+}
 
 static char	*expand_envp(char *buffer, char *temp, t_parser *new, t_shell *ms)
 {
@@ -24,15 +29,13 @@ static char	*expand_envp(char *buffer, char *temp, t_parser *new, t_shell *ms)
 	char	*start;
 	int		len;
 
-	if (!new)
-		return (NULL);
 	start = temp;
 	temp = find_breakpoint(temp);
 	envp = safe_trash(ft_substr(start, 0, temp - start), ALLOCATED, ms);
 	envp = envp_exists(envp, ms);
-	// if (new->mode = HEREDOC || (!envp && new->mode != -1))
-	// 	return (non_expanded_envp(new, buffer, start, temp));
-	if (!envp)
+	if (!envp && new->mode != -1)
+		return (non_expand(buffer, start - 1));
+	else if (!envp)
 		return (temp);
 	len = ft_strlen(buffer) + ft_strlen(envp) + 1;
 	ft_strlcat(buffer, envp, len);
@@ -86,7 +89,7 @@ void	parse_envps(t_parser *new, t_shell *ms)
 		if (!*temp)
 			break ;
 		else
-			temp = parse_dollar(buffer, ++temp, new, ms);
+			temp = parse_dollar(buffer, temp + 1, new, ms);
 	}
 	free_single(&new->content);
 	safe_strdup(&new->content, buffer, ms);
