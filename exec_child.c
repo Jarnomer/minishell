@@ -14,9 +14,13 @@
 
 static void	child_process(t_module *mod, t_shell *ms)
 {
+	t_parser	*cmd;
+
 	redirect_fds(mod, ms);
 	close_fds(ms);
-	if (!mod->command)
+	cmd = mod->command;
+	if (!cmd || (!*cmd->content && cmd->meta == DOLLAR
+		&& parser_length(cmd) == 1))
 		error_exit(NOERROR, NULL, NULL, ms);
 	else if (is_builtin(mod))
 		execute_builtin(ms, mod);
