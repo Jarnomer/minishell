@@ -65,14 +65,15 @@ int	init_modules(char *input, t_shell *ms)
 			input++;
 		temp = ft_strchr(input, PIPE);
 		if (!temp)
-			temp = input + ft_strlen(input) + 1;
+			temp = input + ft_strlen(input);
 		new = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);
 		if (error_syntax(new->input, ms))
 			return (FAILURE);
 		finalize_module(new);
-		input = temp + 1;
+		if (*input)
+			input = temp + 1;
 	}
 	finalize_shell(ms);
 	return (SUCCESS);
