@@ -53,8 +53,8 @@ void	envp_update(t_shell *ms, char *content)
 
 void	envp_add(t_shell *ms, char *content)
 {
-	int 	i;
-	int 	j;
+	int		i;
+	int		j;
 	char	**new_envp;
 
 	i = 0;

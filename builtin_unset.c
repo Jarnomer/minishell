@@ -14,21 +14,21 @@
 
 static int	error_check(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (ft_isdigit(str[i]))
 		return (1);
 	while (str[i] && str[i] != '=')
 	{
-		if (!ft_isalnum(str[i]) && str[i] != '_') 
+		if (!ft_isalnum(str[i]) && str[i] != '_')
 			return (1);
 		i++;
 	}
 	return (0);
 }
 
-void builtin_unset(t_shell *ms, char **cmd, int i, int j)
+void	builtin_unset(t_shell *ms, char **cmd, int i, int j)
 {
 	while (cmd[i] != NULL)
 	{

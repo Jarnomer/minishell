@@ -90,7 +90,6 @@ int	main(void)
 		if (!init_modules(ms.input, &ms))
 		{
 			parse_modules(&ms.mods, &ms);
-			//print_inputs(&ms.mods);
 			execute_children(&ms);
 			wait_children(&ms);
 		}

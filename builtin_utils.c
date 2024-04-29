@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-int name_exists(t_shell *ms, char *name)
+int	name_exists(t_shell *ms, char *name)
 {
-	int i;
-	int size;
+	int	i;
+	int	size;
 
 	i = 0;
 	size = 0;
@@ -32,7 +32,7 @@ int name_exists(t_shell *ms, char *name)
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
-	char **cmd;
+	char	**cmd;
 
 	cmd = safe_double(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)

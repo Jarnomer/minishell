@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void builtin_env(char **envp, int i, int j)
+void	builtin_env(char **envp, int i, int j)
 {
 	while (envp[i] != NULL)
 	{

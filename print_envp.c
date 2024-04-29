@@ -14,7 +14,7 @@
 
 static void	print_single_variable(char *var, int j)
 {
-	int flag;
+	int	flag;
 
 	flag = 0;
 	while (var[j] != '\0')
@@ -34,9 +34,9 @@ static void	print_single_variable(char *var, int j)
 	ft_putchar_fd('\n', 1);
 }
 
-static int is_not_on_the_list(char *var, char **list)
+static int	is_not_on_the_list(char *var, char **list)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (list[i] != NULL)
@@ -48,9 +48,9 @@ static int is_not_on_the_list(char *var, char **list)
 	return (0);
 }
 
-static char *find_top_item(char **envp, char **sorted_list)
+static char	*find_top_item(char **envp, char **sorted_list)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (envp[i])
@@ -62,10 +62,10 @@ static char *find_top_item(char **envp, char **sorted_list)
 	return (envp[i]);
 }
 
-static char **sort_envp_list(char **envp, int envp_size)
+static char	**sort_envp_list(char **envp, int envp_size)
 {
 	int		i;
-	int 	j;
+	int		j;
 	char	*top;
 	char	**sorted_list;
 

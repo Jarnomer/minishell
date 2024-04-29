@@ -33,7 +33,7 @@ static int	symbol_check(char *str, int i)
 
 void	builtin_exit(t_shell *ms, char **cmd)
 {
-	int exit_code;
+	int	exit_code;
 
 	exit_code = 0;
 	if (cmd[1] && symbol_check(cmd[1], 0) == 1)
