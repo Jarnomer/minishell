@@ -12,6 +12,31 @@
 
 #include "minishell.h"
 
+static void	parser_join(t_parser *prev,
+	t_parser *new, t_module *mod, t_shell *ms)
+{
+	int	mode;
+
+	mode = 0;
+	if (!prev || !new)
+		return ;
+	if (!prev->prev)
+		mode = new->mode;
+	if (new->meta != DOLLAR && new->mode != -1)
+		reset_content(prev, new);
+	safe_strjoin(&new->content, prev->content, new->content, ms);
+	parser_delone(prev);
+	if (mode != 0)
+	{
+		if (mode == -1)
+			mod->command = mod->command->next;
+		else if (mode == OUTFILE || mode == APPEND)
+			mod->outfiles = mod->outfiles->next;
+		else
+			mod->infiles = mod->infiles->next;
+	}
+}
+
 static void	filter_quotes(char *content, t_shell *ms)
 {
 	char	*temp;

@@ -39,7 +39,9 @@ static int	read_heredoc(t_parser *hdoc, t_shell *ms)
 	len = ft_strlen(eof);
 	while (true)
 	{
+		ft_putstr_fd(G, STDOUT_FILENO);
 		ft_putstr_fd("> ", STDOUT_FILENO);
+		ft_putstr_fd(T, STDOUT_FILENO);
 		line = get_next_line(STDIN_FILENO);
 		if (!line || !ft_strncmp(line, eof, len))
 			break ;

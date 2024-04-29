@@ -113,6 +113,7 @@ typedef struct s_shell
 //			Initialization
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
+void		init_signals(void);
 
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);
@@ -120,12 +121,18 @@ char		*parse_input(char *argv, t_parser *new);
 void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
 
-//			Parser utils
+//			Parser Utils
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
-void		parser_join(t_parser *p, t_parser *new, t_module *mod, t_shell *ms);
+
+//			Parser Helpers
+void		reset_content(t_parser *prev, t_parser *new);
+char		*find_breakpoint(char *argv);
+int			ft_isspace(char c);
+int			ft_isredirect(char c);
+int			ft_ismeta(char c);
 
 //			Child processes
 void		execute_children(t_shell *ms);
@@ -159,15 +166,6 @@ void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
-
-//			Utility functions
-char		*find_breakpoint(char *argv);
-int			ft_isspace(char c);
-int			ft_isredirect(char c);
-int			ft_ismeta(char c);
-
-//			Signal functions
-void		init_signals(void);
 
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);

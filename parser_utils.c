@@ -12,34 +12,6 @@
 
 #include "minishell.h"
 
-void	parser_join(t_parser *p, t_parser *new, t_module *mod, t_shell *ms)
-{
-	int	mode;
-
-	if (!p || !new)
-		return ;
-	mode = 0;
-	if (!p->prev)
-		mode = new->mode;
-	if (*p->content == DOLLAR && new->meta != DOLLAR
-		&& new->mode != HEREDOC && new->mode != -1)
-		ft_bzero(p->content, ft_strlen(p->content));
-	else if (new->mode != HEREDOC && new->mode != -1 && ft_strlen(new->content) != 1
-		&& ft_strchr(new->content, DOLLAR) && *p->content != DOLLAR)
-		ft_bzero(new->content, ft_strlen(new->content));
-	safe_strjoin(&new->content, p->content, new->content, ms);
-	parser_delone(p);
-	if (mode != 0)
-	{
-		if (mode == -1)
-			mod->command = mod->command->next;
-		else if (mode == OUTFILE || mode == APPEND)
-			mod->outfiles = mod->outfiles->next;
-		else
-			mod->infiles = mod->infiles->next;
-	}
-}
-
 t_parser	*parser_last(t_parser *lst)
 {
 	if (!lst)
