@@ -12,28 +12,25 @@
 
 #include "minishell.h"
 
-int	name_exists(t_shell *ms, char *name)
+static void	handle_redirection(t_shell *ms, t_module *mod)
 {
-	int	i;
-	int	size;
+	pid_t	pid;
 
-	i = 0;
-	size = 0;
-	while (name[size] != '=' && name[size] != '\0')
-		size++;
-	while (i < ms->envp_size)
+	pid = fork();
+	if (pid == 0)
 	{
-		if (ft_strncmp(ms->envp[i], name, size) == 0)
-			return (0);
-		i++;
+		redirect_fds(mod, ms);
+		close_fds(ms);
+		exit(0);
 	}
-	return (1);
 }
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	char	**cmd;
 
+	if (ms->forks == 1 && is_builtin2(mod))
+		handle_redirection(ms, mod);
 	cmd = safe_double(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(cmd);

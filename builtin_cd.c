@@ -12,11 +12,14 @@
 
 #include "minishell.h"
 
+//change name_exists function
+//make sure err_code is right
+
 static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd)
 {
-	if (name_exists(ms, "PWD") == 0)
+	if (envp_exists("PWD", ms) != NULL)
 		envp_update(ms, pwd);
-	if (name_exists(ms, "OLDPWD") == 0)
+	if (envp_exists("OLDPWD", ms) != NULL)
 		envp_update(ms, oldpwd);
 }
 
@@ -42,5 +45,5 @@ void	builtin_cd(t_shell *ms, char **cmd)
 		update_envp_values(ms, pwd, oldpwd);
 	}
 	else
-		error_logger("echo :", cmd[1], ": No such file or directory", ms);
+		error_logger("cd:", cmd[1], ": No such file or directory", ms);
 }

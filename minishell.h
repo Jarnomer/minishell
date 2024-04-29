@@ -180,7 +180,6 @@ char		*envp_exists(char *name, t_shell *ms);
 bool		is_builtin(t_module *mod);
 bool		is_builtin2(t_module *mod);
 void		execute_builtin(t_shell *ms, t_module *mod);
-int			name_exists(t_shell *ms, char *name);
 
 //			Builtin functions
 void		builtin_echo(char **cmd);
