@@ -24,7 +24,7 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 	{
 		if (infile->mode != HEREDOC)
 		{
-			if (*infile->content == DOLLAR)
+			if (*infile->content == DOLLAR && ft_strlen(infile->content) != 1)
 				return (error_occured(infile, MSG_AMB, ms));
 			if (access(infile->content, F_OK) == FAILURE)
 				return (error_occured(infile, strerror(errno), ms));
