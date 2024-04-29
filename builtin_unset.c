@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-//exit code
-
 static int	error_check(char *str)
 {
 	int	i;
@@ -43,7 +41,10 @@ void	builtin_unset(t_shell *ms, char **cmd, int i, int j)
 				envp_remove(ms, cmd[i]);
 		}
 		else
+		{
 			error_logger("unset: ", cmd[i], ": not a valid identifier", ms);
+			ms->excode = 1;
+		}
 		i++;
 	}
 }

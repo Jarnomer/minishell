@@ -45,7 +45,10 @@ void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 				envp_add(ms, cmd[i]);
 		}
 		else
+		{
 			error_logger("export: ", cmd[i], ": not a valid identifier", ms);
+			ms->excode = 1;
+		}
 		i++;
 	}
 }

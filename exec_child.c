@@ -27,7 +27,7 @@ static void	child_process(t_module *mod, t_shell *ms)
 		execute_builtin(ms, mod);
 	else
 		execute_command(mod, ms);
-	exit(0);
+	exit(ms->excode);
 }
 
 static void	parent_process(t_shell *ms)

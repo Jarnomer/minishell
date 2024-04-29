@@ -12,9 +12,14 @@
 
 #include "minishell.h"
 
-void	builtin_pwd(void)
+void	builtin_pwd(t_shell *ms)
 {
+	char	*str;
 	char	buf[1000];
 
-	ft_putendl_fd(getcwd(buf, 1000), 1);
+	str = getcwd(buf, 1000);
+	if (str)
+		ft_putendl_fd(str, 1);
+	else
+		ms->excode = 1;
 }

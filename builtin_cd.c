@@ -12,9 +12,6 @@
 
 #include "minishell.h"
 
-//change name_exists function
-//make sure err_code is right
-
 static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd)
 {
 	if (envp_exists("PWD", ms) != NULL)
@@ -45,5 +42,8 @@ void	builtin_cd(t_shell *ms, char **cmd)
 		update_envp_values(ms, pwd, oldpwd);
 	}
 	else
+	{
 		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
+		ms->excode = 1;
+	}
 }

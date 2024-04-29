@@ -12,27 +12,22 @@
 
 #include "minishell.h"
 
-static void	handle_redirection(t_shell *ms, t_module *mod)
+static int	handle_redirect(t_shell *ms, t_module *mod)
 {
-	pid_t	pid;
-
-	pid = fork();
-	if (pid == 0)
-	{
-		redirect_fds(mod, ms);
-		close_fds(ms);
-		exit(0);
-	}
+	if ((mod->infiles && open_infile(mod, ms) == -1)
+		|| (mod->outfiles && open_outfile(mod, ms) == -1))
+		return (1);
+	return (0);
 }
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	char	**cmd;
 
-	if (ms->forks == 1 && is_builtin2(mod))
-		handle_redirection(ms, mod);
 	cmd = safe_double(mod->command, ms);
-	if (ft_strncmp("echo", cmd[0], 4) == 0)
+	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod) == 1)
+		ms->excode = 1;
+	else if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(cmd);
 	else if (ft_strncmp("cd", cmd[0], 2) == 0)
 		builtin_cd(ms, cmd);
@@ -43,7 +38,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("unset", cmd[0], 5) == 0)
 		builtin_unset(ms, cmd, 1, 0);
 	else if (ft_strncmp("pwd", cmd[0], 3) == 0)
-		builtin_pwd();
+		builtin_pwd(ms);
 	else if (ft_strncmp("exit", cmd[0], 4) == 0)
 		builtin_exit(ms, cmd);
 }
