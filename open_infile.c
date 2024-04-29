@@ -12,30 +12,6 @@
 
 #include "minishell.h"
 
-static void	read_heredocs(t_module *mod, t_shell *ms)
-{
-	t_parser	*infile;
-	int			tempfd;
-
-	infile = mod->infiles;
-	while (infile)
-	{
-		if (infile->mode == HEREDOC)
-		{
-			tempfd = open_heredoc(infile, ms);
-			if (tempfd != -1 && infile->next)
-				close(tempfd);
-			else if (tempfd != -1 && !infile->next)
-			{
-				mod->infd = dup(tempfd);
-				close(tempfd);
-				return ;
-			}
-		}
-		infile = infile->next;
-	}
-}
-
 static t_parser	*error_occured(t_parser *infile, char *errmsg, t_shell *ms)
 {
 	error_logger(infile->content, ": ", errmsg, ms);
@@ -48,7 +24,7 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 	{
 		if (infile->mode != HEREDOC)
 		{
-			if (ft_strchr(infile->content, DOLLAR))
+			if (*infile->content == DOLLAR && ft_strlen(infile->content) != 1)
 				return (error_occured(infile, MSG_AMB, ms));
 			if (access(infile->content, F_OK) == FAILURE)
 				return (error_occured(infile, strerror(errno), ms));
@@ -65,7 +41,6 @@ int	open_infile(t_module *mod, t_shell *ms)
 {
 	t_parser	*last;
 
-	read_heredocs(mod, ms);
 	if (check_infiles(mod->infiles, ms) != NULL)
 		return (FAILURE);
 	if (mod->infd != -1)

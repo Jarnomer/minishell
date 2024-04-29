@@ -7,6 +7,7 @@ CFILES = 	minishell.c \
 			parse_input.c \
 			parse_envps.c \
 			parser_utils.c \
+			parser_helpers.c \
 			open_infile.c \
 			open_outfile.c \
 			open_heredoc.c \
@@ -30,7 +31,6 @@ CFILES = 	minishell.c \
 			builtin_exit.c \
 			builtin_utils.c \
 			utils_envp.c \
-			utils_misc.c \
 			print_envp.c \
 			signal.c
 

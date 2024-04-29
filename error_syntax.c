@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/20 17:56:55 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/28 13:40:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,6 @@ static int	error_occured(char *token, t_shell *ms)
 	return (FAILURE);
 }
 
-static int	unclosed_quotes(char *input, char delim)
-{
-	int	quotes;
-	int	i;
-
-	i = 0;
-	quotes = 0;
-	while (input[i])
-	{
-		if (input[i] == delim)
-			quotes++;
-		++i;
-	}
-	return (quotes % 2);
-}
-
 static char	assign_delimiter(char *argv)
 {
 	char	*single_qt;
@@ -48,25 +32,42 @@ static char	assign_delimiter(char *argv)
 
 	single_qt = ft_strchr(argv, SINGLEQUOTE);
 	double_qt = ft_strchr(argv, DOUBLEQUOTE);
-	if ((single_qt && double_qt)
+	if (!single_qt && !double_qt)
+		return (0);
+	else if ((single_qt && double_qt)
 		&& (single_qt > double_qt))
 		return (DOUBLEQUOTE);
 	else if (single_qt && double_qt)
 		return (SINGLEQUOTE);
 	else if (double_qt)
 		return (DOUBLEQUOTE);
-	else if (single_qt)
-		return (SINGLEQUOTE);
 	else
-		return (EMPTY);
+		return (SINGLEQUOTE);
 }
 
-static int	invalid_redirect(char *input, char delim)
+static int	unclosed_quotes(char *input)
 {
-	while (ft_strchr(input, delim))
+	char	delim;
+
+	while (input)
 	{
+		delim = assign_delimiter(input);
+		if (!delim)
+			return (SUCCESS);
 		input = ft_strchr(input, delim);
-		if (*(input + 1) == delim)
+		if (!ft_strchr(input + 1, delim))
+			return (delim);
+		input = ft_strchr(input + 1, delim) + 1;
+	}
+	return (SUCCESS);
+}
+
+static int	invalid_redirect(char *input, char redirect)
+{
+	while (ft_strchr(input, redirect))
+	{
+		input = ft_strchr(input, redirect);
+		if (*(input + 1) == redirect)
 			input += 2;
 		else
 			input += 1;
@@ -80,18 +81,19 @@ static int	invalid_redirect(char *input, char delim)
 
 int	error_syntax(char *input, t_shell *ms)
 {
-	char	c;
+	char	quote;
 
-	if (!input || !*input || *(input + ft_strlen(input) - 1) == PIPE)
+	if (!input || !*input || *input == PIPE
+		|| *(input + ft_strlen(input) - 1) == PIPE)
 		return (error_occured("`|'", ms));
 	else if (invalid_redirect(input, OUTDIRECT))
 		return (error_occured("`>'", ms));
 	else if (invalid_redirect(input, INDIRECT))
 		return (error_occured("`<'", ms));
-	c = assign_delimiter(input);
-	if (c == SINGLEQUOTE && unclosed_quotes(input, c))
+	quote = unclosed_quotes(input);
+	if (quote == SINGLEQUOTE)
 		return (error_occured("`\''", ms));
-	else if (c == DOUBLEQUOTE && unclosed_quotes(input, c))
+	else if (quote == DOUBLEQUOTE)
 		return (error_occured("`\"'", ms));
 	return (SUCCESS);
 }

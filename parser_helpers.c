@@ -12,6 +12,18 @@
 
 #include "minishell.h"
 
+void	reset_content(t_parser *prev, t_parser *new)
+{
+	if (*prev->content == DOLLAR
+		&& new->meta != DOLLAR)
+		ft_bzero(prev->content, ft_strlen(prev->content));
+	else if (*prev->content != DOLLAR
+		&& ft_strlen(new->content) != 1
+		&& ft_strchr(new->content, DOLLAR)
+		&& new->meta != SINGLEQUOTE)
+		ft_bzero(new->content, ft_strlen(new->content));
+}
+
 char	*find_breakpoint(char *argv)
 {
 	while (*argv != '\0'

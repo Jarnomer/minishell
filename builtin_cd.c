@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:48 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/17 18:58:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/29 17:57:04 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,5 @@ void	builtin_cd(t_shell *ms, char **cmd)
 		update_envp_values(ms, pwd, oldpwd);
 	}
 	else
-		error_logger("cd:", cmd[1], ": No such file or directory", ms);
+		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
 }

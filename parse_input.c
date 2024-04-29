@@ -6,11 +6,36 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/26 14:19:37 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 19:17:45 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	parser_join(t_parser *prev,
+	t_parser *new, t_module *mod, t_shell *ms)
+{
+	int	mode;
+
+	mode = 0;
+	if (!prev || !new)
+		return ;
+	if (!prev->prev)
+		mode = new->mode;
+	if (new->meta != DOLLAR && new->mode != -1)
+		reset_content(prev, new);
+	safe_strjoin(&new->content, prev->content, new->content, ms);
+	parser_delone(prev);
+	if (mode != 0)
+	{
+		if (mode == -1)
+			mod->command = mod->command->next;
+		else if (mode == OUTFILE || mode == APPEND)
+			mod->outfiles = mod->outfiles->next;
+		else
+			mod->infiles = mod->infiles->next;
+	}
+}
 
 static void	filter_quotes(char *content, t_shell *ms)
 {
@@ -23,7 +48,7 @@ static void	filter_quotes(char *content, t_shell *ms)
 	ft_strlcpy(content, temp + 1, len);
 }
 
-void	parse_argv(t_parser *new, t_shell *ms)
+void	parse_argv(t_parser *new, t_module *mod, t_shell *ms)
 {
 	if (new->meta == SINGLEQUOTE || new->meta == DOUBLEQUOTE)
 		filter_quotes(new->content, ms);
@@ -32,7 +57,7 @@ void	parse_argv(t_parser *new, t_shell *ms)
 		&& new->mode != HEREDOC)
 		parse_envps(new, ms);
 	if (new->prev != NULL && new->prev->joinable == true)
-		parser_join(new->prev, new, ms);
+		parser_join(new->prev, new, mod, ms);
 }
 
 static void	check_joinable(t_parser *new, char c)
@@ -43,12 +68,10 @@ static void	check_joinable(t_parser *new, char c)
 
 char	*parse_input(char *argv, t_parser *new)
 {
-	char	*start;
 	char	*delim;
 
-	start = argv;
 	delim = find_breakpoint(argv);
-	if (ft_isspace(*delim))
+	if (ft_isspace(*delim) || ft_isredirect(*delim))
 		return (delim);
 	else if (!ft_ismeta(*argv))
 	{

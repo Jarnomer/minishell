@@ -18,8 +18,9 @@ void	error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms)
 
 	if (!msg1 && !msg2 && !msg3)
 		return ;
-	safe_strdup(&message, "", ms);
-	safe_strjoin(&message, ms->prompt, BR, ms);
+	safe_strdup(&message, ms->prompt, ms);
+	*ft_strchr(message, DOLLAR) = ':';
+	safe_strjoin(&message, message, BR, ms);
 	safe_strjoin(&message, message, msg1, ms);
 	safe_strjoin(&message, message, msg2, ms);
 	safe_strjoin(&message, message, T, ms);

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/25 20:40:50 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/27 19:17:52 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 # include <errno.h>
 # include <string.h>
 # include <dirent.h>
+# include <termios.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include <termios.h>
 
 # define BR		"\033[1;31m"
 # define Y		"\033[0;33m"
@@ -113,19 +113,26 @@ typedef struct s_shell
 //			Initialization
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
+void		init_signals(void);
 
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);
 char		*parse_input(char *argv, t_parser *new);
-void		parse_argv(t_parser *new, t_shell *ms);
+void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
 
-//			Parser utils
+//			Parser Utils
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
-void		parser_join(t_parser *prev, t_parser *lst, t_shell *ms);
+
+//			Parser Helpers
+void		reset_content(t_parser *prev, t_parser *new);
+char		*find_breakpoint(char *argv);
+int			ft_isspace(char c);
+int			ft_isredirect(char c);
+int			ft_ismeta(char c);
 
 //			Child processes
 void		execute_children(t_shell *ms);
@@ -136,7 +143,7 @@ void		wait_children(t_shell *ms);
 //			Open files
 int			open_infile(t_module *mod, t_shell *ms);
 int			open_outfile(t_module *mod, t_shell *ms);
-int			open_heredoc(t_parser *hdoc, t_shell *ms);
+void		open_heredocs(t_module *mod, t_shell *ms);
 
 //			Free memory
 void		free_runtime(t_shell *ms);
@@ -159,15 +166,6 @@ void		safe_strdup(char **dst, char *src, t_shell *ms);
 void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
-
-//			Utility functions
-char		*find_breakpoint(char *argv);
-int			ft_isspace(char c);
-int			ft_isredirect(char c);
-int			ft_ismeta(char c);
-
-//			Signal functions
-void		init_signals(void);
 
 //			Envp functions
 void		envp_print(char **envp, int envp_size, int i, int flag);
