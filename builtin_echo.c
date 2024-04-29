@@ -14,7 +14,7 @@
 
 static int	check_flags(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (str[i] != '-')
@@ -42,6 +42,8 @@ void	builtin_echo(char **cmd)
 		n_flag = true;
 		i++;
 	}
+	if (!cmd[i])
+		ft_putchar_fd('\n', 1);
 	while (cmd[i])
 	{
 		ft_putstr_fd(cmd[i], 1);

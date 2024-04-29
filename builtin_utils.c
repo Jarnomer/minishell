@@ -6,16 +6,16 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/20 17:56:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/29 18:00:37 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int name_exists(t_shell *ms, char *name)
+int	name_exists(t_shell *ms, char *name)
 {
-	int i;
-	int size;
+	int	i;
+	int	size;
 
 	i = 0;
 	size = 0;
@@ -32,7 +32,7 @@ int name_exists(t_shell *ms, char *name)
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
-	char **cmd;
+	char	**cmd;
 
 	cmd = safe_double(mod->command, ms);
 	if (ft_strncmp("echo", cmd[0], 4) == 0)
@@ -46,7 +46,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("unset", cmd[0], 5) == 0)
 		builtin_unset(ms, cmd, 1, 0);
 	else if (ft_strncmp("pwd", cmd[0], 3) == 0)
-		builtin_pwd(ms, ms->envp);
+		builtin_pwd();
 	else if (ft_strncmp("exit", cmd[0], 4) == 0)
 		builtin_exit(ms, cmd);
 }

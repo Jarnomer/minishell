@@ -30,35 +30,6 @@ char	*envp_exists(char *name, t_shell *ms)
 	return (NULL);
 }
 
-void	envp_print(char **envp, int envp_size, int i, int flag)
-{
-	int j;
-
-	while (i < envp_size)
-	{
-		j = 0;
-		if (envp[i][j] == '_' && envp[i][j + 1] == '=')
-			break ;
-		ft_putstr_fd("declare -x ", 1);
-		while (envp[i][j] != '\0')
-		{
-			if (envp[i][j] == '=')
-			{
-				ft_putchar_fd(envp[i][j], 1);
-				ft_putchar_fd('\"', 1);
-				flag = 1;
-				j++;
-			}
-			ft_putchar_fd(envp[i][j], 1);
-			j++;
-		}
-		if (flag == 1)
-			ft_putchar_fd('\"', 1);
-		ft_putchar_fd('\n', 1);
-		i++;
-	}
-}
-
 void	envp_update(t_shell *ms, char *content)
 {
 	int		i;
@@ -77,14 +48,13 @@ void	envp_update(t_shell *ms, char *content)
 	}
 	temp = ms->envp[i];
 	ms->envp[i] = ft_strdup(content);
-	//safe_strdup(&ms->envp[i], content, ms);
 	free(temp);
 }
 
 void	envp_add(t_shell *ms, char *content)
 {
-	int 	i;
-	int 	j;
+	int		i;
+	int		j;
 	char	**new_envp;
 
 	i = 0;
@@ -96,11 +66,9 @@ void	envp_add(t_shell *ms, char *content)
 		if (ft_strncmp(ms->envp[j], "_=", 2) == 0)
 		{
 			new_envp[i] = ft_strdup(content);
-			//safe_strdup(&new_envp[i], content, ms);
 			i++;
 		}
 		new_envp[i] = ft_strdup(ms->envp[j]);
-		//safe_strdup(&new_envp[j], content, ms);
 		i++;
 		j++;
 	}
@@ -124,7 +92,6 @@ void	envp_remove(t_shell *ms, char *content)
 		if (ft_strncmp(ms->envp[j], content, ft_strlen(content)) == 0)
 			j++;
 		new_envp[i] = ft_strdup(ms->envp[j]);
-		//safe_strdup(&new_envp[i], ms->envp[j], ms);
 		i++;
 		j++;
 	}
