@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_misc.c                                       :+:      :+:    :+:   */
+/*   parser_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/15 16:39:12 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:20:07 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	reset_content(t_parser *prev, t_parser *new)
+void	reformat_content(t_parser *prev, t_parser *new)
 {
 	if (*prev->content == DOLLAR
 		&& new->meta != DOLLAR)

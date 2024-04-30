@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 19:17:48 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:16:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,17 @@ static void	append_argument(t_parser *new, t_parser *prev, t_module *mod)
 
 static char	*check_redirect(char *input, t_parser *new)
 {
-	if (*(input + 1) == OUTDIRECT)
-		new->mode = APPEND;
-	else if (*(input + 1) == INDIRECT)
-		new->mode = HEREDOC;
-	else if (*input == OUTDIRECT)
-		new->mode = OUTFILE;
-	else if (*input == INDIRECT)
-		new->mode = INFILE;
+	if (ft_isredirect(*input))
+	{
+		if (*(input + 1) == OUTDIRECT)
+			new->mode = APPEND;
+		else if (*(input + 1) == INDIRECT)
+			new->mode = HEREDOC;
+		else if (*input == OUTDIRECT)
+			new->mode = OUTFILE;
+		else if (*input == INDIRECT)
+			new->mode = INFILE;
+	}
 	else
 		new->mode = -1;
 	if (new->mode == APPEND

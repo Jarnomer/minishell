@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/27 19:17:52 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:15:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
 
 //			Parser Helpers
-void		reset_content(t_parser *prev, t_parser *new);
+void		reformat_content(t_parser *prev, t_parser *new);
 char		*find_breakpoint(char *argv);
 int			ft_isspace(char c);
 int			ft_isredirect(char c);
