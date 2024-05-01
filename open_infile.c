@@ -27,10 +27,10 @@ static t_parser	*check_infiles(t_parser *infile, t_shell *ms)
 			if (*infile->content == DOLLAR && ft_strlen(infile->content) != 1)
 				return (error_occured(infile, MSG_AMB, ms));
 			if (access(infile->content, F_OK) == FAILURE)
-				return (error_occured(infile, strerror(errno), ms));
+				return (error_occured(infile, MSG_FILE, ms));
 			else if (access(infile->content, F_OK) == SUCCESS
 				&& access(infile->content, R_OK) == FAILURE)
-				return (error_occured(infile, strerror(errno), ms));
+				return (error_occured(infile, MSG_PERM, ms));
 		}
 		infile = infile->next;
 	}

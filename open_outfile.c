@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "error.h"
-#include "libft/libft.h"
 #include "minishell.h"
 
 static inline int	read_outfile(char *file, int mode)
@@ -37,14 +35,14 @@ static t_parser	*check_outfiles(t_module *mod, t_shell *ms)
 	{
 		if (*outfile->content == DOLLAR)
 			return (error_occured(outfile, MSG_AMB, ms));
-		if (opendir(outfile->content) != NULL)
+		else if (opendir(outfile->content) != NULL)
 			return (error_occured(outfile, MSG_FLDR, ms));
 		//else if (opendir(outfile->content) == NULL
 		//	&& ft_strchr(outfile->content, '/'))
 		//	return (error_occured(outfile, MSG_PERM, ms));
 		else if (access(outfile->content, F_OK) == SUCCESS
 			&& access(outfile->content, W_OK) == FAILURE)
-			return (error_occured(outfile, strerror(errno), ms));
+			return (error_occured(outfile, MSG_PERM, ms));
 		else
 			close(read_outfile(outfile->content, outfile->mode));
 		outfile = outfile->next;
