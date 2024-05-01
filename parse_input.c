@@ -22,8 +22,8 @@ static void	parser_join(t_parser *prev,
 		return ;
 	if (!prev->prev)
 		mode = new->mode;
-	if (new->meta != DOLLAR && new->mode != -1)
-		reformat_content(prev, new);
+	// if (new->meta != DOLLAR && new->mode != -1)
+	// 	reformat_content(prev, new);
 	safe_strjoin(&new->content, prev->content, new->content, ms);
 	parser_delone(prev);
 	if (mode != 0)
@@ -60,9 +60,11 @@ void	parse_argv(t_parser *new, t_module *mod, t_shell *ms)
 		parser_join(new->prev, new, mod, ms);
 }
 
-static void	check_joinable(t_parser *new, char c)
+static void	check_joinable(t_parser *new, char *c)
 {
-	if (c != '\0' && !ft_isredirect(c) && !ft_isspace(c))
+	if (!*c)
+		return ;
+	else if (!ft_isredirect(*c) && !ft_isspace(*c))
 		new->joinable = true;
 }
 
@@ -75,7 +77,7 @@ char	*parse_input(char *argv, t_parser *new)
 		return (delim);
 	else if (!ft_ismeta(*argv))
 	{
-		check_joinable(new, *(delim + 1));
+		check_joinable(new, delim);
 		return (delim);
 	}
 	new->meta = *delim;
@@ -85,6 +87,6 @@ char	*parse_input(char *argv, t_parser *new)
 		delim = ft_strchr(delim + 1, DOUBLEQUOTE) + 1;
 	else if (*delim == DOLLAR)
 		delim = find_breakpoint(delim + 1);
-	check_joinable(new, *delim);
+	check_joinable(new, delim);
 	return (delim);
 }
