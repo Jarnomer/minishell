@@ -64,29 +64,25 @@ static int	unclosed_quotes(char *input)
 
 static int	invalid_redirect(char *input, char redirect)
 {
-	int	i;
-
-	i = 0;
-	while (input[i])
+	while (*input)
 	{
-		if (input[i] == '$' || (!ft_ismeta(input[i]) && !ft_isredirect(input[i])))
-			i++;
-		else if (ft_ismeta(input[i]))
+		if (*input == '$' || (*input != redirect && !ft_ismeta(*input)))
+			input++;
+		else if (ft_ismeta(*input))
 		{
-			i++;
-			while (input[i] && input[i] != SINGLEQUOTE && input[i] != DOUBLEQUOTE)
-				i++;
-			i++;
+			input++;
+			while (*input && *input != '\'' && *input != '\"')
+				input++;
+			input++;
 		}
 		else
 		{
-			if (input[i + 1] == redirect)
-				i += 2;
-			else
-				i += 1;
-			while (ft_isspace(input[i]))
-				i++;
-			if (!input[i] || ft_isredirect(input[i]))
+			input++;
+			if (*input == redirect)
+				input++;
+			while (ft_isspace(*input))
+				input++;
+			if (!*input || ft_isredirect(*input))
 				return (FAILURE);
 		}
 	}
@@ -105,7 +101,7 @@ int	error_syntax(char *input, t_shell *ms)
 		return (error_occured("`\''", ms));
 	else if (quote == DOUBLEQUOTE)
 		return (error_occured("`\"'", ms));
-	else if (invalid_redirect(input, OUTDIRECT))
+	if (invalid_redirect(input, OUTDIRECT))
 		return (error_occured("`>'", ms));
 	else if (invalid_redirect(input, INDIRECT))
 		return (error_occured("`<'", ms));
