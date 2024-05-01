@@ -55,7 +55,8 @@ static char	*expand_excode(char *buffer, char *temp, t_shell *ms)
 
 static char	*parse_dollar(char *buffer, char *temp, t_parser *new, t_shell *ms)
 {
-	if (!*temp || ft_isredirect(*temp) || ft_ismeta(*temp))
+	if (!*temp || ft_isredirect(*temp)
+		|| ft_ismeta(*temp) || ft_isspace(*temp))
 	{
 		ft_strlcat(buffer, temp - 1, ft_strlen(buffer) + 3);
 		if (*temp)
