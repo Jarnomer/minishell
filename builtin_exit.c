@@ -42,6 +42,8 @@ void	builtin_exit(t_shell *ms, char **cmd)
 		error_exit(1, cmd[0], "too many arguments", ms);
 	if (cmd[1] && ft_atoi(cmd[1]) > -1)
 		exit_code = (ft_atoi(cmd[1]) % 256);
+	else if (cmd[1] && ft_atoi(cmd[1]) < 0)
+		exit_code = (256 - ((ft_atoi(cmd[1]) * -1) % 256));
 	if (ms->forks == 1)
 		ft_putstr_fd("exit\n", 1);
 	exit(exit_code);

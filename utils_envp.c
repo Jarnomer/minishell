@@ -89,7 +89,8 @@ void	envp_remove(t_shell *ms, char *content)
 	new_envp = safe_calloc((ms->envp_size + 1) * sizeof(char *), ms);
 	while (i < ms->envp_size)
 	{
-		if (ft_strncmp(ms->envp[j], content, ft_strlen(content)) == 0)
+		if (ft_strncmp(ms->envp[j], content, ft_strlen(content)) == 0 
+			&& (ms->envp[j][0 + ft_strlen(content)]) == '=')
 			j++;
 		new_envp[i] = ft_strdup(ms->envp[j]);
 		i++;

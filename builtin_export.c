@@ -17,7 +17,7 @@ static int	error_check(char *str)
 	int	i;
 
 	i = 0;
-	if (ft_isdigit(str[i]))
+	if (ft_isdigit(str[i]) || str[i] == '=')
 		return (1);
 	while (str[i] && str[i] != '=')
 	{
