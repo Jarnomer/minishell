@@ -39,9 +39,9 @@ static t_parser	*check_outfiles(t_module *mod, t_shell *ms)
 			return (error_occured(outfile, MSG_AMB, ms));
 		if (opendir(outfile->content) != NULL)
 			return (error_occured(outfile, MSG_FLDR, ms));
-		else if (opendir(outfile->content) == NULL
-			&& ft_strchr(outfile->content, '/'))
-			return (error_occured(outfile, MSG_PERM, ms));
+		//else if (opendir(outfile->content) == NULL
+		//	&& ft_strchr(outfile->content, '/'))
+		//	return (error_occured(outfile, MSG_PERM, ms));
 		else if (access(outfile->content, F_OK) == SUCCESS
 			&& access(outfile->content, W_OK) == FAILURE)
 			return (error_occured(outfile, strerror(errno), ms));
