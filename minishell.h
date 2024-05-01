@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/30 19:15:29 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/01 18:31:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ typedef enum e_syntax
 	SINGLEQUOTE = 39,
 	DOUBLEQUOTE = 34,
 	QUESTIONMARK = 63,
-	EMPTY = 32
 }	t_syntax;
 
 typedef struct s_parser
@@ -120,6 +119,7 @@ void		parse_modules(t_module **lst, t_shell *ms);
 char		*parse_input(char *argv, t_parser *new);
 void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
+int			parse_files(t_module *mod, t_shell *ms);
 
 //			Parser Utils
 void		parser_append(t_parser **lst, t_parser *new);
@@ -141,8 +141,8 @@ void		execute_command(t_module *mod, t_shell *ms);
 void		wait_children(t_shell *ms);
 
 //			Open files
-int			open_infile(t_module *mod, t_shell *ms);
-int			open_outfile(t_module *mod, t_shell *ms);
+t_parser	*open_infile(t_parser *infile, t_module *mod, t_shell *ms);
+t_parser	*open_outfile(t_parser *outfile, t_module *mod, t_shell *ms);
 void		open_heredocs(t_module *mod, t_shell *ms);
 
 //			Free memory

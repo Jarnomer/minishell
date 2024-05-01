@@ -30,8 +30,8 @@ void	builtin_cd(t_shell *ms, char **cmd)
 	pwd = NULL;
 	oldpwd = NULL;
 	home = envp_exists("HOME", ms);
-	oldpwd = safe_trash(ft_strjoin("OLDPWD=", envp_exists("PWD", ms)), 
-		ALLOCATED, ms);
+	oldpwd = safe_trash(ft_strjoin("OLDPWD=", envp_exists("PWD", ms)),
+			ALLOCATED, ms);
 	if (!cmd[1] && chdir(home) == 0)
 	{
 		safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);

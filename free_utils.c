@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:05 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:20:17 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:28:43 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void	free_exit(t_shell *ms)
 {
 	if (!ms)
 		return ;
+	free_runtime(ms);
 	if (ms->prompt != NULL)
 		free_single(&ms->prompt);
 	if (ms->envp != NULL)
 		free_double(&ms->envp);
-	free_runtime(ms);
 }

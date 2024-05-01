@@ -20,7 +20,7 @@ static void	redirect_outfd(t_module *mod, t_shell *ms)
 		&& dup2(ms->pipefd[WR_END], STDOUT) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->outfiles != NULL
-		&& dup2(open_outfile(mod, ms), STDOUT) == FAILURE)
+		&& dup2(mod->outfd, STDOUT) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 }
 
@@ -32,7 +32,7 @@ static void	redirect_infd(t_module *mod, t_shell *ms)
 		&& dup2(ms->tempfd, STDIN) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->infiles != NULL
-		&& dup2(open_infile(mod, ms), STDIN) == FAILURE)
+		&& dup2(mod->infd, STDIN) == FAILURE)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 }
 

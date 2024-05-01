@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/29 18:00:37 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:17:35 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int	handle_redirect(t_shell *ms, t_module *mod)
 {
-	if ((mod->infiles && open_infile(mod, ms) == -1)
-		|| (mod->outfiles && open_outfile(mod, ms) == -1))
+	if ((mod->infiles || mod->outfiles)
+		&& parse_files(mod, ms) == FAILURE)
 		return (1);
 	return (0);
 }

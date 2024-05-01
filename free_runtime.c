@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 18:33:20 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:27:34 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,11 +46,6 @@ static void	free_modules(t_module **lst)
 	*lst = NULL;
 }
 
-static void	reset_shell(t_shell *ms)
-{
-	ms->index = 0;
-}
-
 void	free_runtime(t_shell *ms)
 {
 	if (!ms)
@@ -67,5 +62,5 @@ void	free_runtime(t_shell *ms)
 		free_modules(&ms->mods);
 	if (ms->trash != NULL)
 		free_parser(&ms->trash);
-	reset_shell(ms);
+	ms->index = 0;
 }

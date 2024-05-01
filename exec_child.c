@@ -16,6 +16,9 @@ static void	child_process(t_module *mod, t_shell *ms)
 {
 	t_parser	*cmd;
 
+	if ((mod->infiles || mod->outfiles)
+		&& parse_files(mod, ms) == FAILURE)
+		error_exit(ERR_FILE, NULL, NULL, ms);
 	redirect_fds(mod, ms);
 	close_fds(ms);
 	cmd = mod->command;

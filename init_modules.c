@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/30 20:13:42 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/01 19:33:46 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,13 @@ static char	*find_endpoint(char *input)
 {
 	while (*input)
 	{
-		while (*input && *input != '\'' && *input != '\"' && *input != PIPE)
+		while (*input && *input != SINGLEQUOTE
+			&& *input != DOUBLEQUOTE && *input != PIPE)
 			input++;
-		if (*input == '\'' || *input == '\"')
+		if (*input == SINGLEQUOTE || *input == DOUBLEQUOTE)
 		{
 			input++;
-			while (*input && *input != '\'' && *input != '\"')
+			while (*input && *input != SINGLEQUOTE && *input != DOUBLEQUOTE)
 				input++;
 			input++;
 		}
@@ -72,12 +73,12 @@ int	init_modules(char *input, t_shell *ms)
 			input++;
 		temp = find_endpoint(input);
 		new = safe_calloc(sizeof(t_module), ms);
+		new->outfd = -1;
+		new->infd = -1;
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);
 		if (error_syntax(new->input, ms))
 			return (FAILURE);
-		new->outfd = -1;
-		new->infd = -1;
 		input = temp;
 		if (*input)
 			input++;
