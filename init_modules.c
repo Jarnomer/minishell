@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 15:49:02 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/30 20:13:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,18 +25,6 @@ static int	command_count(t_module *mod)
 	return (len);
 }
 
-static void	finalize_shell(t_shell *ms)
-{
-	ms->forks = command_count(ms->mods);
-	ms->pids = safe_calloc(ms->forks * sizeof(pid_t), ms);
-}
-
-static void	finalize_module(t_module *mod)
-{
-	mod->outfd = -1;
-	mod->infd = -1;
-}
-
 static void	append_module(t_module **lst, t_module *new)
 {
 	t_module	*temp;
@@ -52,6 +40,25 @@ static void	append_module(t_module **lst, t_module *new)
 	}
 }
 
+static char	*find_endpoint(char *input)
+{
+	while (*input)
+	{
+		while (*input && *input != '\'' && *input != '\"' && *input != PIPE)
+			input++;
+		if (*input == '\'' || *input == '\"')
+		{
+			input++;
+			while (*input && *input != '\'' && *input != '\"')
+				input++;
+			input++;
+		}
+		else
+			return (input);
+	}
+	return (input);
+}
+
 int	init_modules(char *input, t_shell *ms)
 {
 	char		*temp;
@@ -63,18 +70,19 @@ int	init_modules(char *input, t_shell *ms)
 	{
 		while (ft_isspace(*input))
 			input++;
-		temp = ft_strchr(input, PIPE);
-		if (!temp)
-			temp = input + ft_strlen(input);
+		temp = find_endpoint(input);
 		new = safe_calloc(sizeof(t_module), ms);
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);
 		if (error_syntax(new->input, ms))
 			return (FAILURE);
-		finalize_module(new);
+		new->outfd = -1;
+		new->infd = -1;
+		input = temp;
 		if (*input)
-			input = temp + 1;
+			input++;
 	}
-	finalize_shell(ms);
+	ms->forks = command_count(ms->mods);
+	ms->pids = safe_calloc(ms->forks * sizeof(pid_t), ms);
 	return (SUCCESS);
 }

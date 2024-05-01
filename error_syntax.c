@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:21 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/28 13:40:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/30 19:16:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,31 @@ static int	unclosed_quotes(char *input)
 
 static int	invalid_redirect(char *input, char redirect)
 {
-	while (ft_strchr(input, redirect))
+	int	i;
+
+	i = 0;
+	while (input[i])
 	{
-		input = ft_strchr(input, redirect);
-		if (*(input + 1) == redirect)
-			input += 2;
+		if (input[i] == '$' || (!ft_ismeta(input[i]) && !ft_isredirect(input[i])))
+			i++;
+		else if (ft_ismeta(input[i]))
+		{
+			i++;
+			while (input[i] && input[i] != SINGLEQUOTE && input[i] != DOUBLEQUOTE)
+				i++;
+			i++;
+		}
 		else
-			input += 1;
-		while (ft_isspace(*input))
-			input++;
-		if (!*input || ft_isredirect(*input))
-			return (FAILURE);
+		{
+			if (input[i + 1] == redirect)
+				i += 2;
+			else
+				i += 1;
+			while (ft_isspace(input[i]))
+				i++;
+			if (!input[i] || ft_isredirect(input[i]))
+				return (FAILURE);
+		}
 	}
 	return (SUCCESS);
 }
@@ -86,14 +100,14 @@ int	error_syntax(char *input, t_shell *ms)
 	if (!input || !*input || *input == PIPE
 		|| *(input + ft_strlen(input) - 1) == PIPE)
 		return (error_occured("`|'", ms));
-	else if (invalid_redirect(input, OUTDIRECT))
-		return (error_occured("`>'", ms));
-	else if (invalid_redirect(input, INDIRECT))
-		return (error_occured("`<'", ms));
 	quote = unclosed_quotes(input);
 	if (quote == SINGLEQUOTE)
 		return (error_occured("`\''", ms));
 	else if (quote == DOUBLEQUOTE)
 		return (error_occured("`\"'", ms));
+	else if (invalid_redirect(input, OUTDIRECT))
+		return (error_occured("`>'", ms));
+	else if (invalid_redirect(input, INDIRECT))
+		return (error_occured("`<'", ms));
 	return (SUCCESS);
 }

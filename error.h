@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:34:46 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 16:22:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/04/29 19:06:48 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,15 @@
 # define MSG_MEM		"Could not malloc"
 # define MSG_FORK		"Could not fork"
 # define MSG_PIPE		"Could not pipe"
+
+# define MSG_SIGPIPE	"Pipe broken"
+# define MSG_SIGCHLD	"Child terminated"
+# define MSG_SIGSEGV	"Segmentation fault"
+# define MSG_SIGBUS		"Bus error"
+# define MSG_SIGKILL	"Killed"
+# define MSG_SIGABRT	"Abort"
+# define MSG_SIGTERM	"Terminated"
+# define MSG_SIGOTHR	"Unhandled signal"
 
 enum e_errcodes
 {
