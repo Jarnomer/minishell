@@ -31,7 +31,7 @@ static int	error_check(char *str)
 void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 {
 	if (cmd[i] == NULL)
-		envp_print(ms->envp, ms->envp_size, 0, 0);
+		envp_print(ms, 0, 0);
 	while (cmd[i] != NULL)
 	{
 		j = 0;

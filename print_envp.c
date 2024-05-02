@@ -91,18 +91,21 @@ static char	**sort_envp_list(char **envp, int envp_size)
 	return (sorted_list);
 }
 
-void	envp_print(char **envp, int envp_size, int i, int j)
+void	envp_print(t_shell *ms, int i, int j)
 {
 	char	**sorted_list;
 
-	sorted_list = sort_envp_list(envp, envp_size);
-	while (i < envp_size)
+	sorted_list = sort_envp_list(ms->envp, ms->envp_size);
+	while (i < ms->envp_size)
 	{
 		if (sorted_list[i][j] == '_' && sorted_list[i][j + 1] == '=')
-			break ;
-		ft_putstr_fd("declare -x ", 1);
-		print_single_variable(sorted_list[i], j);
-		i++;
+			i++;
+		if (i < ms->envp_size)
+		{
+			ft_putstr_fd("declare -x ", 1);
+			print_single_variable(sorted_list[i], j);
+			i++;
+		}
 	}
 	free(sorted_list);
 }
