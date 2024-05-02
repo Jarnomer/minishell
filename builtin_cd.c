@@ -14,6 +14,7 @@
 
 static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd)
 {
+	ms->excode = 0;
 	if (envp_exists("PWD", ms) != NULL)
 		envp_update(ms, pwd);
 	if (envp_exists("OLDPWD", ms) != NULL)

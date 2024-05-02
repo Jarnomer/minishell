@@ -36,6 +36,9 @@
 
 # define PERMS	0664
 
+//GLOBAL VARIABLE
+extern bool	g_sigint;
+
 typedef enum e_checker
 {
 	FAILURE = -1,
@@ -113,7 +116,10 @@ typedef struct s_shell
 //			Initialization
 void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
-void		init_signals(void);
+
+//			Signals
+void		init_signals(t_shell *ms);
+void		sigint_in_cmd(void);
 
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);
@@ -168,7 +174,7 @@ void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
 //			Envp functions
-void		envp_print(char **envp, int envp_size, int i, int flag);
+void		envp_print(t_shell *ms, int i, int flag);
 void		envp_update(t_shell *ms, char *content);
 void		envp_add(t_shell *ms, char *content);
 void		envp_remove(t_shell *ms, char *content);
@@ -180,9 +186,9 @@ bool		is_builtin2(t_module *mod);
 void		execute_builtin(t_shell *ms, t_module *mod);
 
 //			Builtin functions
-void		builtin_echo(char **cmd);
+void		builtin_echo(t_shell *ms, char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd);
-void		builtin_env(char **envp, int i, int j);
+void		builtin_env(t_shell *ms, int i, int j);
 void		builtin_export(t_shell *ms, char **cmd, int i, int j);
 void		builtin_unset(t_shell *ms, char **cmd, int i, int j);
 void		builtin_pwd(t_shell *ms);

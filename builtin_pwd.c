@@ -19,7 +19,10 @@ void	builtin_pwd(t_shell *ms)
 
 	str = getcwd(buf, 1000);
 	if (str)
+	{
 		ft_putendl_fd(str, 1);
+		ms->excode = 0;
+	}
 	else
 		ms->excode = 1;
 }

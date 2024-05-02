@@ -28,11 +28,11 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod) == 1)
 		ms->excode = 1;
 	else if (ft_strncmp("echo", cmd[0], 4) == 0)
-		builtin_echo(cmd);
+		builtin_echo(ms, cmd);
 	else if (ft_strncmp("cd", cmd[0], 2) == 0)
 		builtin_cd(ms, cmd);
 	else if (ft_strncmp("env", cmd[0], 3) == 0)
-		builtin_env(ms->envp, 0, 0);
+		builtin_env(ms, 0, 0);
 	else if (ft_strncmp("export", cmd[0], 6) == 0)
 		builtin_export(ms, cmd, 1, 0);
 	else if (ft_strncmp("unset", cmd[0], 5) == 0)

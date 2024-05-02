@@ -12,15 +12,16 @@
 
 #include "minishell.h"
 
-void	builtin_env(char **envp, int i, int j)
+void	builtin_env(t_shell *ms, int i, int j)
 {
-	while (envp[i] != NULL)
+	while (ms->envp[i] != NULL)
 	{
 		j = 0;
-		while (envp[i][j] != '=' && envp[i][j] != '\0')
+		while (ms->envp[i][j] != '=' && ms->envp[i][j] != '\0')
 			j++;
-		if (envp[i][j] == '=')
-			ft_putendl_fd(envp[i], 1);
+		if (ms->envp[i][j] == '=')
+			ft_putendl_fd(ms->envp[i], 1);
 		i++;
 	}
+	ms->excode = 0;
 }

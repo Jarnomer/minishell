@@ -79,7 +79,13 @@ int	main(void)
 	init_shell(&ms);
 	while (true)
 	{
+		init_signals(&ms);
 		ms.input = readline(ms.prompt);
+		if (g_sigint == true)
+		{
+			g_sigint = false;
+			ms.excode = 1;
+		}
 		if (!ms.input)
 		{
 			ft_putendl_fd("exit", STDOUT);
