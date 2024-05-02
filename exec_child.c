@@ -61,6 +61,8 @@ void	execute_children(t_shell *ms)
 
 	mod = ms->mods;
 	open_heredocs(mod, ms);
+	if (g_sigint == true)
+		return ;
 	fork_limit = ms->forks - 1;
 	pipe_limit = fork_limit - 1;
 	while (ms->index <= fork_limit)

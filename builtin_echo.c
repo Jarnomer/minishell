@@ -30,7 +30,7 @@ static int	check_flags(char *str)
 	return (0);
 }
 
-void	builtin_echo(char **cmd)
+void	builtin_echo(t_shell *ms, char **cmd)
 {
 	int		i;
 	bool	n_flag;
@@ -53,4 +53,5 @@ void	builtin_echo(char **cmd)
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
+	ms->excode = 0;
 }
