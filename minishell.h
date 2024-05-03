@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/01 18:31:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/03 19:16:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 
 //GLOBAL VARIABLE
 extern bool	g_sigint;
-extern bool g_heredoc;
+extern bool	g_heredoc;
 
 typedef enum e_checker
 {
