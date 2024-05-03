@@ -6,13 +6,13 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/30 19:20:07 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/03 19:25:59 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	reformat_content(t_parser *prev, t_parser *new)
+void	preview_content(t_parser *prev, t_parser *new)
 {
 	if (*prev->content == DOLLAR && prev->meta != SINGLEQUOTE
 		&& (new->meta != DOLLAR

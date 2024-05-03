@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/30 19:21:04 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/03 19:26:09 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ static void	parser_join(t_parser *prev,
 		return ;
 	if (!prev->prev)
 		mode = new->mode;
-	// if (new->meta != DOLLAR && new->mode != -1)
-	// 	reformat_content(prev, new);
+	if (new->meta != DOLLAR && new->mode != -1)
+		preview_content(prev, new);
 	safe_strjoin(&new->content, prev->content, new->content, ms);
 	parser_delone(prev);
 	if (mode != 0)
