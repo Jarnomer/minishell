@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 10:37:44 by jmertane          #+#    #+#              #
-#    Updated: 2024/03/26 19:42:01 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/03 17:26:59 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,8 @@ SRCS		+=	$(addsuffix .h, $(HEADERS))
 OBJS		=	$(patsubst %.c, $(OBJSDIR)/%.o, $(SRCS))
 DEPS		=	$(patsubst %.c, $(DEPSDIR)/%.d, $(SRCS))
 
-F			=	=================================================
+F			=	==========================================================
+A			=	>>>>>>>
 B			=	\033[1m
 T			=	\033[0m
 G			=	\033[32m
@@ -89,9 +90,11 @@ $(OBJSDIR)/%.o: %.c | $(OBJSDIR) $(DEPSDIR)
 		echo "$(V)Unable to create object file: $(R)$(B)$@$(T)\n"; \
 		echo "$(Y)$(B)ERROR\t>>>>>>>>$(T)$(Y)\n"; sed '$$d' $(ERRORTXT); \
 		echo "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; fi
-	@if [ ! $(CNTR) ]; then \
+	@if [ $(CNTR) ]; then \
 		$(eval CNTR=$(shell echo $$(($(CNTR)+1)))) \
-		echo "\n$(V)Building $(G)$(B)$(NAME)$(T)$(V) binary...$(T)"; fi
+		printf "$(T)$(V) $<$(T) $(C)$(G)$(B)./libft/$@$(T)\n"; else \
+		printf "$(G)$(B)$(F)$(T)\n$(C)$(B)MAKE LIBFT!$(T)\n$(G)$(B)$(F)$(T)\n"; \
+		printf "$(T)$(V) $<$(T) $(C)$(A)\t$(G)$(B)./libft/$@$(T)\n"; fi
 
 clean:
 	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRORTXT)

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/30 19:16:36 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/03 18:00:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	parse_modules(t_module **lst, t_shell *ms)
 	char		*input;
 
 	mod = *lst;
+	prev = NULL;
 	while (mod)
 	{
 		input = mod->input;

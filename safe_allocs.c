@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/20 18:06:02 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/02 19:07:09 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*safe_trash(char *str, int alloc_flag, t_shell *ms)
 	t_parser	*new;
 
 	if (!str)
-		return (NULL);
+		error_fatal(ENOMEM, MSG_MEM, ms);
 	new = safe_calloc(sizeof(t_parser), ms);
 	parser_append(&ms->trash, new);
 	if (alloc_flag == ALLOCATED)

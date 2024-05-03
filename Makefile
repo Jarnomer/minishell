@@ -37,7 +37,7 @@ CFILES = 	minishell.c \
 
 OFILES = ${CFILES:.c=.o}
 LIBFT = libft/libft.a
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 READLINE_LIB = ~/.brew/Cellar/readline/8.2.10/lib
 READLINE_HEADER = ~/.brew/Cellar/readline/8.2.10/include
 
