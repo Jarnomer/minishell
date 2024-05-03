@@ -14,21 +14,23 @@
 
 bool	g_sigint = false;
 
-//handle heredoc exit when given control-C
-	//option A. exit heredoc_child
-	//option B. save stdin, close stdin to exit heredoc mode
-	//option C. use a global variable
-
-//handle control-D: exits with exit printed on cmd line
-	//no solution yet
-
-//handle control-D in heredoc: exits heredoc with delimiter printed on cmd line
-	//no solution yet
+/*static void heredoc_handler(int sig)
+{
+	if (sig == SIGINT)
+		g_sigint = true;
+	ft_putchar_fd('\n', 1);
+	rl_on_new_line();
+}*/
 
 static void	sigint_handler(int sig)
 {
 	if (sig == SIGINT)
 		g_sigint = true;
+	if (g_heredoc == true)
+	{
+		close(STDIN);
+		return ;
+	}
 	ft_putchar_fd('\n', 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
@@ -45,5 +47,6 @@ void	init_signals(t_shell *ms)
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDERR_FILENO, TCSANOW, &term);
 	signal(SIGINT, sigint_handler);
+	//signal(SIGINT, heredoc_handler);
 	signal(SIGQUIT, SIG_IGN);
 }

@@ -38,6 +38,7 @@
 
 //GLOBAL VARIABLE
 extern bool	g_sigint;
+extern bool g_heredoc;
 
 typedef enum e_checker
 {

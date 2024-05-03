@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-//syntax handling in EOF: (), : and & are forbidden at the start
+bool	g_heredoc = false;
 
 static void	finish_heredoc(char **line, t_shell *ms)
 {
@@ -45,7 +45,7 @@ static int	read_heredoc(t_parser *hdoc, t_shell *ms)
 		ft_putstr_fd("> ", STDOUT_FILENO);
 		ft_putstr_fd(T, STDOUT_FILENO);
 		line = get_next_line(STDIN_FILENO);
-		if (!line || !ft_strncmp(line, eof, len) || g_sigint == true)
+		if (!line || !ft_strncmp(line, eof, len))
 			break ;
 		ft_putstr_fd(line, ms->pipefd[WR_END]);
 		free(line);
@@ -81,9 +81,16 @@ static void	read_heredocs(t_module *mod, t_shell *ms)
 
 void	open_heredocs(t_module *mod, t_shell *ms)
 {
-	while (mod && g_sigint == false)
+	int	stdin_backup;
+
+	stdin_backup = dup(STDIN);
+	while (mod)
 	{
+		g_heredoc = true;
 		read_heredocs(mod, ms);
 		mod = mod->next;
 	}
+	dup2(stdin_backup, STDIN);
+	close(stdin_backup);
+	g_heredoc = false;
 }

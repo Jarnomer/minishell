@@ -49,8 +49,6 @@ void	wait_children(t_shell *ms)
 	i = 0;
 	if (ms->forks == 1 && is_builtin2(ms->mods))
 		return ;
-	if (g_sigint == true)
-		return ;
 	while (i <= ms->index)
 	{
 		waitpid(ms->pids[i], &wstat, 0);
