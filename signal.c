@@ -14,14 +14,6 @@
 
 bool	g_sigint = false;
 
-/*static void heredoc_handler(int sig)
-{
-	if (sig == SIGINT)
-		g_sigint = true;
-	ft_putchar_fd('\n', 1);
-	rl_on_new_line();
-}*/
-
 static void	sigint_handler(int sig)
 {
 	if (sig == SIGINT)
@@ -47,6 +39,5 @@ void	init_signals(t_shell *ms)
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDERR_FILENO, TCSANOW, &term);
 	signal(SIGINT, sigint_handler);
-	//signal(SIGINT, heredoc_handler);
 	signal(SIGQUIT, SIG_IGN);
 }

@@ -22,8 +22,6 @@ static void	parser_join(t_parser *prev,
 		return ;
 	if (!prev->prev)
 		mode = new->mode;
-	// if (new->meta != DOLLAR && new->mode != -1)
-	// 	reformat_content(prev, new);
 	safe_strjoin(&new->content, prev->content, new->content, ms);
 	parser_delone(prev);
 	if (mode != 0)
