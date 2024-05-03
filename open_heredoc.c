@@ -12,8 +12,6 @@
 
 #include "minishell.h"
 
-bool	g_heredoc = false;
-
 static void	finish_heredoc(char **line, t_shell *ms)
 {
 	get_next_line(-1);
@@ -86,11 +84,10 @@ void	open_heredocs(t_module *mod, t_shell *ms)
 	stdin_backup = dup(STDIN);
 	while (mod)
 	{
-		g_heredoc = true;
+		init_signals(1);
 		read_heredocs(mod, ms);
 		mod = mod->next;
 	}
 	dup2(stdin_backup, STDIN);
 	close(stdin_backup);
-	g_heredoc = false;
 }

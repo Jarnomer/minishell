@@ -47,7 +47,7 @@ void	wait_children(t_shell *ms)
 	int	i;
 
 	i = 0;
-	if (ms->forks == 1 && is_builtin2(ms->mods))
+	if ((ms->forks == 1 && is_builtin2(ms->mods)) || g_signal == 2)
 		return ;
 	while (i <= ms->index)
 	{

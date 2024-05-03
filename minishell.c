@@ -21,7 +21,7 @@ static int	is_eof(t_shell *ms)
 
 static void	is_sigint(t_shell *ms)
 {
-	g_sigint = false;
+	g_signal = 0;
 	ms->excode = 1;
 }
 
@@ -32,9 +32,9 @@ int	main(void)
 	init_shell(&ms);
 	while (true)
 	{
-		init_signals(&ms);
+		init_signals(0);
 		ms.input = readline(ms.prompt);
-		if (g_sigint == true)
+		if (g_signal == SIGINT)
 			is_sigint(&ms);
 		if (!ms.input)
 			return (is_eof(&ms));
@@ -46,6 +46,8 @@ int	main(void)
 			execute_children(&ms);
 			wait_children(&ms);
 		}
+		if (g_signal == SIGINT)
+			is_sigint(&ms);
 		free_runtime(&ms);
 	}
 	free_exit(&ms);
