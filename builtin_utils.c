@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/01 19:17:35 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:26:30 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,25 +22,23 @@ static int	handle_redirect(t_shell *ms, t_module *mod)
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
-	char	**cmd;
-
-	cmd = safe_double(mod->command, ms);
+	mod->cmd = safe_double(mod->command, ms);
 	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod) == 1)
 		ms->excode = 1;
-	else if (ft_strncmp("echo", cmd[0], 4) == 0)
-		builtin_echo(ms, cmd);
-	else if (ft_strncmp("cd", cmd[0], 2) == 0)
-		builtin_cd(ms, cmd);
-	else if (ft_strncmp("env", cmd[0], 3) == 0)
+	else if (ft_strncmp("echo", mod->cmd[0], 4) == 0)
+		builtin_echo(ms, mod->cmd);
+	else if (ft_strncmp("cd", mod->cmd[0], 2) == 0)
+		builtin_cd(ms, mod->cmd);
+	else if (ft_strncmp("env", mod->cmd[0], 3) == 0)
 		builtin_env(ms, 0, 0);
-	else if (ft_strncmp("export", cmd[0], 6) == 0)
-		builtin_export(ms, cmd, 1, 0);
-	else if (ft_strncmp("unset", cmd[0], 5) == 0)
-		builtin_unset(ms, cmd, 1, 0);
-	else if (ft_strncmp("pwd", cmd[0], 3) == 0)
+	else if (ft_strncmp("export", mod->cmd[0], 6) == 0)
+		builtin_export(ms, mod->cmd, 1, 0);
+	else if (ft_strncmp("unset", mod->cmd[0], 5) == 0)
+		builtin_unset(ms, mod->cmd, 1, 0);
+	else if (ft_strncmp("pwd", mod->cmd[0], 3) == 0)
 		builtin_pwd(ms);
-	else if (ft_strncmp("exit", cmd[0], 4) == 0)
-		builtin_exit(ms, cmd);
+	else if (ft_strncmp("exit", mod->cmd[0], 4) == 0)
+		builtin_exit(ms, mod->cmd);
 }
 
 bool	is_builtin2(t_module *mod)

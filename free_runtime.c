@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:28:44 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/01 19:27:34 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:26:47 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ static void	free_modules(t_module **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
+		if ((*lst)->cmd != NULL)
+			free((*lst)->cmd);
 		if ((*lst)->input != NULL)
 			free_single(&(*lst)->input);
 		if ((*lst)->command != NULL)

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:58 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/29 17:56:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:30:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int	error_check(char *str)
 
 void	builtin_unset(t_shell *ms, char **cmd, int i, int j)
 {
+	char	*envp;
+
 	while (cmd[i] != NULL)
 	{
 		j = 0;
@@ -37,7 +39,8 @@ void	builtin_unset(t_shell *ms, char **cmd, int i, int j)
 		{
 			while (cmd[i][j] != '=' && cmd[i][j] != '\0')
 				j++;
-			if (cmd[i][j] != '=' && envp_exists(cmd[i], ms) != NULL)
+			envp = safe_trash(ft_substr(cmd[i], 0, j), ALLOCATED, ms);
+			if (cmd[i][j] != '=' && envp_exists(envp, ms) != NULL)
 				envp_remove(ms, cmd[i]);
 		}
 		else

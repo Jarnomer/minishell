@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 13:55:43 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 16:26:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct s_module
 	t_parser		*command;
 	int				outfd;
 	int				infd;
+	char			**cmd;
 	struct s_module	*next;
 }	t_module;
 
