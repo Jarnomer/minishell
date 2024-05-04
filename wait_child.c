@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 12:26:07 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:15:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	update_exitcode(int wstat)
 {
+	// printf("debug printf from update_exitcode\n");
 	if (WIFSIGNALED(wstat) != SUCCESS)
 		return (ERR_SIG + WTERMSIG(wstat));
 	return (WEXITSTATUS(wstat));

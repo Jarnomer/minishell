@@ -6,11 +6,20 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 12:09:56 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 17:10:59 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static bool	empty_prompt(char *input)
+{
+	while (ft_isspace(*input))
+		input++;
+	if (!*input)
+		return (true);
+	return (false);
+}
 
 static int	command_count(t_module *mod)
 {
@@ -60,7 +69,7 @@ int	init_modules(char *input, t_shell *ms)
 	char		*temp;
 	t_module	*new;
 
-	if (!input || !*input || error_syntax(ms->input, ms))
+	if (!input || !*input || error_syntax(ms->input, ms) || empty_prompt(input))
 		return (FAILURE);
 	while (*input)
 	{
