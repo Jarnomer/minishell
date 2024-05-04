@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
+#    Updated: 2024/05/04 19:39:16 by jmertane         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = minishell
 
 CFILES = 	minishell.c \
@@ -44,7 +56,7 @@ READLINE_HEADER = ~/.brew/Cellar/readline/8.2.10/include
 all: ${LIBFT} ${NAME}
 
 ${LIBFT}:
-	make -C libft
+	@make -C libft
 
 ${NAME}: ${OFILES}
 	cc ${OFILES} ${LIBFT} -L ${READLINE_LIB} -lreadline -I ${READLINE_HEADER} -g -fsanitize=address -o ${NAME}

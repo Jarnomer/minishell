@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 10:37:44 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/03 17:26:59 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/04 19:38:00 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,6 +20,7 @@ RM			:=	rm -rf
 AR			:=	ar -rcs
 CFLAGS		:=	-Wall -Werror -Wextra
 DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPSDIR)/$*.d
+SLEEP		:=	sleep .1
 
 FILES		:= 	ft_isalpha \
 				ft_isdigit \
@@ -57,20 +58,19 @@ FILES		:= 	ft_isalpha \
 				ft_striteri \
 				ft_printf \
 				ft_printf_fmt \
-				get_next_line \
-				get_next_line_utils
+				ft_gnl \
+				ft_gnl_utils
 
 HEADERS		:=	libft \
 				ft_printf \
-				get_next_line
+				ft_gnl
 
 SRCS		:=	$(addsuffix .c, $(FILES))
-SRCS		+=	$(addsuffix .h, $(HEADERS))
+HDRS		:=	$(addsuffix .h, $(HEADERS))
 OBJS		=	$(patsubst %.c, $(OBJSDIR)/%.o, $(SRCS))
 DEPS		=	$(patsubst %.c, $(DEPSDIR)/%.d, $(SRCS))
 
-F			=	==========================================================
-A			=	>>>>>>>
+F			=	=================================================================
 B			=	\033[1m
 T			=	\033[0m
 G			=	\033[32m
@@ -78,11 +78,15 @@ V			=	\033[35m
 C			=	\033[36m
 R			=	\033[31m
 Y			=	\033[33m
-
+#
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	@$(AR) $(NAME) $(OBJS)
+	@echo "$(G)$(B)\t\t\t\t\t\t\t\t|\n$(F)$(T)\n" && $(SLEEP)
+	@echo "$(V)Compiled $(G)$(CNTR)$(V) object file(s).$(T)\n"
+	@echo "$(V)Using compiler $(G)$(CC)$(V) with flags: $(G)$(CFLAGS)$(T)\n"
+	@echo "$(V)Successfully compiled binary: $(G)$(B)$(NAME)$(T)\n\n"
 
 $(OBJSDIR)/%.o: %.c | $(OBJSDIR) $(DEPSDIR)
 	@if ! $(CC) $(CFLAGS) $(DEPFLAGS) $< -o $@ 2> $(ERRORTXT); then \
@@ -92,9 +96,13 @@ $(OBJSDIR)/%.o: %.c | $(OBJSDIR) $(DEPSDIR)
 		echo "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; fi
 	@if [ $(CNTR) ]; then \
 		$(eval CNTR=$(shell echo $$(($(CNTR)+1)))) \
-		printf "$(T)$(V) $<$(T) $(C)$(G)$(B)./libft/$@$(T)\n"; else \
-		printf "$(G)$(B)$(F)$(T)\n$(C)$(B)MAKE LIBFT!$(T)\n$(G)$(B)$(F)$(T)\n"; \
-		printf "$(T)$(V) $<$(T) $(C)$(A)\t$(G)$(B)./libft/$@$(T)\n"; fi
+		printf "✅$(T)$(V) $<$(T) $(C)    \t🔀\t$(G)$(B)./libft/$@  \t|$(T)\n"; else \
+		printf "$(C)$(B)\n"; \
+		printf "╦  ╦╔╗ ╔═╗╔╦╗\n"; \
+		printf "║  ║╠╩╗╠╣  ║\n"; \
+		printf "╩═╝╩╚═╝╚   ╩  by jmertane\n"; \
+		printf "$(G)$(B)$(F)\n\t\t\t\t\t\t\t\t|$(T)\n"; \
+		printf "✅$(T)$(V) $<$(T) $(C)    \t🔀\t$(G)$(B)./libft/$@  \t|$(T)\n"; fi
 
 clean:
 	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRORTXT)
