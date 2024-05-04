@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:09 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/08 13:37:10 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/05/04 15:59:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ static int	error_check(char *str)
 
 void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 {
+	char	*envp;
+
 	if (cmd[i] == NULL)
 		envp_print(ms, 0, 0);
 	while (cmd[i] != NULL)
@@ -39,6 +41,8 @@ void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 		{
 			while (cmd[i][j] != '=' && cmd[i][j] != '\0')
 				j++;
+			envp = safe_trash(ft_substr(cmd[i], 0, j), ALLOCATED, ms);
+			printf("envp is: %s", envp);
 			if (cmd[i][j] == '=' && envp_exists(cmd[i], ms) != NULL)
 				envp_update(ms, cmd[i]);
 			else if (envp_exists(cmd[i], ms) == NULL)
