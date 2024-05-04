@@ -30,7 +30,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("echo", cmd[0], 4) == 0)
 		builtin_echo(ms, cmd);
 	else if (ft_strncmp("cd", cmd[0], 2) == 0)
-		builtin_cd(ms, cmd);
+		builtin_cd(ms, cmd, NULL, NULL);
 	else if (ft_strncmp("env", cmd[0], 3) == 0)
 		builtin_env(ms, 0, 0);
 	else if (ft_strncmp("export", cmd[0], 6) == 0)

@@ -90,4 +90,5 @@ void	open_heredocs(t_module *mod, t_shell *ms)
 	}
 	dup2(stdin_backup, STDIN);
 	close(stdin_backup);
+	init_signals(2);
 }

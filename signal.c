@@ -32,6 +32,16 @@ static void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
+static void sigquit_handler(int sig)
+{
+	if (sig == SIGQUIT)
+	{
+		g_signal = 3;
+		ft_putstr_fd("Quit: 3", 1);
+	}
+	ft_putstr_fd("\n", 1);
+}
+
 void	init_signals(int mode)
 {
 	struct termios	term;
@@ -48,5 +58,10 @@ void	init_signals(int mode)
 	{
 		signal(SIGINT, heredoc_handler);
 		signal(SIGQUIT, SIG_IGN);
+	}
+	if (mode == 2)
+	{
+		signal(SIGINT, sigquit_handler);
+		signal(SIGQUIT, sigquit_handler);
 	}
 }
