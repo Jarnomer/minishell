@@ -44,6 +44,9 @@ typedef enum e_checker
 	SUCCESS = 0,
 	ALLOCATE = 10,
 	ALLOCATED,
+	SIG_PARENT = 0,
+	SIG_HEREDOC = 1,
+	SIG_CHILD = 2,
 }	t_checker;
 
 typedef enum e_pipe
@@ -174,7 +177,7 @@ void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
 //			Builtin functions
 void		builtin_echo(t_shell *ms, char **cmd);
-void		builtin_cd(t_shell *ms, char **cmd);
+void		builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd);
 void		builtin_env(t_shell *ms, int i, int j);
 void		builtin_export(t_shell *ms, char **cmd, int i, int j);
 void		builtin_unset(t_shell *ms, char **cmd, int i, int j);

@@ -39,7 +39,12 @@ void	builtin_exit(t_shell *ms, char **cmd)
 	if (cmd[1] && symbol_check(cmd[1], 0) == 1)
 		error_exit(255, cmd[0], "numeric argument required", ms);
 	if (cmd[2])
-		error_exit(1, cmd[0], "too many arguments", ms);
+	{
+		ft_putstr_fd("exit\n", 1);
+		error_logger("exit: ", NULL, "too many arguments", ms);
+		ms->excode = 1;
+		return ;
+	}
 	if (cmd[1] && ft_atoi(cmd[1]) > -1)
 		exit_code = (ft_atoi(cmd[1]) % 256);
 	else if (cmd[1] && ft_atoi(cmd[1]) < 0)

@@ -41,7 +41,7 @@ int	main(void)
 	init_shell(&ms);
 	while (true)
 	{
-		init_signals(0);
+		init_signals(SIG_PARENT);
 		ms.input = readline(ms.prompt);
 		hook_sigint(&ms);
 		if (!ms.input)

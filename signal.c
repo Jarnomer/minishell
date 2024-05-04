@@ -32,6 +32,16 @@ static void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
+static void sigquit_handler(int sig)
+{
+	if (sig == SIGQUIT)
+	{
+		g_signal = 3;
+		ft_putstr_fd("Quit: 3", 1);
+	}
+	ft_putstr_fd("\n", 1);
+}
+
 void	init_signals(int mode)
 {
 	struct termios	term;
@@ -39,14 +49,19 @@ void	init_signals(int mode)
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDERR_FILENO, TCSANOW, &term);
-	if (mode == 0)
+	if (mode == SIG_PARENT)
 	{
 		signal(SIGINT, sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
 	}
-	if (mode == 1)
+	if (mode == SIG_HEREDOC)
 	{
 		signal(SIGINT, heredoc_handler);
 		signal(SIGQUIT, SIG_IGN);
+	}
+	if (mode == SIG_CHILD)
+	{
+		signal(SIGINT, sigquit_handler);
+		signal(SIGQUIT, sigquit_handler);
 	}
 }

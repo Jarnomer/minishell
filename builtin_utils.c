@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 16:26:30 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 19:43:19 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (ft_strncmp("echo", mod->cmd[0], 4) == 0)
 		builtin_echo(ms, mod->cmd);
 	else if (ft_strncmp("cd", mod->cmd[0], 2) == 0)
-		builtin_cd(ms, mod->cmd);
+		builtin_cd(ms, mod->cmd, NULL, NULL);
 	else if (ft_strncmp("env", mod->cmd[0], 3) == 0)
 		builtin_env(ms, 0, 0);
 	else if (ft_strncmp("export", mod->cmd[0], 6) == 0)

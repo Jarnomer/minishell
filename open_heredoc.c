@@ -84,10 +84,11 @@ void	open_heredocs(t_module *mod, t_shell *ms)
 	stdin_backup = dup(STDIN);
 	while (mod)
 	{
-		init_signals(1);
+		init_signals(SIG_HEREDOC);
 		read_heredocs(mod, ms);
 		mod = mod->next;
 	}
 	dup2(stdin_backup, STDIN);
 	close(stdin_backup);
+	init_signals(SIG_CHILD);
 }

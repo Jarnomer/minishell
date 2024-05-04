@@ -12,37 +12,34 @@
 
 #include "minishell.h"
 
-static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd)
+static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 {
-	ms->excode = 0;
+	safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);
 	if (envp_exists("PWD", ms) != NULL)
 		envp_update(ms, pwd);
 	if (envp_exists("OLDPWD", ms) != NULL)
 		envp_update(ms, oldpwd);
+	ms->excode = 0;
 }
 
-void	builtin_cd(t_shell *ms, char **cmd)
+void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 {
-	char	*pwd;
-	char	*oldpwd;
 	char	*home;
 	char	buf[1000];
 
-	pwd = NULL;
-	oldpwd = NULL;
 	home = envp_exists("HOME", ms);
+	if (home == NULL)
+	{
+		error_logger("cd: ", NULL, "HOME not set", ms);
+		ms->excode = 1;
+		return ;
+	}
 	oldpwd = safe_trash(ft_strjoin("OLDPWD=", envp_exists("PWD", ms)),
 			ALLOCATED, ms);
 	if (!cmd[1] && chdir(home) == 0)
-	{
-		safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);
-		update_envp_values(ms, pwd, oldpwd);
-	}
+		update_envp_values(ms, pwd, oldpwd, buf);
 	else if (chdir(cmd[1]) == 0)
-	{
-		safe_strjoin(&pwd, "PWD=", getcwd(buf, 1000), ms);
-		update_envp_values(ms, pwd, oldpwd);
-	}
+		update_envp_values(ms, pwd, oldpwd, buf);
 	else
 	{
 		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
