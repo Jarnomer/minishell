@@ -42,10 +42,9 @@ void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 			while (cmd[i][j] != '=' && cmd[i][j] != '\0')
 				j++;
 			envp = safe_trash(ft_substr(cmd[i], 0, j), ALLOCATED, ms);
-			printf("envp is: %s", envp);
-			if (cmd[i][j] == '=' && envp_exists(cmd[i], ms) != NULL)
+			if (cmd[i][j] == '=' && envp_exists(envp, ms) != NULL)
 				envp_update(ms, cmd[i]);
-			else if (envp_exists(cmd[i], ms) == NULL)
+			else if (envp_exists(envp, ms) == NULL)
 				envp_add(ms, cmd[i]);
 		}
 		else
