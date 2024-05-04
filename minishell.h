@@ -44,6 +44,9 @@ typedef enum e_checker
 	SUCCESS = 0,
 	ALLOCATE = 10,
 	ALLOCATED,
+	SIG_PARENT = 0,
+	SIG_HEREDOC = 1,
+	SIG_CHILD = 2,
 }	t_checker;
 
 typedef enum e_pipe
