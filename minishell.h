@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/03 19:26:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 11:35:25 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,7 @@
 
 # define PERMS	0664
 
-//GLOBAL VARIABLE
-extern bool	g_sigint;
-extern bool	g_heredoc;
+int	g_signal;
 
 typedef enum e_checker
 {
@@ -118,8 +116,7 @@ void		init_shell(t_shell *ms);
 int			init_modules(char *input, t_shell *ms);
 
 //			Signals
-void		init_signals(t_shell *ms);
-void		sigint_in_cmd(void);
+void		init_signals(int mode);
 
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);

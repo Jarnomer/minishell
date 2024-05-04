@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/03 18:03:41 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 11:44:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ static inline void	exit_shell(t_shell *ms)
 	exit(ms->excode);
 }
 
-static inline void	reset_sigint(t_shell *ms)
+static void	hook_sigint(t_shell *ms)
 {
-	g_sigint = false;
+	if (g_signal != SIGINT)
+		return ;
+	g_signal = 0;
 	ms->excode = 1;
 }
 
@@ -39,16 +41,16 @@ int	main(void)
 	init_shell(&ms);
 	while (true)
 	{
-		init_signals(&ms);
+		init_signals(0);
 		ms.input = readline(ms.prompt);
-		if (g_sigint == true)
-			reset_sigint(&ms);
-		else if (!ms.input)
+		hook_sigint(&ms);
+		if (!ms.input)
 			exit_shell(&ms);
 		else if (*ms.input)
 			add_history(ms.input);
 		if (!init_modules(ms.input, &ms))
 			execute_shell(&ms);
+		hook_sigint(&ms);
 		free_runtime(&ms);
 	}
 	free_exit(&ms);
