@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 19:17:42 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 12:13:52 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,10 @@ t_parser	*parser_last(t_parser *lst)
 
 int	parser_length(t_parser *lst)
 {
-	int	len;
-
 	if (!lst)
 		return (0);
-	len = 0;
-	while (lst)
-	{
-		lst = lst->next;
-		len++;
-	}
-	return (len);
+	else
+		return (1 + parser_length(lst->next));
 }
 
 void	parser_delone(t_parser *lst)

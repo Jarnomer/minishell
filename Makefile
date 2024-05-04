@@ -31,8 +31,8 @@ CFILES = 	minishell.c \
 			builtin_pwd.c \
 			builtin_exit.c \
 			builtin_utils.c \
-			utils_envp.c \
-			print_envp.c \
+			envp_utils.c \
+			envp_print.c \
 			signal.c
 
 OFILES = ${CFILES:.c=.o}

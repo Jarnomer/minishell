@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 11:35:25 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 13:55:43 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,18 +171,6 @@ void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
 void		safe_strtrim(char **src, char *set, t_shell *ms);
 void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 
-//			Envp functions
-void		envp_print(t_shell *ms, int i, int flag);
-void		envp_update(t_shell *ms, char *content);
-void		envp_add(t_shell *ms, char *content);
-void		envp_remove(t_shell *ms, char *content);
-char		*envp_exists(char *name, t_shell *ms);
-
-//			Builtin utils
-bool		is_builtin(t_module *mod);
-bool		is_builtin2(t_module *mod);
-void		execute_builtin(t_shell *ms, t_module *mod);
-
 //			Builtin functions
 void		builtin_echo(t_shell *ms, char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd);
@@ -191,5 +179,17 @@ void		builtin_export(t_shell *ms, char **cmd, int i, int j);
 void		builtin_unset(t_shell *ms, char **cmd, int i, int j);
 void		builtin_pwd(t_shell *ms);
 void		builtin_exit(t_shell *ms, char **cmd);
+
+//			Builtin utils
+bool		is_builtin(t_module *mod);
+bool		is_builtin2(t_module *mod);
+void		execute_builtin(t_shell *ms, t_module *mod);
+
+//			Envp utils
+void		envp_print(t_shell *ms, int i, int flag);
+void		envp_update(t_shell *ms, char *content);
+void		envp_add(t_shell *ms, char *content);
+void		envp_remove(t_shell *ms, char *content);
+char		*envp_exists(char *name, t_shell *ms);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/01 19:33:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 12:09:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,10 @@
 
 static int	command_count(t_module *mod)
 {
-	int	len;
-
-	len = 0;
-	while (mod)
-	{
-		mod = mod->next;
-		len++;
-	}
-	return (len);
+	if (!mod)
+		return (0);
+	else
+		return (1 + command_count(mod->next));
 }
 
 static void	append_module(t_module **lst, t_module *new)

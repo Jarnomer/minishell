@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_envp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:36:26 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/27 13:36:28 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/05/04 13:59:13 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static char	*find_top_item(char **envp, char **sorted_list)
 	return (envp[i]);
 }
 
-static char	**sort_envp_list(char **envp, int envp_size)
+static char	**sort_envp_list(char **envp, int envp_size, t_shell *ms)
 {
 	int		i;
 	int		j;
@@ -70,7 +70,7 @@ static char	**sort_envp_list(char **envp, int envp_size)
 	char	**sorted_list;
 
 	i = 0;
-	sorted_list = ft_calloc(envp_size + 1, sizeof(char *));
+	sorted_list = safe_calloc((envp_size + 1) * sizeof(char *), ms);
 	while (i < envp_size)
 	{
 		j = 1;
@@ -87,7 +87,6 @@ static char	**sort_envp_list(char **envp, int envp_size)
 		sorted_list[i] = top;
 		i++;
 	}
-	sorted_list[i] = NULL;
 	return (sorted_list);
 }
 
@@ -95,7 +94,7 @@ void	envp_print(t_shell *ms, int i, int j)
 {
 	char	**sorted_list;
 
-	sorted_list = sort_envp_list(ms->envp, ms->envp_size);
+	sorted_list = sort_envp_list(ms->envp, ms->envp_size, ms);
 	while (i < ms->envp_size)
 	{
 		if (sorted_list[i][j] == '_' && sorted_list[i][j + 1] == '=')

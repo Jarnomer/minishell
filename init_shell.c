@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/09 15:11:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/04 12:00:16 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ static void	init_envp(t_shell *ms)
 void	init_shell(t_shell *ms)
 {
 	ft_bzero(ms, sizeof(*ms));
-	init_envp(ms);
 	create_prompt(ms);
+	init_envp(ms);
 	ms->pipefd[RD_END] = -1;
 	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;
