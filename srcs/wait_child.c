@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 14:03:52 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:55:14 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static int	update_exitcode(int wstat)
 {

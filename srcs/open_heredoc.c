@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/07 12:57:07 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/13 13:57:01 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	finish_heredoc(char **line, t_shell *ms)
 {

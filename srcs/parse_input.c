@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 11:37:47 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:08 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	parser_join(t_parser *prev,
 	t_parser *new, t_module *mod, t_shell *ms)

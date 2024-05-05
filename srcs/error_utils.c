@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:36:13 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 void	error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms)
 {

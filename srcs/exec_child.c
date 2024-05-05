@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 12:25:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:28 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	child_process(t_module *mod, t_shell *ms)
 {

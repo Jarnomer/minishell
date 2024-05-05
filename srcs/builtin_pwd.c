@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkinaret <vkinaret@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:27 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/08 13:37:30 by vkinaret         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:52:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 void	builtin_pwd(t_shell *ms)
 {

@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 19:43:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static int	handle_redirect(t_shell *ms, t_module *mod)
 {

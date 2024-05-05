@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:00 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/19 18:59:25 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 void	safe_strdup(char **dst, char *src, t_shell *ms)
 {

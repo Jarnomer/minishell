@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 12:00:16 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:44 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	create_prompt(t_shell *ms)
 {

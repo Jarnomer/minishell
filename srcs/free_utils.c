@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:05 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 11:45:16 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:38 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 void	free_single(char **str)
 {

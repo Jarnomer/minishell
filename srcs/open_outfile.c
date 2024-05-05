@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 14:10:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 11:38:38 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static int	read_outfile(char *file, int mode)
 {

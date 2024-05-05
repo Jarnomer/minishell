@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:03:40 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/27 18:35:34 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:03 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static char	*no_expand(char *buffer, char *start)
 {

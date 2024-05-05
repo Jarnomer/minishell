@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:25:54 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/02 19:07:09 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:20 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 char	**safe_double(t_parser *lst, t_shell *ms)
 {

@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:18 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/27 15:47:35 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:52:47 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static int	check_flags(char *str)
 {

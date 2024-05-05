@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:35:52 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 17:10:59 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:41 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static bool	empty_prompt(char *input)
 {

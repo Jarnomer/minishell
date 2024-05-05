@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/04 12:13:52 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:16 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 t_parser	*parser_last(t_parser *lst)
 {

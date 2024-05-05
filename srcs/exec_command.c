@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/22 19:11:12 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:31 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	error_occured(char *exec, char ***arr, t_parser *lst, t_shell *ms)
 {

@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 17:39:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/01 19:30:43 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:17 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	reset_shell_fds(t_shell *ms)
 {

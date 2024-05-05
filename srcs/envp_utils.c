@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_envp.c                                       :+:      :+:    :+:   */
+/*   envp_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 13:09:20 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 15:42:42 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:21 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static	void	error_occured(char ***arr, t_shell *ms)
 {

@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:23:27 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/01 18:23:30 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:54:05 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static char	*prep_next_redirect(char *input)
 {

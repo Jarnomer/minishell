@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 21:01:06 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 12:26:01 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:55:50 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 int	g_signal = 0;
 
@@ -32,7 +32,7 @@ static void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
-static void sigquit_handler(int sig)
+static void	sigquit_handler(int sig)
 {
 	if (sig == SIGQUIT)
 	{

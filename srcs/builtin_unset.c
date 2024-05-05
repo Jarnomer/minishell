@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:58 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 16:30:55 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:52:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static int	error_check(char *str)
 {

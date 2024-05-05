@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:48 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/04/29 17:57:04 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:52:41 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 {

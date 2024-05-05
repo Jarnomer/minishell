@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_envp.c                                       :+:      :+:    :+:   */
+/*   envp_print.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 13:36:26 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/04 13:59:13 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:19 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	print_single_variable(char *var, int j)
 {

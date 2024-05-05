@@ -6,11 +6,11 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:02 by jmertane          #+#    #+#             */
-/*   Updated: 2024/04/18 15:57:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/05 15:53:33 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <minishell.h>
 
 static void	redirect_outfd(t_module *mod, t_shell *ms)
 {
