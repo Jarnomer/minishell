@@ -6,29 +6,34 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/05 15:50:29 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/05 20:48:52 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 		:=	minishell
-OBJSDIR		:=	objs
+ERRTXT		:=	error.txt
+OBJSDIR		:=	build
 INCSDIR		:=	incs
 SRCSDIR		:=	srcs
 DEPSDIR		:=	.deps
-ERRORTXT	:=	error.txt
 LIBFTDIR	:=	libft
 LIBFTBIN	:=	$(LIBFTDIR)/libft.a
 
-CC			:=	cc
 RM			:=	rm -rf
 AR			:=	ar -rcs
+CC			:=	cc
 CFLAGS		:=	-Wall -Werror -Wextra
-RLFLAGS		:=	-lreadline
-DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPSDIR)/$*.d
+DEBUGFLAGS	=	-g #-fsanitize=address
+DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPENDDIR)/$$*.d
 SCREENCLR	:=	printf "\033c"
 SLEEP		:=	sleep .1
 
-MODULES		:=	buildins \
+RL_FLG		:=	-lreadline
+RL_LIB		:=	-L ~/.brew/Cellar/readline/8.2.10/lib
+RL_INC		:=	-I ~/.brew/Cellar/readline/8.2.10/include
+
+MODULES		:=	main \
+				buildins \
 				parser \
 				exec \
 				free \
@@ -37,7 +42,7 @@ MODULES		:=	buildins \
 				error \
 				utils
 
-FILES 		= 	minishell.c \
+SOURCES 	= 	minishell.c \
 				init_shell.c \
 				init_modules.c \
 				parse_mods.c \
@@ -72,16 +77,16 @@ FILES 		= 	minishell.c \
 				envp_print.c \
 				signals.c
 
-SRCS		=	$(addprefix $(SRCSDIR)/, $(FILES))
-OBJS		=	$(patsubst $(SRCSDIR)/%.c, $(OBJSDIR)/%.o, $(SRCS))
-DEPS		=	$(patsubst $(SRCSDIR)/%.c, $(DEPSDIR)/%.d, $(SRCS))
+SOURCEDIR	:=	$(addprefix $(SRCSDIR)/, $(MODULES))
+BUILDDIR	:=	$(addprefix $(OBJSDIR)/, $(MODULES))
+DEPENDDIR	:=	$(addprefix $(DEPSDIR)/, $(MODULES))
+SRCS		:=	$(foreach file, $(SOURCES), $(shell find $(SOURCEDIR) -name $(file)))
+OBJS		:=	$(patsubst $(SRCSDIR)/%.c, $(OBJSDIR)/%.o, $(SRCS))
+DEPS		:=	$(patsubst $(SRCSDIR)/%.c, $(DEPSDIR)/%.d, $(SRCS))
+INCS	 	+=	$(foreach header, $(INCSDIR), -I $(header))
+INCS	 	+=	$(foreach header, $(LIBFTDIR)/$(INCSDIR), -I $(header))
 
-INCS	 	=	$(foreach hdir, $(INCSDIR), -I $(hdir))
-INCS	 	+=	$(foreach hdir, $(LIBFTDIR)/$(INCSDIR), -I $(hdir))
-RLLIB		:=	-L ~/.brew/Cellar/readline/8.2.10/lib
-RLINC		:=	-I ~/.brew/Cellar/readline/8.2.10/include
-
-F			=	============================================================
+F			=	=====================================
 B			=	\033[1m
 T			=	\033[0m
 G			=	\033[32m
@@ -90,65 +95,65 @@ C			=	\033[36m
 R			=	\033[31m
 Y			=	\033[33m
 
+vpath %.c $(SOURCEDIR)
+
+define cc_cmd
+$1/%.o: %.c | $(BUILDDIR) $(DEPENDDIR)
+	@if ! $(CC) $(CFLAGS) $(INCS) $(RL_INC) -c $$< -o $$@ 2> $(ERRTXT); then \
+		printf "$(R)$(B)\nERROR!\n$(F)$(T)\n"; \
+		printf "$(V)Unable to create object file:$(T)\n\n"; \
+		printf "$(R)$(B)$$@$(T)\n"; \
+		printf "$(Y)\n"; sed '$$d' $(ERRTXT); \
+		printf "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; \
+	else \
+		printf "$(C)$(B)☑$(T)$(V) $$<$ \n    $(C)⮑\t$(G)$(B)$$@$(T) \t\n"; \
+	fi
+endef
+
 all: $(LIBFTBIN) $(NAME)
-
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(INCS) $(RLINC) $(RLLIB) $(RLFLAGS) $^ $(LIBFTBIN) -o $@
-	@printf "$(V)\nSuccessfully compiled binary $(G)$(B)$(NAME)$(T)"
-	@printf "$(V) and $(G)$(B)$(CNTR)$(V) object file(s).$(T)\n"
-	@printf "$(G)$(B)\n$(F)$(T)\n" && make finish
-
-$(OBJSDIR)/%.o: $(SRCSDIR)/%.c | $(OBJSDIR) $(DEPSDIR)
-	@if ! $(CC) $(CFLAGS) $(INCS) $(RLINC) $(DEPFLAGS) $< -o $@ 2> $(ERRORTXT); then \
-		echo "$(R)$(B)\nMAKE TERMINATED!\n$(F)$(T)\n"; \
-		echo "$(V)Unable to create object file: $(R)$(B)$@$(T)\n"; \
-		echo "$(Y)$(B)ERROR\t>>>>>>>>$(T)$(Y)\n"; sed '$$d' $(ERRORTXT); \
-		echo "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; fi
-	@if [ $(CNTR) ]; then \
-		$(eval CNTR=$(shell echo $$(($(CNTR)+1)))) \
-		printf "✅$(T)$(V) $<$(T) $(C)      \t🔀\t$(G)$(B)$@$(T)\n"; else \
-		make title; printf "✅$(T)$(V) $<$(T) $(C)      \t🔀\t$(G)$(B)$@$(T)\n"; fi
-
-title:
-	@printf "$(C)                                   $(R)$(B)                  ╱|、$(T)\n"
-	@printf "$(C)╔╦╗╦╔╗╔╦╔═╗╦ ╦╔═╗╦  ╦              $(R)$(B)                 (\` - 7$(T)\n"
-	@printf "$(C)║║║║║║║║╚═╗╠═╣║╣ ║  ║   by vkinaret$(R)$(B)                 |、⁻〵$(T)\n"
-	@printf "$(C)╩ ╩╩╝╚╝╩╚═╝╩ ╩╚═╝╩═╝╩═╝  & jmertane$(R)$(B)                 じしˍ,)ノ$(T)\n"
-	@printf "$(G)$(B)$(F)\n$(T)\n"
-	@printf "$(V)Using compiler $(G)$(B)$(CC)$(T)$(V) with flags: $(G)$(B)$(CFLAGS)$(T)\n\n"
-
-finish:
-	@printf "$(C)╔═╗╦╔╗╔╦╔═╗╦ ╦╔═╗╔╦╗$(T)\n"
-	@printf "$(C)╠╣ ║║║║║╚═╗╠═╣║╣  ║║$(T)\n"
-	@printf "$(C)╚  ╩╝╚╝╩╚═╝╩ ╩╚═╝═╩╝$(T)\n\n"
 
 $(LIBFTBIN):
 	@make --quiet -C $(LIBFTDIR) all
+	@make title
+
+$(NAME): $(OBJS)
+	@$(CC) $(CFLAGS) $(INCS) $(RL_INC) $(RL_FLG) $(RL_LIB) $^ $(LIBFTBIN) -o $@
+	@make finish
+
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: all
 
 clean:
-	@$(SCREENCLR) && echo "$(C)$(B)\nCLEAN START!\n$(G)$(F)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
-	@echo "$(V)Removing object and dependency file(s) for $(G)$(B)$(NAME)$(T)\n"
 	@make --quiet -C $(LIBFTDIR) clean
-	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRORTXT)
-	@echo "$(G)$(B)$(F)$(C)\nFINISHED!$(T)" && $(SLEEP)
+	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRTXT)
 
 fclean: clean
-	@echo "$(C)$(B)\nFCLEAN START!\n$(G)$(F)$(T)"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(LIBFTDIR)$(T)\n"
-	@echo "$(V)Removing all binary file(s) for $(G)$(B)$(NAME)$(T)\n"
 	@make --quiet -C $(LIBFTDIR) fclean
 	@$(RM) $(NAME)
-	@echo "$(G)$(B)$(F)$(C)\nFINISHED!\n$(T)" && $(SLEEP)
 
 re:
 	@make fclean
 	@make all
 
-$(OBJSDIR) $(DEPSDIR):
+title:
+	@$(SCREENCLR) && printf "\n"
+	@printf "$(C)╔╦╗╦╔╗╔╦╔═╗╦ ╦╔═╗╦  ╦$(T)\n"
+	@printf "$(C)║║║║║║║║╚═╗╠═╣║╣ ║  ║   by vkinaret$(T)\n"
+	@printf "$(C)╩ ╩╩╝╚╝╩╚═╝╩ ╩╚═╝╩═╝╩═╝  & jmertane$(T)\n"
+	@printf "$(G)$(B)$(F)\n$(T)\n"
+
+finish:
+	@printf "\n$(G)$(B)$(F)$(T)\n"
+	@printf "$(C)╔═╗╦╔╗╔╦╔═╗╦ ╦╔═╗╔╦╗        $(V)$(B)$(NAME)$(T)\n"
+	@printf "$(C)╠╣ ║║║║║╚═╗╠═╣║╣  ║║$(T)\n"
+	@printf "$(C)╚  ╩╝╚╝╩╚═╝╩ ╩╚═╝═╩╝$(T)\n\n"
+
+$(BUILDDIR) $(DEPENDDIR):
 	@mkdir -p $@
 
 $(DEPS):
 	include $(wildcard $(DEPS))
 
-.PHONY: all debug clean fclean re nm title finish
+$(foreach build, $(BUILDDIR), $(eval $(call cc_cmd, $(build))))
+
+.PHONY: all debug clean fclean re
