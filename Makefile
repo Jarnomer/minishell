@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/06 15:22:34 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/06 19:57:01 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,8 @@ RM			:=	rm -rf
 AR			:=	ar -rcs
 CC			:=	cc
 CFLAGS		:=	-Wall -Werror -Wextra
-DEBUGFLAGS	=	-g #-fsanitize=address
-DEPFLAGS	=	-c -MT $$@ -MMD -MP -MF $(DEPENDDIR)/$$*.d
+DEBUGFLAGS	=	-g -fsanitize=address
+DEPFLAGS	=	-c -MT $$@ -MMD -MP -MF $(DEPSDIR)/$$*.d
 SCREENCLR	:=	printf "\033c"
 SLEEP		:=	sleep .1
 
@@ -83,7 +83,7 @@ DEPENDDIR	:=	$(addprefix $(DEPSDIR)/, $(MODULES))
 SRCS		:=	$(foreach file, $(SOURCES), $(shell find $(SOURCEDIR) -name $(file)))
 OBJS		:=	$(patsubst $(SRCSDIR)/%.c, $(OBJSDIR)/%.o, $(SRCS))
 DEPS		:=	$(patsubst $(SRCSDIR)/%.c, $(DEPSDIR)/%.d, $(SRCS))
-INCS	 	+=	$(foreach header, $(INCSDIR), -I $(header))
+INCS	 	:=	$(foreach header, $(INCSDIR), -I $(header))
 INCS	 	+=	$(foreach header, $(LIBFTDIR)/$(INCSDIR), -I $(header))
 
 F			=	=====================================
@@ -99,7 +99,7 @@ vpath %.c $(SOURCEDIR)
 
 define cc_cmd
 $1/%.o: %.c | $(BUILDDIR) $(DEPENDDIR)
-	@if ! $(CC) $(CFLAGS) $(INCS) $(RL_INC) -c $$< -o $$@ 2> $(ERRTXT); then \
+	@if ! $(CC) $(CFLAGS) $(INCS) $(RL_INC) $(DEPFLAGS) $$< -o $$@ 2> $(ERRTXT); then \
 		printf "$(R)$(B)\nERROR!\n$(F)$(T)\n"; \
 		printf "$(V)Unable to create object file:$(T)\n\n"; \
 		printf "$(R)$(B)$$@$(T)\n"; \
