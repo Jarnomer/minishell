@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:11:26 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:55:14 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:57:41 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,8 @@ void	wait_children(t_shell *ms)
 	int	i;
 
 	i = 0;
-	if ((ms->forks == 1 && is_builtin2(ms->mods)) || g_signal == 2)
+	if ((ms->forks == 1 && is_builtin2(ms->mods))
+		|| g_signal == SIGINT)
 		return ;
 	while (i <= ms->index)
 	{

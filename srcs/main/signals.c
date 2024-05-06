@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 21:01:06 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/05 15:55:50 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:58:40 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@ int	g_signal = 0;
 static void	heredoc_handler(int sig)
 {
 	if (sig == SIGINT)
-		g_signal = 2;
-	ft_putchar_fd('\n', 1);
+		g_signal = SIGINT;
+	ft_putchar_fd('\n', STDOUT);
 	close(STDIN);
 }
 
 static void	sigint_handler(int sig)
 {
 	if (sig == SIGINT)
-		g_signal = 2;
-	ft_putchar_fd('\n', 1);
+		g_signal = SIGINT;
+	ft_putchar_fd('\n', STDOUT);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -36,10 +36,10 @@ static void	sigquit_handler(int sig)
 {
 	if (sig == SIGQUIT)
 	{
-		g_signal = 3;
-		ft_putstr_fd("Quit: 3", 1);
+		g_signal = SIGQUIT;
+		ft_putstr_fd("Quit: 3", STDOUT);
 	}
-	ft_putstr_fd("\n", 1);
+	ft_putstr_fd("\n", STDOUT);
 }
 
 void	init_signals(int mode)

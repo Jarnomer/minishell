@@ -6,39 +6,48 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 12:12:13 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/05 15:53:00 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:57:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
+static void	exit_buildin(t_module *mod, t_shell *ms)
+{
+	if (ms->forks == 1 && is_builtin2(mod))
+		return ;
+	free_exit(ms);
+	exit(ms->excode);
+}
+
 static int	handle_redirect(t_shell *ms, t_module *mod)
 {
 	if ((mod->infiles || mod->outfiles)
 		&& parse_files(mod, ms) == FAILURE)
-		return (1);
-	return (0);
+		return (FAILURE);
+	return (SUCCESS);
 }
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	mod->cmd = safe_double(mod->command, ms);
-	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod) == 1)
+	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod))
 		ms->excode = 1;
-	else if (ft_strncmp("echo", mod->cmd[0], 4) == 0)
+	else if (!ft_strncmp("echo", mod->cmd[0], 5))
 		builtin_echo(ms, mod->cmd);
-	else if (ft_strncmp("cd", mod->cmd[0], 2) == 0)
+	else if (!ft_strncmp("cd", mod->cmd[0], 3))
 		builtin_cd(ms, mod->cmd, NULL, NULL);
-	else if (ft_strncmp("env", mod->cmd[0], 3) == 0)
+	else if (!ft_strncmp("env", mod->cmd[0], 4))
 		builtin_env(ms, 0, 0);
-	else if (ft_strncmp("export", mod->cmd[0], 6) == 0)
+	else if (!ft_strncmp("export", mod->cmd[0], 7))
 		builtin_export(ms, mod->cmd, 1, 0);
-	else if (ft_strncmp("unset", mod->cmd[0], 5) == 0)
+	else if (!ft_strncmp("unset", mod->cmd[0], 6))
 		builtin_unset(ms, mod->cmd, 1, 0);
-	else if (ft_strncmp("pwd", mod->cmd[0], 3) == 0)
+	else if (!ft_strncmp("pwd", mod->cmd[0], 4))
 		builtin_pwd(ms);
-	else if (ft_strncmp("exit", mod->cmd[0], 4) == 0)
+	else if (!ft_strncmp("exit", mod->cmd[0], 5))
 		builtin_exit(ms, mod->cmd);
+	exit_buildin(mod, ms);
 }
 
 bool	is_builtin2(t_module *mod)

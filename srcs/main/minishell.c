@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 19:58:33 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/06 17:57:54 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void	hook_sigint(t_shell *ms)
 {
 	if (g_signal != SIGINT)
 		return ;
-	g_signal = 0;
+	g_signal = NOERROR;
 	ms->excode = 1;
 }
 

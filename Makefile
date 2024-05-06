@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/05 20:48:52 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/06 15:22:34 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ AR			:=	ar -rcs
 CC			:=	cc
 CFLAGS		:=	-Wall -Werror -Wextra
 DEBUGFLAGS	=	-g #-fsanitize=address
-DEPFLAGS	=	-c -MT $@ -MMD -MP -MF $(DEPENDDIR)/$$*.d
+DEPFLAGS	=	-c -MT $$@ -MMD -MP -MF $(DEPENDDIR)/$$*.d
 SCREENCLR	:=	printf "\033c"
 SLEEP		:=	sleep .1
 
@@ -131,9 +131,7 @@ fclean: clean
 	@make --quiet -C $(LIBFTDIR) fclean
 	@$(RM) $(NAME)
 
-re:
-	@make fclean
-	@make all
+re: fclean all
 
 title:
 	@$(SCREENCLR) && printf "\n"
@@ -156,4 +154,4 @@ $(DEPS):
 
 $(foreach build, $(BUILDDIR), $(eval $(call cc_cmd, $(build))))
 
-.PHONY: all debug clean fclean re
+.PHONY: all debug clean fclean re title finish
