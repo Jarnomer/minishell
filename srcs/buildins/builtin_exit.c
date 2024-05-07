@@ -12,6 +12,24 @@
 
 #include <minishell.h>
 
+static int	long_min_check(char *str, int i)
+{
+	if (str && i > 19)
+		return (1);
+	if (i == 19 && ft_strncmp(str, "9223372036854775808", 20) > 0)
+		return (1);
+	return (0);
+}
+
+static int	long_max_check(char *str, int i)
+{
+	if (i > 19)
+		return (1);
+	if (i == 19 && ft_strncmp(str, "9223372036854775807", 20) > 0)
+		return (1);
+	return (0);
+}
+
 static int	symbol_check(char *str, int i)
 {
 	if ((str[0] == '-' || str[0] == '+') && ft_isdigit(str[1]))
@@ -22,12 +40,12 @@ static int	symbol_check(char *str, int i)
 			return (1);
 		i++;
 	}
-	if (str[0] != '+' && ft_strncmp(str, "9223372036854775807", 20) > 0)
-		return (1);
-	if (str[0] == '+' && ft_strncmp(str, "+9223372036854775807", 21) > 0)
-		return (1);
-	if (str[0] == '-' && ft_strncmp(str, "-9223372036854775808", 21) > 0)
-		return (1);
+	if (str[0] != '+' && str[0] != '-')
+		return (long_max_check(str, i));
+	else if (str[0] == '+')
+		return (long_max_check(str + 1, i - 1));
+	else if (str[0] == '-')
+		return (long_min_check(str + 1, i - 1));
 	return (0);
 }
 
@@ -51,5 +69,5 @@ void	builtin_exit(t_shell *ms, char **cmd)
 		exit_code = (256 - ((ft_atoi(cmd[1]) * -1) % 256));
 	if (ms->forks == 1)
 		ft_putstr_fd("exit\n", 1);
-	exit(exit_code);
+	error_exit(exit_code, NULL, NULL, ms);
 }

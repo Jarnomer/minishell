@@ -22,7 +22,7 @@ static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 	ms->excode = 0;
 }
 
-void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
+static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 {
 	char	*home;
 	char	buf[1000];
@@ -32,13 +32,31 @@ void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 	{
 		error_logger("cd: ", NULL, "HOME not set", ms);
 		ms->excode = 1;
-		return ;
+		return (1);
 	}
+	if (!cmd[1] && chdir(home) == 0)
+	{
+		update_envp_values(ms, pwd, oldpwd, buf);
+		return (2);
+	}
+	else if (!cmd[1])
+	{
+		error_logger("cd: ", home, ": No such file or directory", ms);
+		ms->excode = 1;
+		return (1);
+	}
+	return (0);
+}
+
+void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
+{
+	char	buf[1000];
+
 	oldpwd = safe_trash(ft_strjoin("OLDPWD=", envp_exists("PWD", ms)),
 			ALLOCATED, ms);
-	if (!cmd[1] && chdir(home) == 0)
-		update_envp_values(ms, pwd, oldpwd, buf);
-	else if (chdir(cmd[1]) == 0)
+	if (check_home(ms, cmd, pwd, oldpwd) > 0)
+		return ;
+	if (cmd[1] && chdir(cmd[1]) == 0)
 		update_envp_values(ms, pwd, oldpwd, buf);
 	else
 	{
