@@ -21,7 +21,7 @@ static void	increment_shell_level(t_shell *ms)
 	envp = NULL;
 	content = envp_exists("SHLVL", ms);
 	shlvl = ft_atoi(content) + 1;
-	content = ft_itoa(shlvl);
+	content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
 	safe_strjoin(&envp, "SHLVL=", content, ms);
 	envp_update(ms, envp);
 }
