@@ -47,7 +47,10 @@ void	init_signals(int mode)
 	struct termios	term;
 
 	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~ECHOCTL;
+	if (mode == SIG_CHILD)
+		term.c_lflag |= ECHOCTL;
+	else
+		term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDERR_FILENO, TCSANOW, &term);
 	if (mode == SIG_PARENT)
 	{
