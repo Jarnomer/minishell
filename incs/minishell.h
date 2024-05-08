@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/05 12:39:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:18:55 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <dirent.h>
 # include <termios.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <sys/types.h>
 # include <readline/readline.h>
 # include <readline/history.h>

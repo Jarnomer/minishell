@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/28 10:37:44 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/06 19:56:58 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/07 21:32:13 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,11 +101,10 @@ $1/%.o: %.c | $(BUILDDIR) $(DEPENDDIR)
 	fi
 endef
 
-all: $(NAME)
+all: title $(NAME) finish
 
 $(NAME): $(OBJS)
 	@$(AR) $@ $^
-	@make finish
 
 debug: CFLAGS += $(DEBUGFLAGS)
 debug: all

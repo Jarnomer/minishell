@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/09 19:14:32 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:53:31 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/08 16:44:33 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,19 @@
 
 static void	error_occured(char *exec, char ***arr, t_parser *lst, t_shell *ms)
 {
+	struct stat	info;
+	int			sstat;
+
 	if (*arr != NULL)
 		free(*arr);
 	if (!lst)
 		error_fatal(ENOMEM, MSG_MEM, ms);
 	if (!exec)
 		error_exit(ERR_CMD, lst->content, MSG_CMD, ms);
-	else if (opendir(exec) != NULL)
+	sstat = stat(exec, &info);
+	if (!sstat && S_ISDIR(info.st_mode))
 		error_exit(ERR_FLDR, exec, MSG_FLDR, ms);
-	else if (access(exec, F_OK) == SUCCESS
+	else if (!sstat && S_ISREG(info.st_mode)
 		&& access(exec, X_OK) == FAILURE)
 		error_exit(ERR_PERM, exec, MSG_PERM, ms);
 	else if (ft_strchr(exec, '/'))
