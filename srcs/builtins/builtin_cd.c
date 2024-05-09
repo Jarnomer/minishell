@@ -84,7 +84,8 @@ void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 {
 	char	buf[1000];
 
-	oldpwd = safe_trash(ft_strjoin("OLDPWD=", getcwd(buf, 1000)), ALLOCATED, ms);
+	oldpwd = safe_trash(ft_strjoin("OLDPWD=", getcwd(buf, 1000)),
+			ALLOCATED, ms);
 	if (check_home(ms, cmd, pwd, oldpwd) > 0 || error_occured(ms, cmd) > 0)
 		return ;
 	if (cmd[1] && chdir(cmd[1]) == 0)

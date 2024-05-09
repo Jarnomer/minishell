@@ -28,7 +28,7 @@ static void	increment_shell_level(t_shell *ms)
 	{
 		error_logger("warning: ", NULL, "shlvl too high, resetting to 1", ms);
 		envp_update(ms, "SHLVL=1");
-	}	
+	}
 	else if (ft_atoi(content) == 999)
 		envp_remove(ms, "SHLVL");
 	else
