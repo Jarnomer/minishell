@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/09 19:08:08 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:28:04 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef enum e_redirect
 	HEREDOC,
 	OUTFILE,
 	APPEND,
-	AMBIGUOUS
 }	t_redirect;
 
 typedef enum e_syntax

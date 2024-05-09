@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:53:28 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:27:26 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ static void	child_process(t_module *mod, t_shell *ms)
 		execute_builtin(ms, mod);
 	else
 		execute_command(mod, ms);
-	exit(ms->excode);
 }
 
 static void	parent_process(t_shell *ms)
