@@ -48,6 +48,7 @@ static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 		envp_update(ms, pwd);
 	if (envp_exists("OLDPWD", ms) != NULL)
 		envp_update(ms, oldpwd);
+	free(pwd);
 	ms->excode = 0;
 }
 
@@ -68,12 +69,14 @@ static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 		update_envp_values(ms, pwd, oldpwd, buf);
 		return (2);
 	}
-	else if (!cmd[1])
+	else if (!cmd[1] && *home)
 	{
 		error_logger("cd: ", home, ": No such file or directory", ms);
 		ms->excode = 1;
 		return (1);
 	}
+	else if (!*home)
+		return (2);
 	return (0);
 }
 
@@ -81,7 +84,8 @@ void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 {
 	char	buf[1000];
 
-	oldpwd = safe_trash(ft_strjoin("OLDPWD=", getcwd(buf, 1000)), ALLOCATED, ms);
+	oldpwd = safe_trash(ft_strjoin("OLDPWD=", getcwd(buf, 1000)),
+			ALLOCATED, ms);
 	if (check_home(ms, cmd, pwd, oldpwd) > 0 || error_occured(ms, cmd) > 0)
 		return ;
 	if (cmd[1] && chdir(cmd[1]) == 0)
