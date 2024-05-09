@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/24 16:14:17 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/05 15:52:52 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 15:22:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ void	builtin_exit(t_shell *ms, char **cmd)
 	exit_code = 0;
 	if (cmd[1] && symbol_check(cmd[1], 0) == 1)
 		error_exit(255, cmd[0], "numeric argument required", ms);
-	if (cmd[2])
+	if (cmd[1] && cmd[2])
 	{
 		ft_putstr_fd("exit\n", 1);
-		error_logger("exit: ", NULL, "too many arguments", ms);
+		error_logger("exit: ", "", "too many arguments", ms);
 		ms->excode = 1;
 		return ;
 	}

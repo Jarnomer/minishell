@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:54:11 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 16:07:28 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,30 +64,36 @@ static char	*check_redirect(char *input, t_parser *new)
 	return (input);
 }
 
+static void	parse_mod(char *input, t_module *mod, t_shell *ms)
+{
+	t_parser	*new;
+	t_parser	*prev;
+
+	prev = NULL;
+	while (*input)
+	{
+		while (ft_isspace(*input))
+			input++;
+		if (!*input)
+			break ;
+		new = safe_calloc(sizeof(t_parser), ms);
+		input = check_redirect(input, new);
+		append_argument(new, prev, mod);
+		input = build_argument(input, new, mod, ms);
+		prev = new;
+	}
+}
+
 void	parse_modules(t_module **lst, t_shell *ms)
 {
 	t_module	*mod;
-	t_parser	*new;
-	t_parser	*prev;
 	char		*input;
 
 	mod = *lst;
-	prev = NULL;
 	while (mod)
 	{
 		input = mod->input;
-		while (*input)
-		{
-			while (ft_isspace(*input))
-				input++;
-			if (!*input)
-				break ;
-			new = safe_calloc(sizeof(t_parser), ms);
-			input = check_redirect(input, new);
-			append_argument(new, prev, mod);
-			input = build_argument(input, new, mod, ms);
-			prev = new;
-		}
+		parse_mod(input, mod, ms);
 		mod = mod->next;
 	}
 }

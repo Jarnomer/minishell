@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:53:44 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 14:36:29 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ static void	increment_shell_level(t_shell *ms)
 	content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
 	safe_strjoin(&envp, "SHLVL=", content, ms);
 	envp_update(ms, envp);
+	free(envp);
 }
 
 static void	create_prompt(t_shell *ms)

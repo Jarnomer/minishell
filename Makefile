@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/07 21:32:06 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/09 13:26:18 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ RL_LIB		:=	-L ~/.brew/Cellar/readline/8.2.10/lib
 RL_INC		:=	-I ~/.brew/Cellar/readline/8.2.10/include
 
 MODULES		:=	main \
-				buildins \
+				builtins \
 				parser \
 				exec \
 				free \
