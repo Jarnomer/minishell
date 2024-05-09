@@ -6,24 +6,19 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:54:13 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:08:17 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	preview_content(t_parser *prev, t_parser *new)
+bool	ft_hasspace(char *argv)
 {
-	if (*prev->content == DOLLAR && prev->meta != SINGLEQUOTE
-		&& (new->meta != DOLLAR
-			|| (new->meta == DOLLAR
-				&& !ft_strchr(new->content, DOLLAR))))
-		ft_bzero(prev->content, ft_strlen(prev->content));
-	if (*prev->content != DOLLAR
-		&& *new->content == DOLLAR
-		&& new->meta != SINGLEQUOTE
-		&& ft_strlen(new->content) != 1)
-		ft_bzero(new->content, ft_strlen(new->content));
+	while (*argv && !ft_isspace(*argv))
+		argv++;
+	if (!*argv)
+		return (false);
+	return (true);
 }
 
 char	*find_breakpoint(char *argv)

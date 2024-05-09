@@ -6,11 +6,25 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/05 15:54:16 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:05:18 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+void	preview_content(t_parser *prev, t_parser *new)
+{
+	if (*prev->content == DOLLAR && prev->meta != SINGLEQUOTE
+		&& (new->meta != DOLLAR
+			|| (new->meta == DOLLAR
+				&& !ft_strchr(new->content, DOLLAR))))
+		ft_bzero(prev->content, ft_strlen(prev->content));
+	if (*prev->content != DOLLAR
+		&& *new->content == DOLLAR
+		&& new->meta != SINGLEQUOTE
+		&& ft_strlen(new->content) != 1)
+		ft_bzero(new->content, ft_strlen(new->content));
+}
 
 t_parser	*parser_last(t_parser *lst)
 {

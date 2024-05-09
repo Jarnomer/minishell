@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:03:40 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 16:10:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:20:09 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static char	*expand_envp(char *buffer, char *temp, t_parser *new, t_shell *ms)
 	temp = find_breakpoint(temp);
 	envp = safe_trash(ft_substr(start, 0, temp - start), ALLOCATED, ms);
 	envp = envp_exists(envp, ms);
-	if (!envp && new->mode != -1 && new->meta == DOLLAR)
+	if (new->mode != -1 && new->meta == DOLLAR
+		&& (!envp || (envp && ft_hasspace(envp))))
 		return (no_expand(buffer, start - 1));
 	else if (!envp)
 		return (temp);

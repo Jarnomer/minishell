@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/09 16:33:05 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:08:08 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ typedef enum e_redirect
 	INFILE,
 	HEREDOC,
 	OUTFILE,
-	APPEND
+	APPEND,
+	AMBIGUOUS
 }	t_redirect;
 
 typedef enum e_syntax
@@ -132,14 +133,15 @@ void		parse_expands(t_module *mod, t_shell *ms);
 int			parse_files(t_module *mod, t_shell *ms);
 
 //			Parser Utils
+void		preview_content(t_parser *prev, t_parser *new);
 void		parser_append(t_parser **lst, t_parser *new);
 int			parser_length(t_parser *lst);
 t_parser	*parser_last(t_parser *lst);
 void		parser_delone(t_parser *lst);
 
 //			Parser Helpers
-void		preview_content(t_parser *prev, t_parser *new);
 char		*find_breakpoint(char *argv);
+bool		ft_hasspace(char *argv);
 int			ft_isspace(char c);
 int			ft_isredirect(char c);
 int			ft_ismeta(char c);

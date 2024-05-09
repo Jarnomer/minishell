@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 16:21:01 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 18:54:27 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 19:10:15 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	relink_parser(t_parser *lst, t_parser *head, t_module *mod)
 	parser_delone(lst);
 }
 
-static t_parser *parse_expand(t_parser *lst, t_shell *ms)
+static t_parser	*parse_expand(t_parser *lst, t_shell *ms)
 {
 	t_parser	*new;
 	t_parser	*head;
@@ -62,9 +62,7 @@ static void	check_expandable(t_parser *lst, t_module *mod, t_shell *ms)
 	while (temp)
 	{
 		content = temp->content;
-		while (*content && !ft_isspace(*content))
-			content++;
-		if (temp->meta == DOLLAR && temp->mode == -1 && *content != '\0')
+		if (temp->meta == DOLLAR && temp->mode == -1 && ft_hasspace(content))
 		{
 			new = parse_expand(temp, ms);
 			relink_parser(temp, new, mod);
