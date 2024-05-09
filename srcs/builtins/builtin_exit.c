@@ -56,7 +56,7 @@ void	builtin_exit(t_shell *ms, char **cmd)
 	exit_code = 0;
 	if (cmd[1] && symbol_check(cmd[1], 0) == 1)
 		error_exit(255, cmd[0], "numeric argument required", ms);
-	if (cmd[2])
+	if (cmd[1] && cmd[2])
 	{
 		ft_putstr_fd("exit\n", 1);
 		error_logger("exit: ", NULL, "too many arguments", ms);

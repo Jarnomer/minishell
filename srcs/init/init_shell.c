@@ -20,10 +20,25 @@ static void	increment_shell_level(t_shell *ms)
 
 	envp = NULL;
 	content = envp_exists("SHLVL", ms);
-	shlvl = ft_atoi(content) + 1;
-	content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
-	safe_strjoin(&envp, "SHLVL=", content, ms);
-	envp_update(ms, envp);
+	if (content == NULL)
+		envp_add(ms, "SHLVL=1");
+	else if (ft_atoi(content) < 0)
+		envp_update(ms, "SHLVL=0");
+	else if (ft_atoi(content) > 999)
+	{
+		error_logger("warning: ", NULL, "shlvl too high, resetting to 1", ms);
+		envp_update(ms, "SHLVL=1");
+	}	
+	else if (ft_atoi(content) == 999)
+		envp_remove(ms, "SHLVL");
+	else
+	{
+		shlvl = ft_atoi(content) + 1;
+		content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
+		safe_strjoin(&envp, "SHLVL=", content, ms);
+		envp_update(ms, envp);
+		free(envp);
+	}
 }
 
 static void	create_prompt(t_shell *ms)
