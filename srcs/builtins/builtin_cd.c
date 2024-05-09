@@ -48,6 +48,7 @@ static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 		envp_update(ms, pwd);
 	if (envp_exists("OLDPWD", ms) != NULL)
 		envp_update(ms, oldpwd);
+	free(pwd);
 	ms->excode = 0;
 }
 
@@ -68,12 +69,14 @@ static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 		update_envp_values(ms, pwd, oldpwd, buf);
 		return (2);
 	}
-	else if (!cmd[1])
+	else if (!cmd[1] && *home)
 	{
 		error_logger("cd: ", home, ": No such file or directory", ms);
 		ms->excode = 1;
 		return (1);
 	}
+	else if (!*home)
+		return (2);
 	return (0);
 }
 
