@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/09 16:06:56 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 16:33:05 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ void		parse_modules(t_module **lst, t_shell *ms);
 char		*parse_input(char *argv, t_parser *new);
 void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
+void		parse_expands(t_module *mod, t_shell *ms);
 int			parse_files(t_module *mod, t_shell *ms);
 
 //			Parser Utils

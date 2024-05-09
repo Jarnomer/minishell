@@ -6,7 +6,7 @@
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/09 13:26:18 by jmertane         ###   ########.fr        #
+#    Updated: 2024/05/09 17:26:20 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,6 +48,7 @@ SOURCES 	= 	minishell.c \
 				parse_mods.c \
 				parse_input.c \
 				parse_envps.c \
+				parse_expand.c \
 				parse_files.c \
 				parser_utils.c \
 				parser_helpers.c \
