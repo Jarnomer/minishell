@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 13:37:48 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/08 16:47:03 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/09 16:12:32 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,10 +81,8 @@ void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 {
 	char	buf[1000];
 
-	oldpwd = safe_trash(ft_strjoin("OLDPWD=", envp_exists("PWD", ms)),
-			ALLOCATED, ms);
-	if (check_home(ms, cmd, pwd, oldpwd) > 0
-		|| error_occured(ms, cmd) > 0)
+	oldpwd = safe_trash(ft_strjoin("OLDPWD=", getcwd(buf, 1000)), ALLOCATED, ms);
+	if (check_home(ms, cmd, pwd, oldpwd) > 0 || error_occured(ms, cmd) > 0)
 		return ;
 	if (cmd[1] && chdir(cmd[1]) == 0)
 		update_envp_values(ms, pwd, oldpwd, buf);
