@@ -33,7 +33,7 @@ RL_LIB		:=	-L ~/.brew/Cellar/readline/8.2.10/lib
 RL_INC		:=	-I ~/.brew/Cellar/readline/8.2.10/include
 
 MODULES		:=	main \
-				buildins \
+				builtins \
 				parser \
 				exec \
 				free \
