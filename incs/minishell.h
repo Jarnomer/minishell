@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/09 19:28:04 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/11 13:02:44 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define BR		"\033[1;31m"
-# define Y		"\033[0;33m"
-# define T		"\033[0m"
-# define V		"\033[35m"
-# define G		"\033[32m"
+# define BR		"\001\033[1;31m\002"
+# define Y		"\001\033[0;33m\002"
+# define T		"\001\033[0m\002"
+# define V		"\001\033[35m\002"
+# define G		"\001\033[32m\002"
 
 # define PERMS	0664
 

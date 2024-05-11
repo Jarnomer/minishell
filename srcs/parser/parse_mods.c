@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 19:00:40 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/11 12:46:24 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ void	parse_modules(t_module **lst, t_shell *ms)
 	{
 		input = mod->input;
 		parse_mod(input, mod, ms);
-		parse_expands(mod, ms);
+		if (mod->command != NULL)
+			parse_expands(mod, ms);
 		mod = mod->next;
 	}
 }
