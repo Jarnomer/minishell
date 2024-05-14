@@ -23,6 +23,7 @@
 # define MSG_MEM		"Could not malloc"
 # define MSG_FORK		"Could not fork"
 # define MSG_PIPE		"Could not pipe"
+# define CWD_ERR		"getcwd: cannot access parent directories: "
 
 enum e_errcodes
 {

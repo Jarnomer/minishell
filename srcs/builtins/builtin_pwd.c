@@ -24,5 +24,5 @@ void	builtin_pwd(t_shell *ms)
 		ms->excode = 0;
 	}
 	else
-		ms->excode = 1;
+		ft_putendl_fd(ms->pwd, 1);
 }
