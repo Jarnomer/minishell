@@ -42,5 +42,7 @@ void	free_exit(t_shell *ms)
 		free_single(&ms->prompt);
 	if (ms->envp != NULL)
 		free_double(&ms->envp);
+	if (ms->cwd != NULL)
+		free_single(&ms->cwd);
 	rl_clear_history();
 }

@@ -73,8 +73,7 @@ void	init_shell(t_shell *ms)
 	create_prompt(ms);
 	init_envp(ms);
 	increment_shell_level(ms);
-	ms->pwd = envp_exists("PWD", ms);
-	ms->oldpwd = envp_exists("OLDPWD", ms);
+	ms->cwd = ft_strdup(envp_exists("PWD", ms));
 	ms->pipefd[RD_END] = -1;
 	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;

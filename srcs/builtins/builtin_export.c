@@ -12,6 +12,24 @@
 
 #include <minishell.h>
 
+static int	name_exists(t_shell *ms, char *name)
+{
+	int	i;
+	int	size;
+
+	i = 0;
+	size = 0;
+	while (name[size] != '=' && name[size] != '\0')
+		size++;
+	while (i < ms->envp_size)
+	{
+		if (ft_strncmp(ms->envp[i], name, size) == 0)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 static int	error_check(char *str)
 {
 	int	i;
@@ -42,9 +60,9 @@ void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 			while (cmd[i][j] != '=' && cmd[i][j] != '\0')
 				j++;
 			envp = safe_trash(ft_substr(cmd[i], 0, j), ALLOCATED, ms);
-			if (cmd[i][j] == '=' && envp_exists(envp, ms) != NULL)
+			if (cmd[i][j] == '=' && name_exists(ms, cmd[i]) == 0)
 				envp_update(ms, cmd[i]);
-			else if (envp_exists(envp, ms) == NULL)
+			else if (name_exists(ms, cmd[i]) == 1)
 				envp_add(ms, cmd[i]);
 		}
 		else

@@ -111,8 +111,7 @@ typedef struct s_shell
 	int				tempfd;
 	int				forks;
 	int				index;
-	char			*pwd;
-	char			*oldpwd;
+	char			*cwd;
 	pid_t			*pids;
 	t_module		*mods;
 	t_parser		*trash;
