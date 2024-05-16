@@ -67,11 +67,21 @@ static void	init_envp(t_shell *ms)
 
 void	init_shell(t_shell *ms)
 {
+	char	*pwd;
+	char	buf[1000];
+	
 	ft_bzero(ms, sizeof(*ms));
 	create_prompt(ms);
 	init_envp(ms);
 	increment_shell_level(ms);
-	ms->cwd = ft_strdup(envp_exists("PWD", ms));
+	pwd = envp_exists("PWD", ms);
+	if (pwd)
+		safe_strdup(&ms->cwd, pwd, ms);
+	else if (getcwd(buf, 1000) != NULL)
+	{
+		pwd = safe_trash(ft_strjoin("PWD=", getcwd(buf, 1000)), ALLOCATED, ms);
+		envp_add(ms, pwd);
+	}
 	ms->pipefd[RD_END] = -1;
 	ms->pipefd[WR_END] = -1;
 	ms->tempfd = -1;
