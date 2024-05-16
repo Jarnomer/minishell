@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/30 13:09:20 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/05 15:53:21 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:08:03 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,18 @@ char	*envp_exists(char *name, t_shell *ms)
 	int		i;
 
 	i = 0;
-	temp = NULL;
-	safe_strjoin(&temp, name, "=", ms);
+	temp = safe_trash(ft_strjoin(name, "="), ALLOCATED, ms);
 	len = ft_strlen(temp);
 	while (ms->envp[i] && !ft_strnstr(ms->envp[i], temp, len))
 		i++;
-	free_single(&temp);
 	if (ms->envp[i] != NULL)
 		return (ms->envp[i] + len);
+	i = 0;
+	len = ft_strlen(name);
+	while (ms->envp[i] && ft_strncmp(ms->envp[i], name, len + 1))
+		i++;
+	if (ms->envp[i] != NULL)
+		return (ms->envp[i]);
 	return (NULL);
 }
 
