@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/16 17:35:19 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 20:51:02 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	init_shell(t_shell *ms)
 {
 	char	*pwd;
 	char	buf[1000];
-	
+
 	ft_bzero(ms, sizeof(*ms));
 	create_prompt(ms);
 	init_envp(ms);

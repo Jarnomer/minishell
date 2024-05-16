@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/16 17:30:58 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 20:37:23 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,12 @@ static void	check_joinable(t_parser *new, char *c)
 		new->joinable = true;
 }
 
-char	*parse_input(char *argv, t_parser *new)
+char	*parse_input(char *argv, t_parser *new, t_module *mod)
 {
 	char	*delim;
 
+	if (!mod)
+		return (NULL);
 	delim = find_breakpoint(argv);
 	if (ft_isspace(*delim) || ft_isredirect(*delim))
 		return (delim);
@@ -85,7 +87,7 @@ char	*parse_input(char *argv, t_parser *new)
 		delim = ft_strchr(delim + 1, SINGLEQUOTE) + 1;
 	else if (*delim == DOUBLEQUOTE)
 		delim = ft_strchr(delim + 1, DOUBLEQUOTE) + 1;
-	else if (*delim == DOLLAR)
+	else if (*delim == DOLLAR || *delim == ':')
 		delim = find_breakpoint(delim + 1);
 	check_joinable(new, delim);
 	return (delim);

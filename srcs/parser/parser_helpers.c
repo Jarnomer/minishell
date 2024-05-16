@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:26:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 19:08:17 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 20:37:16 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*find_breakpoint(char *argv)
 
 int	ft_ismeta(char c)
 {
-	return (c == '\'' || c == '\"' || c == '$');
+	return (c == '\'' || c == '\"' || c == '$' || c == ':');
 }
 
 int	ft_isredirect(char c)
