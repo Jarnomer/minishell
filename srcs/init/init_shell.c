@@ -6,17 +6,17 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/16 17:12:51 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:35:19 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static void    increment_shell_level(t_shell *ms)
+static void	increment_shell_level(t_shell *ms)
 {
-    int		shlvl;
-    char	*content;
-    char	*envp;
+	int		shlvl;
+	char	*content;
+	char	*envp;
 
 	content = envp_exists("SHLVL", ms);
 	if (content == NULL)

@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 16:56:34 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/15 17:18:15 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:30:58 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static void	parser_join(t_parser *prev,
 		return ;
 	if (!prev->prev)
 		mode = new->mode;
-	if (new->meta != DOLLAR && new->mode != -1)
+	if ((new->meta != DOLLAR && new->mode != -1)
+		|| (prev->meta == DOLLAR && ft_strlen(prev->content) == 1))
 		preview_content(prev, new);
 	if (prev->meta == DOLLAR && ft_hasspace(prev->content))
 		new->meta = DOLLAR;

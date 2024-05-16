@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 19:36:06 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/15 17:18:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:31:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ void	preview_content(t_parser *prev, t_parser *new)
 		&& new->meta != SINGLEQUOTE
 		&& ft_strlen(new->content) != 1)
 		ft_bzero(new->content, ft_strlen(new->content));
+	if (prev->meta == DOLLAR && ft_strlen(prev->content) == 1
+		&& (new->meta == SINGLEQUOTE || new->meta == DOUBLEQUOTE))
+		ft_bzero(prev->content, ft_strlen(prev->content));
 }
 
 t_parser	*parser_last(t_parser *lst)
