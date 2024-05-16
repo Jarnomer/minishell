@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:29:11 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 16:11:59 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:12:51 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,26 @@ static void    increment_shell_level(t_shell *ms)
     char	*content;
     char	*envp;
 
-    content = envp_exists("SHLVL", ms);
-    if (content == NULL)
-        envp_add(ms, "SHLVL=1");
-    else if (ft_atoi(content) < 0)
-        envp_update(ms, "SHLVL=0");
-    else if (ft_atoi(content) > 999)
-    {
-        error_logger("warning: ", "", "shlvl too high, resetting to 1", ms);
-        envp_update(ms, "SHLVL=1");
-    }
-    else if (ft_atoi(content) == 999)
-        envp_remove(ms, "SHLVL");
-    else
-    {
-        shlvl = ft_atoi(content) + 1;
-        content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
-        envp = safe_trash(ft_strjoin("SHLVL=", content), ALLOCATED, ms);
-        envp_update(ms, envp);
-    }
+	content = envp_exists("SHLVL", ms);
+	if (content == NULL)
+		envp_add(ms, "SHLVL=1");
+	else if (ft_atoi(content) < 0)
+		envp_update(ms, "SHLVL=0");
+	else if (ft_atoi(content) > 999)
+	{
+		error_logger("warning: ", "", "shlvl too high, resetting to 1", ms);
+		envp_update(ms, "SHLVL=1");
+	}
+	else if (ft_atoi(content) == 999)
+		envp_remove(ms, "SHLVL");
+	else
+	{
+		shlvl = ft_atoi(content) + 1;
+		content = safe_trash(ft_itoa(shlvl), ALLOCATED, ms);
+		envp = safe_trash(ft_strjoin("SHLVL=", content), ALLOCATED, ms);
+		envp_update(ms, envp);
+	}
 }
-
 
 static void	create_prompt(t_shell *ms)
 {
