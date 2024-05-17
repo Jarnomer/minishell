@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 18:19:46 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:03:42 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	main(void)
 			execute_shell(&ms);
 		hook_sigint(&ms);
 		free_runtime(&ms);
-		system("leaks -q minishell");
+		system("leaks -q minishell | grep -w total >> leaks.txt");
 	}
 	free_exit(&ms);
 	return (ms.excode);
