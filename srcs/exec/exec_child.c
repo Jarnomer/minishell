@@ -6,11 +6,22 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/06 13:10:57 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/09 19:27:26 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 20:50:56 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+
+static bool	executable_exists(t_parser *cmd)
+{
+	if (!cmd)
+		return (false);
+	else if (!*cmd->content && cmd->meta == '$' && parser_length(cmd) == 1)
+		return (false);
+	else if ((ft_strlen(cmd->content) == 1 && *cmd->content == ':'))
+		return (false);
+	return (true);
+}
 
 static void	child_process(t_module *mod, t_shell *ms)
 {
@@ -22,9 +33,7 @@ static void	child_process(t_module *mod, t_shell *ms)
 	redirect_fds(mod, ms);
 	close_fds(ms);
 	cmd = mod->command;
-	if (!cmd || (!*cmd->content
-			&& cmd->meta == DOLLAR
-			&& parser_length(cmd) == 1))
+	if (!executable_exists(cmd))
 		error_exit(NOERROR, NULL, NULL, ms);
 	else if (is_builtin(mod))
 		execute_builtin(ms, mod);

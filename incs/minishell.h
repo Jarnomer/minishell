@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/11 13:02:44 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:29:36 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void		init_signals(int mode);
 
 //			Parsing
 void		parse_modules(t_module **lst, t_shell *ms);
-char		*parse_input(char *argv, t_parser *new);
+char		*parse_input(char *argv, t_parser *new, t_module *mod);
 void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
 void		parse_envps(t_parser *new, t_shell *ms);
 void		parse_expands(t_module *mod, t_shell *ms);

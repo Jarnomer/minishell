@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 18:32:53 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/11 12:46:24 by jmertane         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:41:43 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static char	*build_argument(char *s, t_parser *new, t_module *mod, t_shell *ms)
 	while (*s && ft_isspace(*s))
 		s++;
 	start = s;
-	s = parse_input(s, new);
+	s = parse_input(s, new, mod);
 	safe_substr(&new->content, start, s, ms);
 	parse_argv(new, mod, ms);
 	return (s);
