@@ -31,12 +31,6 @@ char	*envp_exists(char *name, t_shell *ms)
 		i++;
 	if (ms->envp[i] != NULL)
 		return (ms->envp[i] + len);
-	i = 0;
-	len = ft_strlen(name);
-	while (ms->envp[i] && ft_strncmp(ms->envp[i], name, len + 1))
-		i++;
-	if (ms->envp[i] != NULL)
-		return (ms->envp[i]);
 	return (NULL);
 }
 
@@ -89,20 +83,20 @@ void	envp_add(t_shell *ms, char *content)
 
 void	envp_remove(t_shell *ms, char *content)
 {
-	char	**new_envp;
 	int		i;
 	int		j;
 	int		len;
+	char	**new_envp;
 
 	i = 0;
 	j = 0;
+	len = ft_strlen(content);
 	ms->envp_size -= 1;
 	new_envp = safe_calloc((ms->envp_size + 1) * sizeof(char *), ms);
 	while (i < ms->envp_size)
 	{
-		len = ft_strlen(content);
 		if (!ft_strncmp(ms->envp[j], content, len)
-			&& (ms->envp[j][len]) == '=')
+			&& ((ms->envp[j][len]) == '=' || (ms->envp[j][len]) == '\0'))
 			j++;
 		new_envp[i] = ft_strdup(ms->envp[j]);
 		if (!new_envp[i])

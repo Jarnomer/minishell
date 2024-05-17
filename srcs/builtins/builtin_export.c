@@ -12,6 +12,44 @@
 
 #include <minishell.h>
 
+static char	*name_exists(char *arg, t_shell *ms)
+{
+	int		i;
+	int		len;
+	char	*name;
+
+	i = 0;
+	while (arg[i] != '\0' && arg[i] != '=')
+		i++;
+	name = safe_trash(ft_substr(arg, 0, i), ALLOCATED, ms);
+	i = 0;
+	len = ft_strlen(name);
+	while (ms->envp[i])
+	{
+		if (ft_strncmp(ms->envp[i], name, len) == 0
+			&& (ms->envp[i][len] == '\0' || ms->envp[i][len] == '='))
+			return (ms->envp[i] + len);
+		i++;
+	}
+	return (NULL);
+}
+
+static int	content_check(char *arg, t_shell *ms)
+{
+	int		i;
+	char	*content;
+
+	i = 0;
+	content = name_exists(arg, ms);
+	while (arg[i] != '=' && arg[i] != '\0')
+		i++;
+	if (arg[i] == '=' && arg[i + 1] == '\0' && *content == '\0')
+		return (1);
+	else if (arg[i] == '=' && arg[i + 1] != '\0')
+		return (1);
+	return (0);
+}
+
 static int	error_check(char *str)
 {
 	int	i;
@@ -30,8 +68,6 @@ static int	error_check(char *str)
 
 void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 {
-	char	*envp;
-
 	if (cmd[i] == NULL)
 		envp_print(ms, 0, 0);
 	while (cmd[i] != NULL)
@@ -39,15 +75,9 @@ void	builtin_export(t_shell *ms, char **cmd, int i, int j)
 		j = 0;
 		if (!error_check(cmd[i]))
 		{
-			while (cmd[i][j] != '=' && cmd[i][j] != '\0')
-				j++;
-			envp = safe_trash(ft_substr(cmd[i], 0, j), ALLOCATED, ms);
-			printf("str i: %s\n", cmd[i]);
-			printf("char j: %c\n", cmd[i][j]);
-			printf("envp_exists returned: %s\n", envp_exists(cmd[i], ms));
-			if (cmd[i][j] == '=' && envp_exists(cmd[i], ms) != NULL)
+			if (name_exists(cmd[i], ms) != NULL && content_check(cmd[i], ms))
 				envp_update(ms, cmd[i]);
-			else if (envp_exists(cmd[i], ms) == NULL)
+			else if (name_exists(cmd[i], ms) == NULL)
 				envp_add(ms, cmd[i]);
 		}
 		else
