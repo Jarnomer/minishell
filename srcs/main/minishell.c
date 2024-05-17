@@ -52,6 +52,7 @@ int	main(void)
 			execute_shell(&ms);
 		hook_sigint(&ms);
 		free_runtime(&ms);
+		system("leaks -q minishell");
 	}
 	free_exit(&ms);
 	return (ms.excode);

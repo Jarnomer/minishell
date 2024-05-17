@@ -42,7 +42,7 @@ void	builtin_echo(t_shell *ms, char **cmd)
 		n_flag = true;
 		i++;
 	}
-	if (!cmd[i])
+	if (!cmd[i] && n_flag == false)
 		ft_putchar_fd('\n', 1);
 	while (cmd[i])
 	{
