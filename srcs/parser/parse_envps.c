@@ -64,8 +64,6 @@ static char	*parse_dollar(char *buffer, char *temp, t_parser *new, t_shell *ms)
 			temp++;
 		return (temp);
 	}
-	//else if (!ft_strncmp(temp, "PWD", 3))
-	//	return (expand_cwd());
 	else if (*temp == QUESTIONMARK)
 		return (expand_excode(buffer, temp, ms));
 	else

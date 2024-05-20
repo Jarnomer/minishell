@@ -52,7 +52,6 @@ int	main(void)
 			execute_shell(&ms);
 		hook_sigint(&ms);
 		free_runtime(&ms);
-		system("leaks -q minishell | grep -w total >> leaks.txt");
 	}
 	free_exit(&ms);
 	return (ms.excode);
