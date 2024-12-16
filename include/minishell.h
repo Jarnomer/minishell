@@ -37,7 +37,7 @@
 
 # define PERMS	0664
 
-int	g_signal;
+extern int	g_signal;
 
 typedef enum e_checker
 {
@@ -142,7 +142,6 @@ void		parser_delone(t_parser *lst);
 //			Parser Helpers
 char		*find_breakpoint(char *argv);
 bool		ft_hasspace(char *argv);
-int			ft_isspace(char c);
 int			ft_isredirect(char c);
 int			ft_ismeta(char c);
 
@@ -183,8 +182,8 @@ void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
 void		builtin_echo(t_shell *ms, char **cmd);
 void		builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd);
 void		builtin_env(t_shell *ms, int i, int j);
-void		builtin_export(t_shell *ms, char **cmd, int i, int j);
-void		builtin_unset(t_shell *ms, char **cmd, int i, int j);
+void		builtin_export(t_shell *ms, char **cmd, int i);
+void		builtin_unset(t_shell *ms, char **cmd, int i);
 void		builtin_pwd(t_shell *ms);
 void		builtin_exit(t_shell *ms, char **cmd);
 

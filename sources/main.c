@@ -12,6 +12,8 @@
 
 #include <minishell.h>
 
+int	g_signal = 0;
+
 static inline void	execute_shell(t_shell *ms)
 {
 	parse_modules(&ms->mods, ms);

@@ -10,149 +10,213 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		:=	minishell
-ERRTXT		:=	error.txt
-OBJSDIR		:=	build
-INCSDIR		:=	incs
-SRCSDIR		:=	srcs
-DEPSDIR		:=	.deps
-LIBFTDIR	:=	libft
-LIBFTBIN	:=	$(LIBFTDIR)/libft.a
+# **************************************************************************** #
+#    VARIABLES
+# **************************************************************************** #
 
-RM			:=	rm -rf
-AR			:=	ar -rcs
-CC			:=	cc
-CFLAGS		:=	-Wall -Werror -Wextra
-DEBUGFLAGS	=	-g -fsanitize=address
-DEPFLAGS	=	-c -MT $$@ -MMD -MP -MF $(DEPSDIR)/$$*.d
-SCREENCLR	:=	printf "\033c"
-SLEEP		:=	sleep .1
+NAME = minishell
 
-RL_FLG		:=	-lreadline
-RL_LIB		:=	-L ~/.brew/Cellar/readline/8.2.10/lib
-RL_INC		:=	-I ~/.brew/Cellar/readline/8.2.10/include
+SOURCEDIR := sources
+HEADERDIR := include
+BUILDDIR  := build
+BUILDLOG  := build.log
 
-MODULES		:=	main \
-				builtins \
-				parser \
-				exec \
-				free \
-				open \
-				init \
-				error \
-				utils
+LIBFTDIR  := ./libft
+LIBFTBIN  := libft.a
 
-SOURCES 	= 	minishell.c \
-				init_shell.c \
-				init_modules.c \
-				parse_mods.c \
-				parse_input.c \
-				parse_envps.c \
-				parse_expand.c \
-				parse_files.c \
-				parser_utils.c \
-				parser_helpers.c \
-				open_infile.c \
-				open_outfile.c \
-				open_heredoc.c \
-				exec_child.c \
-				exec_redirect.c \
-				exec_command.c \
-				wait_child.c \
-				error_syntax.c \
-				error_utils.c \
-				free_runtime.c \
-				free_utils.c \
-				close_fds.c \
-				safe_allocs.c \
-				safe_strings.c \
-				builtin_cd.c \
-				builtin_echo.c \
-				builtin_env.c \
-				builtin_export.c \
-				builtin_unset.c \
-				builtin_pwd.c \
-				builtin_exit.c \
-				builtin_utils.c \
-				envp_utils.c \
-				envp_print.c \
-				signals.c
+TESTCASE  := ./$(NAME)
 
-SOURCEDIR	:=	$(addprefix $(SRCSDIR)/, $(MODULES))
-BUILDDIR	:=	$(addprefix $(OBJSDIR)/, $(MODULES))
-DEPENDDIR	:=	$(addprefix $(DEPSDIR)/, $(MODULES))
-SRCS		:=	$(foreach file, $(SOURCES), $(shell find $(SOURCEDIR) -name $(file)))
-OBJS		:=	$(patsubst $(SRCSDIR)/%.c, $(OBJSDIR)/%.o, $(SRCS))
-DEPS		:=	$(patsubst $(SRCSDIR)/%.c, $(DEPSDIR)/%.d, $(SRCS))
-INCS	 	:=	$(foreach header, $(INCSDIR), -I $(header))
-INCS	 	+=	$(foreach header, $(LIBFTDIR)/$(INCSDIR), -I $(header))
+# **************************************************************************** #
+#    COMMANDS
+# **************************************************************************** #
 
-F			=	=====================================
-B			=	\033[1m
-T			=	\033[0m
-G			=	\033[32m
-V			=	\033[35m
-C			=	\033[36m
-R			=	\033[31m
-Y			=	\033[33m
+RM          := rm -rf
+SCREENCLEAR := printf "\033c"
+
+# **************************************************************************** #
+#    COMPILATION
+# **************************************************************************** #
+
+CC         := cc
+CFLAGS     := -Wall -Werror -Wextra -lreadline
+CPPFLAGS   := -c -MMD -MP
+DEBUGFLAGS := -g -fsanitize=address
+MAKEFLAGS  += --no-print-directory -j4
+
+# **************************************************************************** #
+#    VALGRIND
+# **************************************************************************** #
+
+LEAKSLOG := leaks.log
+SUPPFILE := readline.supp
+VLGFLAGS := --leak-check=full \
+            --show-leak-kinds=all \
+            --track-origins=yes \
+            --track-fds=yes \
+            --trace-children=yes \
+            --log-file=$(LEAKSLOG) \
+            --suppressions=$(SUPPFILE) \
+            --verbose \
+            --quiet
+
+# **************************************************************************** #
+#    SOURCES
+# **************************************************************************** #
+
+MODULES := builtins \
+           parser \
+           exec \
+           free \
+           open \
+           init \
+           error \
+           utils
+
+SOURCES = main \
+          signals \
+          init_shell \
+          init_modules \
+          parse_mods \
+          parse_input \
+          parse_envps \
+          parse_expand \
+          parse_files \
+          parser_utils \
+          parser_helpers \
+          open_infile \
+          open_outfile \
+          open_heredoc \
+          exec_child \
+          exec_redirect \
+          exec_command \
+          wait_child \
+          error_syntax \
+          error_utils \
+          free_runtime \
+          free_utils \
+          close_fds \
+          safe_allocs \
+          safe_strings \
+          builtin_cd \
+          builtin_echo \
+          builtin_env \
+          builtin_export \
+          builtin_unset \
+          builtin_pwd \
+          builtin_exit \
+          builtin_utils \
+          envp_utils \
+          envp_print
+
+SOURCES := $(addsuffix .c, $(SOURCES))
+
+OBJECTS := $(addprefix $(BUILDDIR)/, $(SOURCES:.c=.o))
+
+SOURCEDIR += $(addprefix $(SOURCEDIR)/, $(MODULES))
+
+INCS := $(addprefix -I, $(HEADERDIR) $(LIBFTDIR)/$(HEADERDIR))
+
+DEPS := $(OBJECTS:.o=.d)
 
 vpath %.c $(SOURCEDIR)
 
-define cc_cmd
-$1/%.o: %.c | $(BUILDDIR) $(DEPENDDIR)
-	@if ! $(CC) $(CFLAGS) $(INCS) $(RL_INC) $(DEPFLAGS) $$< -o $$@ 2> $(ERRTXT); then \
-		printf "$(R)$(B)\nERROR!\n$(F)$(T)\n"; \
-		printf "$(V)Unable to create object file:$(T)\n\n"; \
-		printf "$(R)$(B)$$@$(T)\n"; \
-		printf "$(Y)\n"; sed '$$d' $(ERRTXT); \
-		printf "$(R)$(B)\n$(F)\nExiting...$(T)\n"; exit 1 ; \
+# **************************************************************************** #
+#    RULES
+# **************************************************************************** #
+
+all: $(NAME)
+
+$(NAME): $(OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) -o $@
+	printf "$(V)$(B)Binary:$(T)$(Y) $(NAME) $(T)\n"
+
+$(OBJECTS): $(LIBFTDIR)/$(LIBFTBIN)
+
+libft: $(LIBFTDIR)/$(LIBFTBIN)
+
+$(LIBFTDIR)/$(LIBFTBIN): 
+	@make -C $(LIBFTDIR) all
+
+run: all
+	$(SCREENCLEAR)
+	$(TESTCASE)
+
+re: fclean
+	make all
+
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: re
+
+nm:
+	$(foreach d, $(HEADERDIR), $(foreach h, $(wildcard $(d)/*), \
+		norminette -R CheckDefine $(h);))
+	$(foreach d, $(SOURCEDIR), $(foreach s, $(wildcard $(d)/*), \
+		norminette -R CheckForbiddenSourceHeader $(s);))
+
+leaks: all
+	valgrind $(VLGFLAGS) $(TESTCASE)
+
+# **************************************************************************** #
+#    BUILD
+# **************************************************************************** #
+
+define build_cmd
+$1/%.o: %.c | $(BUILDDIR)
+	if ! $(CC) $(CFLAGS) $(CPPFLAGS) $(INCS) $$< -o $$@ 2> $(BUILDLOG); then \
+		printf "$(R)$(B)\nError: \
+		$(V)Unable to create object file: \
+		$(R)$(B)$$@$(Y)\n\n"; \
+		sed '$$d' $(BUILDLOG); exit 1 ; \
 	else \
-		printf "$(C)$(B)☑$(T)$(V) $$<$ \n    $(C)⮑\t$(G)$(B)$$@$(T) \t\n"; \
+		printf "$(C)$(B)Object: $(G)$$@ $(T)\n"; \
 	fi
 endef
 
-all: $(LIBFTBIN) $(NAME)
-
-$(LIBFTBIN):
-	@make --quiet -C $(LIBFTDIR) all
-	@make title
-
-$(NAME): $(OBJS)
-	@$(CC) $(CFLAGS) $(INCS) $(RL_INC) $(RL_FLG) $(RL_LIB) $^ $(LIBFTBIN) -o $@
-	@make finish
-
-debug: CFLAGS += $(DEBUGFLAGS)
-debug: all
+# **************************************************************************** #
+#    CLEAN
+# **************************************************************************** #
 
 clean:
-	@make --quiet -C $(LIBFTDIR) clean
-	@$(RM) $(OBJSDIR) $(DEPSDIR) $(ERRTXT)
+	@make -C $(LIBFTDIR) fclean
+	$(call delete_cmd, $(BUILDDIR), $(BUILDLOG), $(LEAKSLOG))
 
 fclean: clean
-	@make --quiet -C $(LIBFTDIR) fclean
-	@$(RM) $(NAME)
+	$(call delete_cmd, $(NAME))
 
-re: fclean all
+define delete_cmd
+	printf "$(R)$(B)Delete:$(T)$(Y)$1$2$3$4$5$(T)\n"
+	$(RM) $1 $2 $3 $4 $5
+endef
 
-title:
-	@$(SCREENCLR) && printf "\n"
-	@printf "$(C)╔╦╗╦╔╗╔╦╔═╗╦ ╦╔═╗╦  ╦$(T)\n"
-	@printf "$(C)║║║║║║║║╚═╗╠═╣║╣ ║  ║   by vkinaret$(T)\n"
-	@printf "$(C)╩ ╩╩╝╚╝╩╚═╝╩ ╩╚═╝╩═╝╩═╝  & jmertane$(T)\n"
-	@printf "$(G)$(B)$(F)\n$(T)\n"
+# **************************************************************************** #
+#    COLORS
+# **************************************************************************** #
 
-finish:
-	@printf "\n$(G)$(B)$(F)$(T)\n"
-	@printf "$(C)╔═╗╦╔╗╔╦╔═╗╦ ╦╔═╗╔╦╗        $(V)$(B)$(NAME)$(T)\n"
-	@printf "$(C)╠╣ ║║║║║╚═╗╠═╣║╣  ║║$(T)\n"
-	@printf "$(C)╚  ╩╝╚╝╩╚═╝╩ ╩╚═╝═╩╝$(T)\n\n"
+T = \033[0m
+B = \033[1m
+G = \033[32m
+V = \033[35m
+C = \033[36m
+Y = \033[33m
+R = \033[31m
 
-$(BUILDDIR) $(DEPENDDIR):
-	@mkdir -p $@
+# **************************************************************************** #
+#    UTILS
+# **************************************************************************** #
 
-$(DEPS):
-	include $(wildcard $(DEPS))
+-include $(DEPS)
 
-$(foreach build, $(BUILDDIR), $(eval $(call cc_cmd, $(build))))
+$(BUILDDIR):
+	mkdir -p $@
 
-.PHONY: all debug clean fclean re title finish
+$(foreach build, $(BUILDDIR), $(eval $(call build_cmd, $(build))))
+
+# **************************************************************************** #
+#    PHONY
+# **************************************************************************** #
+
+.PHONY: all libft re nm
+.PHONY: debug leaks run
+.PHONY: clean fclean
+
+.SILENT:

@@ -40,9 +40,9 @@ void	execute_builtin(t_shell *ms, t_module *mod)
 	else if (!ft_strncmp("env", mod->cmd[0], 4))
 		builtin_env(ms, 0, 0);
 	else if (!ft_strncmp("export", mod->cmd[0], 7))
-		builtin_export(ms, mod->cmd, 1, 0);
+		builtin_export(ms, mod->cmd, 1);
 	else if (!ft_strncmp("unset", mod->cmd[0], 6))
-		builtin_unset(ms, mod->cmd, 1, 0);
+		builtin_unset(ms, mod->cmd, 1);
 	else if (!ft_strncmp("pwd", mod->cmd[0], 4))
 		builtin_pwd(ms);
 	else if (!ft_strncmp("exit", mod->cmd[0], 5))

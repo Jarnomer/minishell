@@ -12,8 +12,6 @@
 
 #include <minishell.h>
 
-int	g_signal = 0;
-
 static void	heredoc_handler(int sig)
 {
 	if (sig == SIGINT)
