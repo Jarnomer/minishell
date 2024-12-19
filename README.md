@@ -100,7 +100,9 @@ Once input is given by the user, it is splitted into `modules` based one the `pi
 
 Each module is then parsed and devided into `command`, `infile` and `outfile` arguments.
 
-Parser also checks if arguments should be expanded `$` or `joined` with previous argument. 
+Parser also checks if arguments should be expanded `$` or `joined` with previous argument.
+
+After modules are prepared, file operations are processed where heredocs are taken first.
 
 ## ♻️ Resources
 
