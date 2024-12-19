@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-	<b><i>Limited recreation of original Unix 🐧 shell</i></b><br>
+	<b><i>Limited recreation of original Unix 🐧 shell.</i></b><br>
 </p>
 
 <p align="center">
