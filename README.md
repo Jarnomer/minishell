@@ -31,6 +31,11 @@
 
 ## 📝 General
 
+Goal of the project is to create `shell` which supports basic `bash` functionalities.
+
+These include file redirections, signal handling and pipes among others.
+
+Also some of the basic `commands` such as `export` and `cd` and are supported as `buildins`.
 
 ## 🛠️ Build
 
@@ -48,12 +53,43 @@ cd minishell && make all
 
 ## ⚡ Usage
 
+```bash
+make run
+```
+
+You can use following features as you would in bash.
+
+| Feature                  | Description                                                                                     |
+|--------------------------|-------------------------------------------------------------------------------------------------|
+| Single Quotes (`'`)      | Prevent the shell from interpreting meta-characters in the quoted sequence.                     |
+| Double Quotes (`"`)      | Prevent the shell from interpreting meta-characters in the quoted sequence, except for `$`.     |
+| Pipes (`|`)              | Connect the output of one command to the input of the next command in the pipeline.             |
+| Environment Variables (`$`) | Expand to their values when `$` is followed by a sequence of characters.                     |
+| Exit Status (`$?`)       | Expand to the exit status of the most recently executed foreground pipeline.                    |
+
+I also supports these redirect operators and control sequences.
+
+| Redirection | Description                      |
+|-------------|----------------------------------|
+| `<`         | Redirects input.                 |
+| `>`         | Redirects output.                |
+| `<<`        | Reads heredoc till delimiter.    |
+| `>>`        | Redirects output in append mode. |
+
+| Signal      | Description                          |
+|-------------------|------------------------------- |
+| `Ctrl-C`    | Displays a new prompt on a new line. |
+| `Ctrl-D`    | Exits the shell.                     |
+| `Ctrl-\`    | Does nothing.                        |
 
 ## 🚀 Details
 
 
 ## ♻️ Resources
 
+[Bash Reference Manual](https://www.gnu.org/software/bash/manual/bash.html) official manual of GNU Bash features.
+
+[minishell_tester](https://github.com/LucasKuhn/minishell_tester) excellent baseline tester, don't forget to check the forks.
 
 ## 4️⃣2️⃣ Footer
 
