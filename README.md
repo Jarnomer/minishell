@@ -61,9 +61,9 @@ You can use following features as you would in bash.
 
 | Feature                  | Description                                                                                     |
 |--------------------------|-------------------------------------------------------------------------------------------------|
-| Single Quotes         | Prevents shell from interpreting meta-characters in the quoted (`'`) sequence.                     |
-| Double Quotes         | Prevents shell from interpreting meta-characters in the quoted (`"`) sequence, except for `$`.     |
-| Pipes                 | Connects command outputs and inputs in the pipeline `\|`.             |
+| Single Quotes         | Prevents shell from interpreting meta-characters in quoted (`'`) sequences                     |
+| Double Quotes         | Prevents shell from interpreting meta-characters in quoted (`"`) sequences, except `$`.     |
+| Pipes                 | Connects command outputs and inputs using `\|` the pipeline .             |
 | Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                     |
 | Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.                    |
 
