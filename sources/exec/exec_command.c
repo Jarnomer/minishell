@@ -27,7 +27,7 @@ static void	error_occured(char *exec, char ***arr, t_parser *lst, t_shell *ms)
 	if (!sstat && S_ISDIR(info.st_mode))
 		error_exit(ERR_FLDR, exec, MSG_FLDR, ms);
 	else if (!sstat && S_ISREG(info.st_mode)
-		&& access(exec, X_OK) == FAILURE)
+		&& access(exec, X_OK) == -1)
 		error_exit(ERR_PERM, exec, MSG_PERM, ms);
 	else if (ft_strchr(exec, '/'))
 		error_exit(ERR_CMD, exec, MSG_FILE, ms);
@@ -50,7 +50,7 @@ static char	*find_executable(char *binary, char *env, t_shell *ms)
 		exec = ft_strjoin(paths[i++], binary);
 		if (!exec)
 			error_occured(NULL, &paths, NULL, ms);
-		if (access(exec, F_OK) == SUCCESS)
+		if (access(exec, F_OK) == 0)
 			return (exec);
 		free(exec);
 	}
@@ -88,6 +88,6 @@ void	execute_command(t_module *mod, t_shell *ms)
 		temp = temp->next;
 	exec = build_executable(temp, ms);
 	cmd = safe_double(temp, ms);
-	if (!exec || execve(exec, cmd, ms->envp) == FAILURE)
+	if (!exec || execve(exec, cmd, ms->envp) == -1)
 		error_occured(exec, &cmd, temp, ms);
 }

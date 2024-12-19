@@ -25,7 +25,7 @@ static inline void	exit_shell(t_shell *ms)
 {
 	ft_putendl_fd("exit", STDOUT);
 	free_exit(ms);
-	exit(ms->excode);
+	exit(ms->exitcode);
 }
 
 static void	hook_sigint(t_shell *ms)
@@ -33,7 +33,7 @@ static void	hook_sigint(t_shell *ms)
 	if (g_signal != SIGINT)
 		return ;
 	g_signal = NOERROR;
-	ms->excode = 1;
+	ms->exitcode = 1;
 }
 
 int	main(void)
@@ -56,5 +56,5 @@ int	main(void)
 		free_runtime(&ms);
 	}
 	free_exit(&ms);
-	return (ms.excode);
+	return (ms.exitcode);
 }

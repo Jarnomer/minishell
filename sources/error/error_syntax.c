@@ -21,8 +21,8 @@ static int	error_occured(char *token, t_shell *ms)
 		error_logger(MSG_QUOT, " ", token, ms);
 	else
 		error_logger(MSG_SYNX, " ", token, ms);
-	ms->excode = ERR_SYNX;
-	return (FAILURE);
+	ms->exitcode = ERR_SYNX;
+	return (-1);
 }
 
 static char	assign_delimiter(char *argv)
@@ -53,13 +53,13 @@ static int	unclosed_quotes(char *input)
 	{
 		delim = assign_delimiter(input);
 		if (!delim)
-			return (SUCCESS);
+			return (0);
 		input = ft_strchr(input, delim);
 		if (!ft_strchr(input + 1, delim))
 			return (delim);
 		input = ft_strchr(input + 1, delim) + 1;
 	}
-	return (SUCCESS);
+	return (0);
 }
 
 static int	invalid_redirect(char *input, char redirect)
@@ -83,10 +83,10 @@ static int	invalid_redirect(char *input, char redirect)
 			while (ft_isspace(*input))
 				input++;
 			if (!*input || ft_isredirect(*input))
-				return (FAILURE);
+				return (-1);
 		}
 	}
-	return (SUCCESS);
+	return (0);
 }
 
 int	error_syntax(char *input, t_shell *ms)
@@ -105,5 +105,5 @@ int	error_syntax(char *input, t_shell *ms)
 		return (error_occured("`>'", ms));
 	else if (invalid_redirect(input, INDIRECT))
 		return (error_occured("`<'", ms));
-	return (SUCCESS);
+	return (0);
 }

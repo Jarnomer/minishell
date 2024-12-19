@@ -23,5 +23,5 @@ void	builtin_env(t_shell *ms, int i, int j)
 			ft_putendl_fd(ms->envp[i], 1);
 		i++;
 	}
-	ms->excode = 0;
+	ms->exitcode = 0;
 }

@@ -21,7 +21,7 @@ void	builtin_pwd(t_shell *ms)
 	if (str)
 	{
 		ft_putendl_fd(str, 1);
-		ms->excode = 0;
+		ms->exitcode = 0;
 	}
 	else
 		ft_putendl_fd(ms->cwd, 1);

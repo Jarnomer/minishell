@@ -82,7 +82,7 @@ void	builtin_export(t_shell *ms, char **cmd, int i)
 		else
 		{
 			error_logger("export: ", cmd[i], ": not a valid identifier", ms);
-			ms->excode = 1;
+			ms->exitcode = 1;
 		}
 		i++;
 	}

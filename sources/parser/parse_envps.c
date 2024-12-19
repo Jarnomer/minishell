@@ -48,7 +48,7 @@ static char	*expand_excode(char *buffer, char *temp, t_shell *ms)
 	char	*excode;
 	int		len;
 
-	excode = safe_trash(ft_itoa(ms->excode), ALLOCATED, ms);
+	excode = safe_trash(ft_itoa(ms->exitcode), ALLOCATED, ms);
 	len = ft_strlen(buffer) + ft_strlen(excode) + 1;
 	ft_strlcat(buffer, excode, len);
 	return (temp + 1);

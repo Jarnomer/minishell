@@ -22,7 +22,7 @@ static void	finish_heredoc(char **line, t_shell *ms)
 
 static void	prepare_heredoc(t_parser *hdoc, t_shell *ms)
 {
-	if (pipe(ms->pipefd) == FAILURE)
+	if (pipe(ms->pipefd) == -1)
 		error_fatal(errno, MSG_PIPE, ms);
 	safe_strjoin(&hdoc->content, hdoc->content, "\n", ms);
 }

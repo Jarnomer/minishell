@@ -41,14 +41,16 @@ extern int	g_signal;
 
 typedef enum e_checker
 {
-	FAILURE = -1,
-	SUCCESS = 0,
 	ALLOCATE = 10,
 	ALLOCATED,
-	SIG_PARENT = 0,
-	SIG_HEREDOC = 1,
-	SIG_CHILD = 2,
 }	t_checker;
+
+typedef enum e_signal
+{
+	SIG_PARENT,
+	SIG_HEREDOC,
+	SIG_CHILD
+}	t_signal;
 
 typedef enum e_pipe
 {
@@ -81,23 +83,23 @@ typedef enum e_syntax
 typedef struct s_parser
 {
 	char			*content;
+	struct s_parser	*next;
+	struct s_parser	*prev;
 	bool			joinable;
 	int				meta;
 	int				mode;
-	struct s_parser	*next;
-	struct s_parser	*prev;
 }	t_parser;
 
 typedef struct s_module
 {
 	char			*input;
+	struct s_module	*next;
 	t_parser		*infiles;
 	t_parser		*outfiles;
 	t_parser		*command;
+	char			**cmd;
 	int				outfd;
 	int				infd;
-	char			**cmd;
-	struct s_module	*next;
 }	t_module;
 
 typedef struct s_shell
@@ -105,7 +107,7 @@ typedef struct s_shell
 	char			**envp;
 	char			*prompt;
 	char			*input;
-	int				excode;
+	int				exitcode;
 	int				envp_size;
 	int				pipefd[2];
 	int				tempfd;

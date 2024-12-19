@@ -21,24 +21,24 @@ static int	error_occured(t_shell *ms, char **cmd)
 	if (ft_strlen(cmd[1]) > 255)
 	{
 		error_logger("cd: ", cmd[1], ": File name too long", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
 	else if (!sstat && S_ISREG(info.st_mode))
 	{
 		error_logger("cd: ", cmd[1], ": Not a directory", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
 	else if (!sstat && S_ISDIR(info.st_mode) && access(cmd[1], R_OK) == -1)
 	{
 		error_logger("cd: ", cmd[1], ": Permission denied", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
 	else if (sstat == -1)
 	{
 		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
-	return (ms->excode);
+	return (ms->exitcode);
 }
 
 static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
@@ -62,7 +62,7 @@ static void	update_envp_values(t_shell *ms, char *pwd, char *oldpwd, char *buf)
 		envp_update(ms, pwd);
 	if (envp_exists("OLDPWD", ms) != NULL)
 		envp_update(ms, oldpwd);
-	ms->excode = 0;
+	ms->exitcode = 0;
 }
 
 static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
@@ -74,7 +74,7 @@ static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 	if (!home && (!cmd[1] || !*cmd[1]))
 	{
 		error_logger("cd: ", NULL, "HOME not set", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 		return (1);
 	}
 	if (!cmd[1] && chdir(home) == 0)
@@ -87,7 +87,7 @@ static int	check_home(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 	if (!cmd[1] && *home)
 	{
 		error_logger("cd: ", home, ": No such file or directory", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 		return (1);
 	}
 	return (0);
@@ -115,7 +115,7 @@ static void	getcwd_is_null(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 	else
 	{
 		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
 }
 
@@ -137,6 +137,6 @@ void	builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd)
 	else
 	{
 		error_logger("cd: ", cmd[1], ": No such file or directory", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 	}
 }

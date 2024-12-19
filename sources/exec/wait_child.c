@@ -14,7 +14,7 @@
 
 static int	update_exitcode(int wstat)
 {
-	if (WIFSIGNALED(wstat) != SUCCESS)
+	if (WIFSIGNALED(wstat) != 0)
 		return (ERR_SIG + WTERMSIG(wstat));
 	return (WEXITSTATUS(wstat));
 }
@@ -31,7 +31,7 @@ void	wait_children(t_shell *ms)
 	while (i <= ms->index)
 	{
 		waitpid(ms->pids[i], &wstat, 0);
-		ms->excode = update_exitcode(wstat);
+		ms->exitcode = update_exitcode(wstat);
 		i++;
 	}
 }

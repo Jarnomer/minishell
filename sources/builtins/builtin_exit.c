@@ -60,7 +60,7 @@ void	builtin_exit(t_shell *ms, char **cmd)
 	{
 		ft_putstr_fd("exit\n", 1);
 		error_logger("exit: ", "", "too many arguments", ms);
-		ms->excode = 1;
+		ms->exitcode = 1;
 		return ;
 	}
 	if (cmd[1] && ft_atoi(cmd[1]) > -1)

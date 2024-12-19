@@ -17,10 +17,10 @@ static void	redirect_outfd(t_module *mod, t_shell *ms)
 	if (!mod->outfiles && ms->forks == 1)
 		return ;
 	else if (!mod->outfiles && ms->index != ms->forks - 1
-		&& dup2(ms->pipefd[WR_END], STDOUT) == FAILURE)
+		&& dup2(ms->pipefd[WR_END], STDOUT) == -1)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->outfiles != NULL
-		&& dup2(mod->outfd, STDOUT) == FAILURE)
+		&& dup2(mod->outfd, STDOUT) == -1)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 }
 
@@ -29,10 +29,10 @@ static void	redirect_infd(t_module *mod, t_shell *ms)
 	if (!mod->infiles && ms->forks == 1)
 		return ;
 	else if (!mod->infiles && ms->index != 0
-		&& dup2(ms->tempfd, STDIN) == FAILURE)
+		&& dup2(ms->tempfd, STDIN) == -1)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	else if (mod->infiles != NULL
-		&& dup2(mod->infd, STDIN) == FAILURE)
+		&& dup2(mod->infd, STDIN) == -1)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 }
 

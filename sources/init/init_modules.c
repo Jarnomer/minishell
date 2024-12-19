@@ -70,7 +70,7 @@ int	init_modules(char *input, t_shell *ms)
 	t_module	*new;
 
 	if (!input || !*input || error_syntax(ms->input, ms) || empty_prompt(input))
-		return (FAILURE);
+		return (-1);
 	while (*input)
 	{
 		while (ft_isspace(*input))
@@ -82,12 +82,12 @@ int	init_modules(char *input, t_shell *ms)
 		safe_substr(&new->input, input, temp, ms);
 		append_module(&ms->mods, new);
 		if (error_syntax(new->input, ms))
-			return (FAILURE);
+			return (-1);
 		input = temp;
 		if (*input)
 			input++;
 	}
 	ms->forks = command_count(ms->mods);
 	ms->pids = safe_calloc(ms->forks * sizeof(pid_t), ms);
-	return (SUCCESS);
+	return (0);
 }

@@ -23,7 +23,7 @@ static int	read_outfile(char *file, int mode)
 static int	error_occured(t_parser *outfile, char *errmsg, t_shell *ms)
 {
 	error_logger(outfile->content, ": ", errmsg, ms);
-	return (FAILURE);
+	return (-1);
 }
 
 static int	directory_exists(char *content, t_shell *ms)
@@ -36,8 +36,8 @@ static int	directory_exists(char *content, t_shell *ms)
 	len = ft_strlen(content) - ft_strlen(end);
 	folder = safe_trash(ft_substr(content, 0, len), ALLOCATED, ms);
 	if (opendir(folder) == NULL)
-		return (FAILURE);
-	return (SUCCESS);
+		return (-1);
+	return (0);
 }
 
 static int	check_outfile(t_parser *outfile, t_shell *ms)
@@ -47,17 +47,17 @@ static int	check_outfile(t_parser *outfile, t_shell *ms)
 	else if (opendir(outfile->content) != NULL)
 		return (error_occured(outfile, MSG_FLDR, ms));
 	else if (ft_strchr(outfile->content, '/')
-		&& directory_exists(outfile->content, ms) == FAILURE)
+		&& directory_exists(outfile->content, ms) == -1)
 		return (error_occured(outfile, MSG_FILE, ms));
-	else if (access(outfile->content, F_OK) == SUCCESS
-		&& access(outfile->content, W_OK) == FAILURE)
+	else if (access(outfile->content, F_OK) == 0
+		&& access(outfile->content, W_OK) == -1)
 		return (error_occured(outfile, MSG_PERM, ms));
-	return (SUCCESS);
+	return (0);
 }
 
 t_parser	*open_outfile(t_parser *outfile, t_module *mod, t_shell *ms)
 {
-	if (check_outfile(outfile, ms) == FAILURE)
+	if (check_outfile(outfile, ms) == -1)
 		return (NULL);
 	if (outfile->next != NULL)
 	{

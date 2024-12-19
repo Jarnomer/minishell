@@ -17,22 +17,22 @@ static void	exit_buildin(t_module *mod, t_shell *ms)
 	if (ms->forks == 1 && is_builtin2(mod))
 		return ;
 	free_exit(ms);
-	exit(ms->excode);
+	exit(ms->exitcode);
 }
 
 static int	handle_redirect(t_shell *ms, t_module *mod)
 {
 	if ((mod->infiles || mod->outfiles)
-		&& parse_files(mod, ms) == FAILURE)
-		return (FAILURE);
-	return (SUCCESS);
+		&& parse_files(mod, ms) == -1)
+		return (-1);
+	return (0);
 }
 
 void	execute_builtin(t_shell *ms, t_module *mod)
 {
 	mod->cmd = safe_double(mod->command, ms);
 	if (ms->forks == 1 && is_builtin2(mod) && handle_redirect(ms, mod))
-		ms->excode = 1;
+		ms->exitcode = 1;
 	else if (!ft_strncmp("echo", mod->cmd[0], 5))
 		builtin_echo(ms, mod->cmd);
 	else if (!ft_strncmp("cd", mod->cmd[0], 3))

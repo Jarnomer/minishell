@@ -53,5 +53,5 @@ void	builtin_echo(t_shell *ms, char **cmd)
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
-	ms->excode = 0;
+	ms->exitcode = 0;
 }

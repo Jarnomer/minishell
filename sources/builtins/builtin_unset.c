@@ -64,7 +64,7 @@ void	builtin_unset(t_shell *ms, char **cmd, int i)
 		else
 		{
 			error_logger("unset: ", cmd[i], ": not a valid identifier", ms);
-			ms->excode = 1;
+			ms->exitcode = 1;
 		}
 		i++;
 	}

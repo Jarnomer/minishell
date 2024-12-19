@@ -28,7 +28,7 @@ static void	child_process(t_module *mod, t_shell *ms)
 	t_parser	*cmd;
 
 	if ((mod->infiles || mod->outfiles)
-		&& parse_files(mod, ms) == FAILURE)
+		&& parse_files(mod, ms) == -1)
 		error_exit(ERR_FILE, NULL, NULL, ms);
 	redirect_fds(mod, ms);
 	close_fds(ms);
@@ -53,7 +53,7 @@ static void	parent_process(t_shell *ms)
 static void	fork_process(t_module *mod, t_shell *ms)
 {
 	ms->pids[ms->index] = fork();
-	if (ms->pids[ms->index] == FAILURE)
+	if (ms->pids[ms->index] == -1)
 		error_fatal(errno, MSG_FORK, ms);
 	else if (ms->pids[ms->index] != 0)
 		parent_process(ms);
@@ -76,7 +76,7 @@ void	execute_children(t_shell *ms)
 	while (ms->index <= fork_limit)
 	{
 		if (ms->index <= pipe_limit
-			&& pipe(ms->pipefd) == FAILURE)
+			&& pipe(ms->pipefd) == -1)
 			error_fatal(errno, MSG_PIPE, ms);
 		if (ms->forks == 1 && is_builtin2(mod))
 			execute_builtin(ms, mod);

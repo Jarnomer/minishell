@@ -26,16 +26,16 @@ static int	handle_outfile(t_parser **outfile, t_module *mod, t_shell *ms)
 {
 	*outfile = open_outfile(*outfile, mod, ms);
 	if (!*outfile)
-		return (FAILURE);
-	return (SUCCESS);
+		return (-1);
+	return (0);
 }
 
 static int	handle_indirect(t_parser **infile, t_module *mod, t_shell *ms)
 {
 	*infile = open_infile(*infile, mod, ms);
 	if (!*infile)
-		return (FAILURE);
-	return (SUCCESS);
+		return (-1);
+	return (0);
 }
 
 static char	*find_redirect(char *input)
@@ -73,12 +73,12 @@ int	parse_files(t_module *mod, t_shell *ms)
 		if (!*input)
 			break ;
 		if (*input == INDIRECT
-			&& handle_indirect(&infile, mod, ms) == FAILURE)
-			return (FAILURE);
+			&& handle_indirect(&infile, mod, ms) == -1)
+			return (-1);
 		else if (*input == OUTDIRECT
-			&& handle_outfile(&outfile, mod, ms) == FAILURE)
-			return (FAILURE);
+			&& handle_outfile(&outfile, mod, ms) == -1)
+			return (-1);
 		input = prep_next_redirect(input);
 	}
-	return (SUCCESS);
+	return (0);
 }
