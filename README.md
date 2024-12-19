@@ -57,7 +57,7 @@ cd minishell && make all
 make run
 ```
 
-You can use the following features as you would in bash `shell` using the `terminal`.
+You can use the following `features` as you would in bash shell using the `terminal`.
 
 | Feature               | Description                                                                             |
 |-----------------------|-----------------------------------------------------------------------------------------|
@@ -67,7 +67,7 @@ You can use the following features as you would in bash `shell` using the `termi
 | Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                |
 | Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.       |
 
-It also supports these redirect operators and control sequences.
+It also supports these `redirect` operators and `control` sequences.
 
 | Operator    | Description                      |
 |-------------|----------------------------------|
@@ -82,7 +82,7 @@ It also supports these redirect operators and control sequences.
 | `Ctrl-D`    | Exits the shell.                     |
 | `Ctrl-\`    | Does nothing.                        |
 
-Finally here is the list of features buildin commmands.
+Finally here is the list of featured buildin `commmands`.
 
 | Command         | Description                                                                                 |
 |-----------------|---------------------------------------------------------------------------------------------|
@@ -96,6 +96,11 @@ Finally here is the list of features buildin commmands.
 
 ## 🚀 Details
 
+Once input is given by the user, it is splitted into `modules` based one the `pipeline`.
+
+Each module is then parsed and devided into `command`, `infile` and `outfile` arguments.
+
+Parser also checks if arguments should be expanded (`$`) or `joined` with previous argument. 
 
 ## ♻️ Resources
 
