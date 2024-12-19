@@ -31,7 +31,7 @@
 
 ## 📝 General
 
-Goal of the project is to create `shell` which supports basic `bash` functionalities.
+Goal of the project is to create `shell` which supports basic `bash` functionality.
 
 These include file redirections, signal handling and pipes among others.
 
@@ -102,7 +102,7 @@ Each module is then parsed and devided into `command`, `infile` and `outfile` ar
 
 Parser also checks if arguments should be expanded `$` or `joined` with previous argument.
 
-After modules are prepared, file operations are processed where heredocs are taken first.
+After modules are prepared, file operations are processed where heredocs are given precedence.
 
 ## ♻️ Resources
 
