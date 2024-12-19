@@ -57,19 +57,19 @@ cd minishell && make all
 make run
 ```
 
-You can use following features as you would in bash.
+You can use the following features as you would in bash `shell` using the `terminal`.
 
-| Feature                  | Description                                                                                     |
-|--------------------------|-------------------------------------------------------------------------------------------------|
-| Single Quotes         | Prevents shell from interpreting meta-characters in quoted (`'`) sequences                     |
-| Double Quotes         | Prevents shell from interpreting meta-characters in quoted (`"`) sequences, except `$`.     |
-| Pipes                 | Connects command outputs and inputs using `\|` the pipeline.             |
-| Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                     |
-| Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.                    |
+| Feature               | Description                                                                             |
+|-----------------------|-----------------------------------------------------------------------------------------|
+| Single Quotes         | Prevents shell from interpreting meta-characters in quoted (`'`) sequences.             |
+| Double Quotes         | Prevents shell from interpreting meta-characters in quoted (`"`) sequences, except `$`. |
+| Pipes                 | Connects command outputs and inputs using `\|` the pipeline.                            |
+| Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                |
+| Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.       |
 
 It also supports these redirect operators and control sequences.
 
-| Redirection | Description                      |
+| Operator    | Description                      |
 |-------------|----------------------------------|
 | `<`         | Redirects input.                 |
 | `>`         | Redirects output.                |
@@ -84,15 +84,15 @@ It also supports these redirect operators and control sequences.
 
 Finally here is the list of features buildin commmands.
 
-| Command | Description                                                      |
-|------------------|------------------------------------------------------------------|
-| `echo`          | Prints arguments to the standard output. Supports the `-n` option to omit the trailing newline. |
-| `cd`            | Changes the current directory to the specified relative or absolute path. |
-| `pwd`           | Prints the current working directory. No options are supported.  |
-| `export`        | Sets environment variables. No options are supported.            |
-| `unset`         | Unsets environment variables. No options are supported.          |
-| `env`           | Displays the current environment variables. No options or arguments are supported. |
-| `exit`          | Exits the shell. No options are supported.                       |
+| Command         | Description                                                                                 |
+|-----------------|---------------------------------------------------------------------------------------------|
+| `echo`          | Prints arguments to the standard output. Supports `-n` option to omit the trailing newline. |
+| `cd`            | Changes the current directory to the specified relative or absolute path.                   |
+| `pwd`           | Prints the current working directory. No options are supported.                             |
+| `export`        | Sets environment variables. No options are supported.                                       |
+| `unset`         | Unsets environment variables. No options are supported.                                     |
+| `env`           | Displays the current environment variables. No options or arguments are supported.          |
+| `exit`          | Exits the shell. No options are supported.                                                  |
 
 ## 🚀 Details
 
