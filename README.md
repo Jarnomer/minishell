@@ -61,8 +61,8 @@ You can use the following `features` as you would in bash shell using the `termi
 
 | Feature               | Description                                                                             |
 |-----------------------|-----------------------------------------------------------------------------------------|
-| Single Quotes         | Prevents shell from interpreting meta-characters in quoted (`'`) sequences.             |
-| Double Quotes         | Prevents shell from interpreting meta-characters in quoted (`"`) sequences, except `$`. |
+| Single Quotes         | Prevents shell from interpreting meta-characters in quoted `'` sequences.               |
+| Double Quotes         | Prevents shell from interpreting meta-characters in quoted `"` sequences, except `$`.   |
 | Pipes                 | Connects command outputs and inputs using `\|` the pipeline.                            |
 | Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                |
 | Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.       |
@@ -100,7 +100,7 @@ Once input is given by the user, it is splitted into `modules` based one the `pi
 
 Each module is then parsed and devided into `command`, `infile` and `outfile` arguments.
 
-Parser also checks if arguments should be expanded (`$`) or `joined` with previous argument. 
+Parser also checks if arguments should be expanded `$` or `joined` with previous argument. 
 
 ## ♻️ Resources
 
