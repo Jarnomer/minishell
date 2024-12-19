@@ -61,11 +61,11 @@ You can use following features as you would in bash.
 
 | Feature                  | Description                                                                                     |
 |--------------------------|-------------------------------------------------------------------------------------------------|
-| Single Quotes (`'`)      | Prevent the shell from interpreting meta-characters in the quoted sequence.                     |
-| Double Quotes (`"`)      | Prevent the shell from interpreting meta-characters in the quoted sequence, except for `$`.     |
-| Pipes (`|`)              | Connect the output of one command to the input of the next command in the pipeline.             |
-| Environment Variables (`$`) | Expand to their values when `$` is followed by a sequence of characters.                     |
-| Exit Status (`$?`)       | Expand to the exit status of the most recently executed foreground pipeline.                    |
+| Single Quotes         | Prevents shell from interpreting meta-characters in the quoted (`'`) sequence.                     |
+| Double Quotes         | Prevents shell from interpreting meta-characters in the quoted (`"`) sequence, except for `$`.     |
+| Pipes                 | Connects command outputs and inputs in the pipeline `\|`.             |
+| Environment Variables | Expand to their values when `$` is followed by a sequence of characters.                     |
+| Exit Status           | Expand `$?` to the exit status of the most recently executed foreground pipeline.                    |
 
 I also supports these redirect operators and control sequences.
 
