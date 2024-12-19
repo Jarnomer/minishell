@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-	<b><i>Limited recreation of original Unix shell</i></b><br>
+	<b><i>Limited recreation of original Unix 🐧 shell</i></b><br>
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@ GNU `make`, `gcc` and `readline` are required to build and compile the project.
 ⚠️ Shell was designed for `linux`. Extra steps might be required for MacOS and Windows. ⚠️
 
 ```bash
-git clone https://github.com/Jarnomer/minishell.git
+git clone --recurse-submodules https://github.com/Jarnomer/minishell.git
 ```
 
 ```bash

@@ -1,0 +1,9 @@
+minishell
+*test*
+*build
+*.vscode
+*.log
+*.pdf
+*.txt
+*.sh
+*.a
