@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/26 17:35:47 by vkinaret          #+#    #+#             */
-/*   Updated: 2024/05/16 19:29:36 by jmertane         ###   ########.fr       */
+/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
+/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,190 +15,92 @@
 
 # include <libft.h>
 # include <error.h>
+# include <utils.h>
+# include <env.h>
+# include <vec.h>
 
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
 # include <stdbool.h>
 # include <fcntl.h>
-# include <stdio.h>
-# include <errno.h>
-# include <string.h>
-# include <dirent.h>
-# include <termios.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
-# include <sys/types.h>
+# include <errno.h>
+
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define BR		"\001\033[1;31m\002"
-# define Y		"\001\033[0;33m\002"
-# define T		"\001\033[0m\002"
-# define V		"\001\033[35m\002"
-# define G		"\001\033[32m\002"
+# define PROMPT "minishell$ "
+# define METACHAR "|<>&()"
 
-# define PERMS	0664
-
-extern int	g_signal;
-
-typedef enum e_checker
+typedef enum e_token_type
 {
-	ALLOCATE = 10,
-	ALLOCATED,
-}	t_checker;
+	TOK_WORD,
+	TOK_PIPE,
+	TOK_REDIR_IN,
+	TOK_REDIR_OUT,
+	TOK_HEREDOC,
+	TOK_APPEND,
+	TOK_AND,
+	TOK_OR,
+	TOK_LPAREN,
+	TOK_RPAREN,
+	TOK_EOF
+}	t_token_type;
 
-typedef enum e_signal
+typedef enum e_redir_type
 {
-	SIG_PARENT,
-	SIG_HEREDOC,
-	SIG_CHILD
-}	t_signal;
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APPEND,
+	REDIR_HEREDOC
+}	t_redir_type;
 
-typedef enum e_pipe
+typedef enum e_ast_type
 {
-	RD_END,
-	WR_END
-}	t_pipe;
+	AST_CMD,
+	AST_PIPE,
+	AST_AND,
+	AST_OR,
+	AST_SUBSHELL
+}	t_ast_type;
 
-typedef enum e_redirect
+typedef struct s_token
 {
-	STDIN,
-	STDOUT,
-	STDERR,
-	INFILE,
-	HEREDOC,
-	OUTFILE,
-	APPEND,
-}	t_redirect;
+	t_token_type	type;
+	char			*value;
+}	t_token;
 
-typedef enum e_syntax
+typedef struct s_redir
 {
-	PIPE = 124,
-	DOLLAR = 36,
-	INDIRECT = 60,
-	OUTDIRECT = 62,
-	SINGLEQUOTE = 39,
-	DOUBLEQUOTE = 34,
-	QUESTIONMARK = 63,
-}	t_syntax;
+	t_redir_type	type;
+	char			*target;
+	bool			quoted;
+	int				fd;
+}	t_redir;
 
-typedef struct s_parser
+typedef struct s_cmd
 {
-	char			*content;
-	struct s_parser	*next;
-	struct s_parser	*prev;
-	bool			joinable;
-	int				meta;
-	int				mode;
-}	t_parser;
+	t_vec	args;
+	t_vec	redirs;
+}	t_cmd;
 
-typedef struct s_module
+typedef struct s_ast
 {
-	char			*input;
-	struct s_module	*next;
-	t_parser		*infiles;
-	t_parser		*outfiles;
-	t_parser		*command;
-	char			**cmd;
-	int				outfd;
-	int				infd;
-}	t_module;
+	t_ast_type		type;
+	t_cmd			*cmd;
+	struct s_ast	*left;
+	struct s_ast	*right;
+	t_vec			redirs;
+}	t_ast;
 
 typedef struct s_shell
 {
-	char			**envp;
-	char			*prompt;
-	char			*input;
-	int				exitcode;
-	int				envp_size;
-	int				pipefd[2];
-	int				tempfd;
-	int				forks;
-	int				index;
-	char			*cwd;
-	pid_t			*pids;
-	t_module		*mods;
-	t_parser		*trash;
+	t_vec	env;
+	int		exit_status;
+	bool	interactive;
+	bool	running;
 }	t_shell;
-
-//			Initialization
-void		init_shell(t_shell *ms);
-int			init_modules(char *input, t_shell *ms);
-
-//			Signals
-void		init_signals(int mode);
-
-//			Parsing
-void		parse_modules(t_module **lst, t_shell *ms);
-char		*parse_input(char *argv, t_parser *new, t_module *mod);
-void		parse_argv(t_parser *new, t_module *mod, t_shell *ms);
-void		parse_envps(t_parser *new, t_shell *ms);
-void		parse_expands(t_module *mod, t_shell *ms);
-int			parse_files(t_module *mod, t_shell *ms);
-
-//			Parser Utils
-void		preview_content(t_parser *prev, t_parser *new);
-void		parser_append(t_parser **lst, t_parser *new);
-int			parser_length(t_parser *lst);
-t_parser	*parser_last(t_parser *lst);
-void		parser_delone(t_parser *lst);
-
-//			Parser Helpers
-char		*find_breakpoint(char *argv);
-bool		ft_hasspace(char *argv);
-int			ft_isredirect(char c);
-int			ft_ismeta(char c);
-
-//			Child processes
-void		execute_children(t_shell *ms);
-void		redirect_fds(t_module *mod, t_shell *ms);
-void		execute_command(t_module *mod, t_shell *ms);
-void		wait_children(t_shell *ms);
-
-//			Open files
-t_parser	*open_infile(t_parser *infile, t_module *mod, t_shell *ms);
-t_parser	*open_outfile(t_parser *outfile, t_module *mod, t_shell *ms);
-void		open_heredocs(t_module *mod, t_shell *ms);
-
-//			Free memory
-void		free_runtime(t_shell *ms);
-void		free_exit(t_shell *ms);
-void		close_fds(t_shell *ms);
-void		free_double(char ***arr);
-void		free_single(char **str);
-
-//			Error handling
-void		error_exit(int errcode, char *msg1, char *msg2, t_shell *ms);
-void		error_logger(char *msg1, char *msg2, char *msg3, t_shell *ms);
-int			error_syntax(char *input, t_shell *ms);
-void		error_fatal(int errcode, char *errmsg, t_shell *ms);
-
-//			Safety wrappers
-void		*safe_calloc(size_t n, t_shell *ms);
-char		*safe_trash(char *str, int alloc_flag, t_shell *ms);
-char		**safe_double(t_parser *lst, t_shell *ms);
-void		safe_strdup(char **dst, char *src, t_shell *ms);
-void		safe_substr(char **dst, char *stt, char *end, t_shell *ms);
-void		safe_strtrim(char **src, char *set, t_shell *ms);
-void		safe_strjoin(char **dst, char *s1, char *s2, t_shell *ms);
-
-//			Builtin functions
-void		builtin_echo(t_shell *ms, char **cmd);
-void		builtin_cd(t_shell *ms, char **cmd, char *pwd, char *oldpwd);
-void		builtin_env(t_shell *ms, int i, int j);
-void		builtin_export(t_shell *ms, char **cmd, int i);
-void		builtin_unset(t_shell *ms, char **cmd, int i);
-void		builtin_pwd(t_shell *ms);
-void		builtin_exit(t_shell *ms, char **cmd);
-
-//			Builtin utils
-bool		is_builtin(t_module *mod);
-bool		is_builtin2(t_module *mod);
-void		execute_builtin(t_shell *ms, t_module *mod);
-
-//			Envp utils
-void		envp_print(t_shell *ms, int i, int flag);
-void		envp_update(t_shell *ms, char *content);
-void		envp_add(t_shell *ms, char *content);
-void		envp_remove(t_shell *ms, char *content);
-char		*envp_exists(char *name, t_shell *ms);
 
 #endif

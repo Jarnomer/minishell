@@ -1,60 +1,83 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/04 18:32:23 by jmertane          #+#    #+#             */
-/*   Updated: 2024/05/17 16:03:42 by jmertane         ###   ########.fr       */
+/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
+/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include <execute.h>
+#include <lexer.h>
+#include <parser.h>
+#include <debug.h>
+#include <sig.h>
 
-int	g_signal = 0;
-
-static inline void	execute_shell(t_shell *ms)
+static void	shell_cleanup(t_shell *shell)
 {
-	parse_modules(&ms->mods, ms);
-	execute_children(ms);
-	wait_children(ms);
+	vec_free(&shell->env, free_str);
+	rl_clear_history();
 }
 
-static inline void	exit_shell(t_shell *ms)
+static void	run_shell(t_shell *shell)
 {
-	ft_putendl_fd("exit", STDOUT);
-	free_exit(ms);
-	exit(ms->exitcode);
-}
+	char	*line;
 
-static void	hook_sigint(t_shell *ms)
-{
-	if (g_signal != SIGINT)
-		return ;
-	g_signal = NOERROR;
-	ms->exitcode = 1;
-}
-
-int	main(void)
-{
-	t_shell	ms;
-
-	init_shell(&ms);
-	while (true)
+	while (shell->running)
 	{
-		init_signals(SIG_PARENT);
-		ms.input = readline(ms.prompt);
-		hook_sigint(&ms);
-		if (!ms.input)
-			exit_shell(&ms);
-		else if (*ms.input)
-			add_history(ms.input);
-		if (!init_modules(ms.input, &ms))
-			execute_shell(&ms);
-		hook_sigint(&ms);
-		free_runtime(&ms);
+		line = readline(PROMPT);
+		if (!line)
+		{
+			if (shell->interactive)
+				printf("exit\n");
+			break ;
+		}
+		if (*line)
+		{
+			add_history(line);
+			execute_shell(shell, line);
+		}
+		free(line);
 	}
-	free_exit(&ms);
-	return (ms.exitcode);
+}
+
+static void	env_init(t_vec *env, char **envp)
+{
+	size_t	i;
+
+	if (!envp)
+		return ;
+	i = 0;
+	while (envp[i])
+	{
+		vec_push(env, safe_strdup(envp[i]));
+		i++;
+	}
+}
+
+static void	shell_init(t_shell *shell, char **envp)
+{
+	shell->env = vec_new(0);
+	env_init(&shell->env, envp);
+	shell->exit_status = 0;
+	shell->interactive = isatty(STDIN_FILENO);
+	shell->running = true;
+	setup_signals_interactive();
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	t_shell	shell;
+
+	shell_init(&shell, envp);
+	if (argc > 1 && !ft_strcmp(argv[1], "-d"))
+		run_debug_mode(&shell);
+	else
+		run_shell(&shell);
+	shell_cleanup(&shell);
+	return (shell.exit_status);
 }

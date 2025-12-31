@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/05/04 17:42:13 by jmertane          #+#    #+#              #
-#    Updated: 2024/05/09 17:26:20 by jmertane         ###   ########.fr        #
+#    Created: 2023/11/30 15:32:20 by jmertane          #+#    #+#              #
+#    Updated: 2024/02/15 11:04:37 by jmertane         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,8 +24,6 @@ BUILDLOG  := build.log
 LIBFTDIR  := ./libft
 LIBFTBIN  := libft.a
 
-TESTCASE  := ./$(NAME)
-
 # **************************************************************************** #
 #    COMMANDS
 # **************************************************************************** #
@@ -38,7 +36,8 @@ SCREENCLEAR := printf "\033c"
 # **************************************************************************** #
 
 CC         := cc
-CFLAGS     := -Wall -Werror -Wextra -lreadline
+CFLAGS     := -Wall -Werror -Wextra
+LDFLAGS    := -lreadline
 CPPFLAGS   := -c -MMD -MP
 DEBUGFLAGS := -g -fsanitize=address
 MAKEFLAGS  += --no-print-directory -j4
@@ -63,50 +62,70 @@ VLGFLAGS := --leak-check=full \
 #    SOURCES
 # **************************************************************************** #
 
-MODULES := builtins \
+MODULES := lexer \
            parser \
-           exec \
-           free \
-           open \
-           init \
+           expand \
+           execute \
+           builtin \
+           signal \
            error \
+           debug \
            utils
 
-SOURCES = main \
-          signals \
-          init_shell \
-          init_modules \
-          parse_mods \
-          parse_input \
-          parse_envps \
-          parse_expand \
-          parse_files \
-          parser_utils \
-          parser_helpers \
-          open_infile \
-          open_outfile \
-          open_heredoc \
-          exec_child \
-          exec_redirect \
-          exec_command \
-          wait_child \
-          error_syntax \
-          error_utils \
-          free_runtime \
-          free_utils \
-          close_fds \
-          safe_allocs \
-          safe_strings \
-          builtin_cd \
-          builtin_echo \
-          builtin_env \
-          builtin_export \
-          builtin_unset \
-          builtin_pwd \
-          builtin_exit \
-          builtin_utils \
-          envp_utils \
-          envp_print
+SOURCES := main \
+           env \
+           sig \
+           sig_utils \
+           err_print \
+           err_check \
+           lexer \
+           lex_token \
+           lex_oper \
+           lex_word \
+           lex_utils \
+           parser \
+           parse_valid \
+           parse_rules \
+           parse_shell \
+           parse_ast \
+           parse_cmd \
+           parse_redir \
+           parse_utils \
+           expand \
+           exp_var \
+           exp_word \
+           exp_wildc \
+           exp_wc_utils \
+           exp_utils \
+           execute \
+           exec_ast \
+           exec_cmd \
+           exec_pipe \
+           exec_subs \
+           exec_redir \
+           exec_path \
+           exec_hdoc \
+           exec_utils \
+           builtin \
+           builtin_echo \
+           builtin_exit \
+           builtin_pwd \
+           builtin_cd \
+           builtin_env \
+           builtin_unset \
+           builtin_export \
+           builtin_utils \
+           debug \
+           debug_lexer \
+           debug_parser \
+           debug_types \
+           debug_utils \
+           vec \
+           vec_utils \
+           safe_str \
+           try_sysc \
+           fd_utils \
+           utils
 
 SOURCES := $(addsuffix .c, $(SOURCES))
 
@@ -127,7 +146,7 @@ vpath %.c $(SOURCEDIR)
 all: $(NAME)
 
 $(NAME): $(OBJECTS)
-	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) -o $@
+	$(CC) $(CFLAGS) $^ $(LIBFTDIR)/$(LIBFTBIN) $(LDFLAGS) -o $@
 	printf "$(V)$(B)Binary:$(T)$(Y) $(NAME) $(T)\n"
 
 $(OBJECTS): $(LIBFTDIR)/$(LIBFTBIN)
@@ -137,9 +156,11 @@ libft: $(LIBFTDIR)/$(LIBFTBIN)
 $(LIBFTDIR)/$(LIBFTBIN): 
 	@make -C $(LIBFTDIR) all
 
+bonus: all
+
 run: all
 	$(SCREENCLEAR)
-	$(TESTCASE)
+	./$(NAME)
 
 re: fclean
 	make all
@@ -148,13 +169,20 @@ debug: CFLAGS += $(DEBUGFLAGS)
 debug: re
 
 nm:
-	$(foreach d, $(HEADERDIR), $(foreach h, $(wildcard $(d)/*), \
-		norminette -R CheckDefine $(h);))
-	$(foreach d, $(SOURCEDIR), $(foreach s, $(wildcard $(d)/*), \
-		norminette -R CheckForbiddenSourceHeader $(s);))
+ifneq ($(shell command -v norminette >/dev/null 2>&1 && echo 1 || echo 0), 1)
+	@printf "$(R)$(B)Error: norminette: $(Y)command not found$(T)\n"; exit 1
+endif
+	$(foreach h, $(HEADERDIR), norminette -R CheckDefine $(h))
+	$(foreach s, $(SOURCEDIR), norminette -R CheckForbiddenSourceHeader $(s))
 
 leaks: all
-	valgrind $(VLGFLAGS) $(TESTCASE)
+	valgrind $(VLGFLAGS) ./$(NAME)
+	$(call report_cmd, $(LEAKSLOG))
+
+define report_cmd
+	$(SCREENCLEAR)
+	sed -n '/ERROR SUMMARY/,$$p' $1 | cut --complement -d' ' -f1
+endef
 
 # **************************************************************************** #
 #    BUILD
@@ -215,8 +243,8 @@ $(foreach build, $(BUILDDIR), $(eval $(call build_cmd, $(build))))
 #    PHONY
 # **************************************************************************** #
 
-.PHONY: all libft re nm
-.PHONY: debug leaks run
+.PHONY: all libft bonus re nm
+.PHONY: run debug leaks
 .PHONY: clean fclean
 
 .SILENT:
