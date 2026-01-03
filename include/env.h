@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ENV_H
 # define ENV_H
-
-# include <vec.h>
 
 typedef struct s_shell	t_shell;
 

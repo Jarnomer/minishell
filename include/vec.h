@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   vec.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VEC_H
 # define VEC_H
 
-# include <stdlib.h>
-# include <stdbool.h>
+# include <minishell.h>
 
 # define VEC_INIT_CAP 8
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,21 @@
 # define MINISHELL_H
 
 # include <libft.h>
-# include <error.h>
 # include <utils.h>
+# include <error.h>
 # include <env.h>
-# include <vec.h>
 
+# include <stdbool.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <string.h>
+# include <errno.h>
 # include <stdio.h>
-# include <stdbool.h>
 # include <fcntl.h>
+# include <signal.h>
+# include <dirent.h>
 # include <sys/wait.h>
 # include <sys/stat.h>
-# include <errno.h>
 
 # include <readline/readline.h>
 # include <readline/history.h>

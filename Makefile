@@ -76,8 +76,8 @@ SOURCES := main \
            env \
            sig \
            sig_utils \
+           error \
            err_print \
-           err_check \
            lexer \
            lex_token \
            lex_oper \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 # define EXECUTE_H
 
 # include <minishell.h>
+# include <builtin.h>
 # include <lexer.h>
 # include <parser.h>
 # include <expand.h>
+# include <sig.h>
 
 typedef struct s_exec
 {

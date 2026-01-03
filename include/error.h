@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef ERROR_H
 # define ERROR_H
+
+# include <minishell.h>
 
 # define C_BOLD_RED			"\033[1;31m"
 # define C_YELLOW			"\033[0;33m"
@@ -39,6 +41,7 @@ typedef enum e_exit_code
 	EC_SUCCESS = 0,
 	EC_FAILURE = 1,
 	EC_SYNTAX = 2,
+	EC_TOOMANY = 2,
 	EC_NOEXEC = 126,
 	EC_NOTFOUND = 127,
 	EC_SIGNAL = 128

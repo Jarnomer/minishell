@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   sig.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,9 @@
 # define SIG_H
 
 # include <minishell.h>
-# include <signal.h>
 
 # define SIG_EXITCODE 130
 
-/*
-** Global variable for signal
-** Stores the signal number received (0 if none)
-*/
 extern volatile sig_atomic_t	g_signal;
 
 void	setup_signals_interactive(void);
