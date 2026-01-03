@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,27 +18,20 @@ t_vec	vec_new(size_t init_cap)
 
 	if (init_cap == 0)
 		init_cap = VEC_INIT_CAP;
-	v.data = malloc(sizeof(void *) * init_cap);
-	if (!v.data)
-	{
-		perror("minishell");
-		exit(EXIT_FAILURE);
-	}
+	v.data = safe_calloc(sizeof(void *) * init_cap);
 	v.cap = init_cap;
 	v.len = 0;
 	return (v);
 }
 
-static bool	vec_grow(t_vec *v)
+static void	vec_grow(t_vec *v)
 {
 	void	**new_data;
 	size_t	new_cap;
 	size_t	i;
 
 	new_cap = v->cap * 2;
-	new_data = malloc(sizeof(void *) * new_cap);
-	if (!new_data)
-		return (false);
+	new_data = safe_calloc(sizeof(void *) * new_cap);
 	i = 0;
 	while (i < v->len)
 	{
@@ -48,7 +41,6 @@ static bool	vec_grow(t_vec *v)
 	free(v->data);
 	v->data = new_data;
 	v->cap = new_cap;
-	return (true);
 }
 
 bool	vec_push(t_vec *v, void *item)
@@ -56,13 +48,7 @@ bool	vec_push(t_vec *v, void *item)
 	if (!v || !v->data)
 		return (false);
 	if (v->len >= v->cap)
-	{
-		if (!vec_grow(v))
-		{
-			perror("minishell");
-			exit(EXIT_FAILURE);
-		}
-	}
+		vec_grow(v);
 	v->data[v->len] = item;
 	v->len++;
 	return (true);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exp_var.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@ static bool	is_valid_var_char(char c, bool first)
 	return (ft_isalnum(c) || c == '_');
 }
 
-/*
-** Extract variable name from string starting after $
-** Sets len to total chars consumed (including any special char)
-** Returns NULL if no valid variable name
-*/
 char	*get_var_name(const char *str, size_t *len)
 {
 	size_t	i;
@@ -36,6 +31,11 @@ char	*get_var_name(const char *str, size_t *len)
 		*len = 1;
 		return (safe_strdup("?"));
 	}
+	if (ft_isdigit(str[0]))
+	{
+		*len = 1;
+		return (safe_substr(str, 0, 1));
+	}
 	if (!is_valid_var_char(str[0], true))
 		return (NULL);
 	i = 0;
@@ -47,11 +47,6 @@ char	*get_var_name(const char *str, size_t *len)
 	return (safe_substr(str, 0, i));
 }
 
-/*
-** Expand variable name to its value
-** Handles $? specially for exit status
-** Returns empty string if variable not found
-*/
 char	*expand_var(char *name, t_shell *shell)
 {
 	char	*value;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token.c                                            :+:      :+:    :+:   */
+/*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,6 @@ void	lexer_free(t_lexer *lex)
 	vec_free(&lex->tokens, token_free);
 }
 
-/*
-** Set syntax error, optionally free pointer with deleter, return false
-** Pass NULL for del and ptr if no cleanup needed
-*/
 bool	lexer_error(t_lexer *lex, void (*del)(void *), void *ptr)
 {
 	lex->error = ERR_SYNTAX;
@@ -66,6 +62,6 @@ bool	lexer_tokenize(t_lexer *lex)
 		}
 	}
 	eof = token_new(TOK_EOF, NULL);
-	token_add_eof(lex, eof);
+	vec_push(&lex->tokens, eof);
 	return (lex->error == ERR_NONE);
 }

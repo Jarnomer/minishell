@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lex_word.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,19 @@ static bool	lexer_read_quoted(t_lexer *lex, char quote, char **word)
 {
 	char	*segment;
 	size_t	start;
+	char	quote_str[2];
 
 	start = lex->pos;
 	lexer_advance(lex);
 	while (lexer_peek(lex) && lexer_peek(lex) != quote)
 		lexer_advance(lex);
 	if (lexer_peek(lex) != quote)
+	{
+		quote_str[0] = quote;
+		quote_str[1] = '\0';
+		print_error_token(quote_str);
 		return (lexer_error(lex, NULL, NULL));
+	}
 	lexer_advance(lex);
 	segment = safe_substr(lex->input, start, lex->pos - start);
 	lexer_join_segment(word, segment);

@@ -49,7 +49,7 @@ int	builtin_cd(t_vec *args, t_shell *shell)
 	if (args->len > 2)
 	{
 		ft_dprintf(STDERR_FILENO, "%scd: %s\n", ERR_PROMPT, ERR_MSG_TOOMANY);
-		return (EC_FAILURE);
+		return (EC_TOOMANY);
 	}
 	target = get_cd_target(args, shell);
 	if (!target)

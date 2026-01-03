@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include <execute.h>
-#include <builtin.h>
-#include <sig.h>
 
 static void	exec_child(t_cmd *cmd, t_shell *shell, char *path)
 {

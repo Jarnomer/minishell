@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parse_valid.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <parser.h>
 
-/*
-** Check: unmatched parentheses
-*/
 static t_token	*validate_parentheses(t_vec *tokens)
 {
 	int		depth;
@@ -46,10 +43,6 @@ static t_token	*validate_parentheses(t_vec *tokens)
 	return (NULL);
 }
 
-/*
-** Check: no leading binary operator (|, &&, ||)
-** Check: no trailing binary operator or redirection
-*/
 static t_token	*validate_edges(t_vec *tokens)
 {
 	t_token	*first;
@@ -68,12 +61,6 @@ static t_token	*validate_edges(t_vec *tokens)
 	return (NULL);
 }
 
-/*
-** Check: no consecutive binary operators (cmd && || other)
-** Check: no empty parentheses ()
-** Check: no binary operator after open paren ((| cmd)
-** Check: no binary operator before close paren (cmd |)
-*/
 static t_token	*validate_sequence(t_vec *tokens)
 {
 	t_token	*prev;
@@ -98,9 +85,6 @@ static t_token	*validate_sequence(t_vec *tokens)
 	return (NULL);
 }
 
-/*
-** Check: redirection must be followed by WORD
-*/
 static t_token	*validate_redirections(t_vec *tokens)
 {
 	t_token	*curr;
@@ -119,10 +103,6 @@ static t_token	*validate_redirections(t_vec *tokens)
 	return (NULL);
 }
 
-/*
-** Validates token stream before parsing.
-** Returns NULL if valid, or pointer to offending token.
-*/
 t_token	*parser_validate(t_vec *tokens)
 {
 	t_token	*err_tok;

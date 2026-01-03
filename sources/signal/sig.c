@@ -3,24 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   sig.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sig.h>
 
-/*
-** Single global variable for signal number
-*/
 volatile sig_atomic_t	g_signal = 0;
 
-/*
-** Handler for SIGINT in interactive mode (ctrl-C at prompt)
-** Clears current line and displays new prompt
-*/
 static void	handle_sigint_interactive(int sig)
 {
 	g_signal = sig;
@@ -30,10 +23,6 @@ static void	handle_sigint_interactive(int sig)
 	rl_redisplay();
 }
 
-/*
-** Interactive mode: ctrl-C shows new prompt, ctrl-\ ignored
-** Used when waiting for user input at readline prompt
-*/
 void	setup_signals_interactive(void)
 {
 	struct sigaction	sa_int;
@@ -49,10 +38,6 @@ void	setup_signals_interactive(void)
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
 
-/*
-** Child process: restore default signal behavior
-** Children should terminate normally on signals
-*/
 void	setup_signals_child(void)
 {
 	struct sigaction	sa;
@@ -64,10 +49,6 @@ void	setup_signals_child(void)
 	sigaction(SIGQUIT, &sa, NULL);
 }
 
-/*
-** Parent during waitpid: ignore signals
-** Prevents parent from being interrupted while waiting
-*/
 void	setup_signals_ignore(void)
 {
 	struct sigaction	sa;

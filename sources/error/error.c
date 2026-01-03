@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,38 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <error.h>
 
-t_parser	parser_new(t_vec *tokens)
+int	check_cmd_error(const char *path)
 {
-	t_parser	p;
+	struct stat	st;
 
-	p.tokens = tokens;
-	p.pos = 0;
-	p.error = ERR_NONE;
-	return (p);
-}
-
-void	*parser_error(t_parser *p, void (*del)(void *), void *ptr)
-{
-	p->error = ERR_SYNTAX;
-	if (del)
-		del(ptr);
-	return (NULL);
-}
-
-t_ast	*parser_parse(t_parser *p)
-{
-	t_ast	*ast;
-
-	if (!p || !p->tokens || p->tokens->len == 0)
-		return (NULL);
-	if (parser_check(p, TOK_EOF))
-		return (NULL);
-	ast = parse_command_line(p);
-	if (!ast)
-		return (NULL);
-	if (!parser_check(p, TOK_EOF))
-		return (parser_error(p, ast_free, ast));
-	return (ast);
+	if (!path || !*path)
+	{
+		print_error_cmd("", ERR_MSG_CMD);
+		return (EC_NOTFOUND);
+	}
+	if (stat(path, &st) == -1)
+	{
+		print_error_cmd((char *)path, ERR_MSG_NOFILE);
+		return (EC_NOTFOUND);
+	}
+	if (S_ISDIR(st.st_mode))
+	{
+		print_error_cmd((char *)path, ERR_MSG_ISDIR);
+		return (EC_NOEXEC);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		print_error_cmd((char *)path, ERR_MSG_PERM);
+		return (EC_NOEXEC);
+	}
+	return (EC_SUCCESS);
 }

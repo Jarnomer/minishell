@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exp_wc_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,6 @@ static t_vec	sort_matches(t_vec *matches)
 	return (*matches);
 }
 
-/*
-** Recursive pattern matching for wildcard *
-** * matches any sequence (including empty)
-*/
 static int	match_pattern(const char *pattern, const char *str)
 {
 	if (*pattern == '\0')
@@ -77,10 +73,6 @@ static void	collect_matches(DIR *dir, char *pattern, t_vec *matches)
 	}
 }
 
-/*
-** Get all files in current directory matching pattern
-** Hidden files (starting with .) only match if pattern starts with .
-*/
 t_vec	get_matching_files(const char *pattern)
 {
 	DIR		*dir;

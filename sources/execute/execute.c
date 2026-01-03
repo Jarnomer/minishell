@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jankku <jankku@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/01 00:00:00 by jankku            #+#    #+#             */
-/*   Updated: 2025/01/01 00:00:00 by jankku           ###   ########.fr       */
+/*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
+/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <execute.h>
-#include <sig.h>
 
 t_exec	exec_new(t_shell *shell)
 {
@@ -65,15 +64,16 @@ void	execute_shell(t_shell *shell, char *line)
 	lex = lexer_new(line);
 	ctx.lex = &lex;
 	if (!lexer_tokenize(&lex))
-		return ;
-	if (!parse_input(&ctx))
-		return ;
-	expand_ast(ctx.ast, shell);
-	if (collect_heredocs(ctx.ast, shell) == -1)
 	{
-		exec_cleanup(&ctx);
+		shell->exit_status = EC_SYNTAX;
+		lexer_free(&lex);
 		return ;
 	}
+	if (!parse_input(&ctx))
+		return ((void)exec_cleanup(&ctx));
+	expand_ast(ctx.ast, shell);
+	if (collect_heredocs(ctx.ast, shell) == -1)
+		return ((void)exec_cleanup(&ctx));
 	shell->exit_status = exec_ast(ctx.ast, shell);
 	exec_cleanup(&ctx);
 }
