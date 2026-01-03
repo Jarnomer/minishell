@@ -13,7 +13,7 @@
 #ifndef ERROR_H
 # define ERROR_H
 
-# include <minishell.h>
+# include <shell.h>
 
 # define C_BOLD_RED			"\033[1;31m"
 # define C_YELLOW			"\033[0;33m"

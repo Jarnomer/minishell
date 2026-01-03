@@ -13,7 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-# include <minishell.h>
+# include <shell.h>
 
 typedef struct s_parser
 {

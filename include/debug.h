@@ -13,7 +13,7 @@
 #ifndef DEBUG_H
 # define DEBUG_H
 
-# include <minishell.h>
+# include <shell.h>
 # include <lexer.h>
 # include <parser.h>
 # include <expand.h>

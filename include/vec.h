@@ -13,7 +13,7 @@
 #ifndef VEC_H
 # define VEC_H
 
-# include <minishell.h>
+# include <shell.h>
 
 # define VEC_INIT_CAP 8
 

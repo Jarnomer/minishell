@@ -13,7 +13,7 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-# include <minishell.h>
+# include <shell.h>
 
 typedef struct s_lexer
 {

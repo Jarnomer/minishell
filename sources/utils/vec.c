@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 
 t_vec	vec_new(size_t init_cap)
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 #include <execute.h>
 #include <lexer.h>
 #include <parser.h>

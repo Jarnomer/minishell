@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 
 void	*safe_calloc(size_t size)
 {

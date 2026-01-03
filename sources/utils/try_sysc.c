@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 
 int	try_pipe(int pipefd[2])
 {

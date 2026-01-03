@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 
 void	vec_clear(t_vec *v, void (*del)(void *))
 {

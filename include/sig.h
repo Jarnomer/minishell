@@ -13,7 +13,7 @@
 #ifndef SIG_H
 # define SIG_H
 
-# include <minishell.h>
+# include <shell.h>
 
 # define SIG_EXITCODE 130
 

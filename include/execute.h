@@ -13,7 +13,7 @@
 #ifndef EXECUTE_H
 # define EXECUTE_H
 
-# include <minishell.h>
+# include <shell.h>
 # include <builtin.h>
 # include <lexer.h>
 # include <parser.h>

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <shell.h>
 
 static ssize_t	env_find(t_vec *env, const char *name)
 {

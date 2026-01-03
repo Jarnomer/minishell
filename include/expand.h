@@ -13,7 +13,7 @@
 #ifndef EXPAND_H
 # define EXPAND_H
 
-# include <minishell.h>
+# include <shell.h>
 
 typedef enum e_quote_state
 {

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <execute.h>
 
 static char	*join_path(const char *dir, const char *cmd)
 {
