@@ -29,11 +29,6 @@ static void	expand_args(t_vec *args, t_shell *shell)
 	}
 }
 
-static bool	skip_redir_expand(t_redir *redir)
-{
-	return (redir->type == REDIR_HEREDOC && redir->quoted);
-}
-
 static void	expand_redirs(t_vec *redirs, t_shell *shell)
 {
 	t_redir	*redir;
@@ -45,7 +40,7 @@ static void	expand_redirs(t_vec *redirs, t_shell *shell)
 	while (i < redirs->len)
 	{
 		redir = redirs->data[i];
-		if (skip_redir_expand(redir))
+		if (redir->type == REDIR_HEREDOC && redir->quoted)
 		{
 			i++;
 			continue ;
@@ -58,11 +53,28 @@ static void	expand_redirs(t_vec *redirs, t_shell *shell)
 	}
 }
 
+static void	remove_empty_args(t_vec *args)
+{
+	size_t	i;
+	char	*arg;
+
+	i = 0;
+	while (i < args->len)
+	{
+		arg = args->data[i];
+		if (arg[0] == '\0')
+			vec_remove(args, i, free);
+		else
+			i++;
+	}
+}
+
 void	expand_cmd(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
 		return ;
 	expand_args(&cmd->args, shell);
+	remove_empty_args(&cmd->args);
 	expand_wildcards(&cmd->args);
 	expand_redirs(&cmd->redirs, shell);
 }

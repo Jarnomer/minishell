@@ -61,3 +61,17 @@ void	vec_append(t_vec *dest, t_vec *src)
 		i++;
 	}
 }
+
+void	vec_remove(t_vec *v, size_t index, void (*del)(void *))
+{
+	if (!v || !v->data || index >= v->len)
+		return ;
+	if (del && v->data[index])
+		del(v->data[index]);
+	while (index + 1 < v->len)
+	{
+		v->data[index] = v->data[index + 1];
+		index++;
+	}
+	v->len--;
+}

@@ -61,17 +61,21 @@ static int	exec_external(t_cmd *cmd, t_shell *shell)
 	char	*path;
 	char	*name;
 	pid_t	pid;
+	int		err;
 
 	name = vec_get(&cmd->args, 0);
+	if (is_direct_path(name))
+	{
+		err = check_cmd_error(name);
+		if (err != EC_SUCCESS)
+			return (err);
+	}
 	path = resolve_path(name, &shell->env);
 	if (!path)
 		return (check_cmd_error(name));
 	pid = try_fork(NULL, 0);
 	if (pid == -1)
-	{
-		free(path);
-		return (EC_FAILURE);
-	}
+		return (free(path), EC_FAILURE);
 	if (pid == 0)
 		exec_child(cmd, shell, path);
 	free(path);

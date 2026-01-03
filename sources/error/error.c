@@ -12,29 +12,25 @@
 
 #include <error.h>
 
+static int	err_return(const char *cmd, const char *msg, int code)
+{
+	print_error_cmd((char *)cmd, (char *)msg);
+	return (code);
+}
+
 int	check_cmd_error(const char *path)
 {
 	struct stat	st;
 
 	if (!path || !*path)
-	{
-		print_error_cmd("", ERR_MSG_CMD);
-		return (EC_NOTFOUND);
-	}
+		return (err_return("", ERR_MSG_CMD, EC_NOTFOUND));
+	if (!ft_strchr(path, '/'))
+		return (err_return(path, ERR_MSG_CMD, EC_NOTFOUND));
 	if (stat(path, &st) == -1)
-	{
-		print_error_cmd((char *)path, ERR_MSG_NOFILE);
-		return (EC_NOTFOUND);
-	}
+		return (err_return(path, ERR_MSG_NOFILE, EC_NOTFOUND));
 	if (S_ISDIR(st.st_mode))
-	{
-		print_error_cmd((char *)path, ERR_MSG_ISDIR);
-		return (EC_NOEXEC);
-	}
+		return (err_return(path, ERR_MSG_ISDIR, EC_NOEXEC));
 	if (access(path, X_OK) == -1)
-	{
-		print_error_cmd((char *)path, ERR_MSG_PERM);
-		return (EC_NOEXEC);
-	}
+		return (err_return(path, ERR_MSG_PERM, EC_NOEXEC));
 	return (EC_SUCCESS);
 }
