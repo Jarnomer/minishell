@@ -33,8 +33,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
-# define PROMPT "minishell$ "
-# define METACHAR "|<>&()"
+# define PROMPT 	C_GREEN "minishell" C_PURPLE "$ " C_RESET
+# define METACHAR	"|<>&()"
 
 typedef enum e_token_type
 {

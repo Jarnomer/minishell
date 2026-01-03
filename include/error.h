@@ -15,11 +15,13 @@
 
 # include <shell.h>
 
-# define C_BOLD_RED			"\033[1;31m"
-# define C_YELLOW			"\033[0;33m"
-# define C_RESET			"\033[0m"
+# define C_BOLD_RED			"\001\033[1;31m\002"
+# define C_YELLOW			"\001\033[0;33m\002"
+# define C_GREEN			"\001\033[32m\002"
+# define C_PURPLE			"\001\033[35m\002"
+# define C_RESET			"\001\033[0m\002"
 
-# define ERR_PROMPT			"minishell: "
+# define ERR_PROMPT 		C_GREEN "minishell" C_PURPLE ": " C_RESET
 
 # define ERR_MSG_UNKNOWN	"unknown error"
 # define ERR_MSG_MALLOC		"Out of memory"
