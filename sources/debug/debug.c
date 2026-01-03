@@ -31,7 +31,7 @@ static t_ast	*debug_parse(t_lexer *lex)
 	return (ast);
 }
 
-static void	debug_process_line(t_shell *shell, char *line)
+static void	debug_line(t_shell *shell, char *line)
 {
 	t_lexer	lex;
 	t_ast	*ast;
@@ -64,15 +64,13 @@ void	run_debug(t_shell *shell)
 	{
 		line = readline(PROMPT);
 		if (!line)
-		{
-			printf("exit\n");
 			break ;
-		}
 		if (*line)
 		{
 			add_history(line);
-			debug_process_line(shell, line);
+			debug_line(shell, line);
 		}
 		free(line);
 	}
+	rl_clear_history();
 }
