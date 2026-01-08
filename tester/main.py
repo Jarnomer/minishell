@@ -9,9 +9,8 @@ from config import Config, ValgrindConfig, Colors
 from runner import TestRunner, TestPrinter, TestLogger
 
 # Import test categories
-from tests.parsing.tests import (
+from tests.parsing import (
     get_all_parsing_tests,
-    get_parsing_tests_by_subcategory,
     QUOTE_TESTS,
     EXPANSION_TESTS,
     TOKENIZATION_TESTS,
@@ -19,9 +18,8 @@ from tests.parsing.tests import (
     EDGE_CASE_TESTS,
     UNCLOSED_QUOTE_TESTS,
 )
-from tests.builtins.tests import (
+from tests.builtins import (
     get_all_builtin_tests,
-    get_builtin_tests_by_command,
     ECHO_TESTS,
     PWD_TESTS,
     CD_TESTS,
@@ -44,9 +42,9 @@ Examples:
   %(prog)s -p -b                Run parsing and builtin tests
   %(prog)s -c parsing/quotes    Run specific subcategory
   %(prog)s --bonus              Include bonus tests
-  %(prog)s --no-valgrind        Skip memory leak checks
+  %(prog)s -l                   Enable memory leak checks with valgrind
   %(prog)s -v                   Verbose output
-  %(prog)s -l                   List available test categories
+  %(prog)s --help               Show this help message
         """
     )
     
@@ -111,33 +109,21 @@ Examples:
     )
     
     parser.add_argument(
-        "--no-valgrind",
+        "-l", "--leaks",
         action="store_true",
-        help="Skip valgrind memory checks"
-    )
-    
-    parser.add_argument(
-        "--no-leaks",
-        action="store_true",
-        help="Skip leak checking (but still check fds)"
+        help="Enable valgrind memory leak checks"
     )
     
     parser.add_argument(
         "--no-fds",
         action="store_true",
-        help="Skip file descriptor checking"
+        help="Skip file descriptor checking (when using -l/--leaks)"
     )
     
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="Verbose output"
-    )
-    
-    parser.add_argument(
-        "-l", "--list",
-        action="store_true",
-        help="List available test categories"
     )
     
     parser.add_argument(
@@ -263,14 +249,10 @@ def check_requirements(config: Config) -> bool:
 def main():
     args = parse_args()
     
-    if args.list:
-        list_categories()
-        return 0
-    
     # Build configuration
     valgrind_config = ValgrindConfig(
-        enabled=not args.no_valgrind,
-        check_leaks=not args.no_leaks,
+        enabled=args.leaks,  # Only enable if -l/--leaks flag is passed
+        check_leaks=True,
         check_fds=not args.no_fds,
     )
     
@@ -333,14 +315,13 @@ def main():
             printer.print_header(category.upper())
             
             for test in cat_tests:
-                printer.print_test_title(test)
                 result = runner.run_test(test)
-                printer.print_result(result, verbose=config.verbose)
+                printer.print_result(result, runner.test_num)
                 logger.log_result(result)
         
         # Print summary
         summary = runner.get_summary()
-        printer.print_summary(summary)
+        printer.print_summary(summary, runner.test_num)
         
         return 0 if summary["failed"] == 0 else 1
         

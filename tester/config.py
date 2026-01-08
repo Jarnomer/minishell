@@ -91,7 +91,6 @@ class Config:
     # Execution
     timeout: float = 0.5
     reference_shell: str = "bash"
-    prompt_pattern: str = r"^minishell\$ "  # Match literal "minishell$ " prompt
     
     # Valgrind
     valgrind: ValgrindConfig = field(default_factory=ValgrindConfig)

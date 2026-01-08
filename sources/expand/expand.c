@@ -6,7 +6,7 @@
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/01 00:00:00 by jmertane          #+#    #+#             */
-/*   Updated: 2026/01/01 00:00:00 by jmertane         ###   ########.fr       */
+/*   Updated: 2026/01/06 00:00:00 by jmertane         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,26 @@ static void	expand_args(t_vec *args, t_shell *shell)
 {
 	char	*old;
 	char	*new;
+	bool	had_quotes;
 	size_t	i;
 
 	i = 0;
 	while (i < args->len)
 	{
 		old = args->data[i];
+		had_quotes = has_quotes(old);
 		new = expand_word(old, shell);
 		free(old);
-		args->data[i] = new;
-		i++;
+		if (new[0] == '\0' && !had_quotes)
+		{
+			free(new);
+			vec_remove(args, i, NULL);
+		}
+		else
+		{
+			args->data[i] = new;
+			i++;
+		}
 	}
 }
 
@@ -53,28 +63,11 @@ static void	expand_redirs(t_vec *redirs, t_shell *shell)
 	}
 }
 
-static void	remove_empty_args(t_vec *args)
-{
-	size_t	i;
-	char	*arg;
-
-	i = 0;
-	while (i < args->len)
-	{
-		arg = args->data[i];
-		if (arg[0] == '\0')
-			vec_remove(args, i, free);
-		else
-			i++;
-	}
-}
-
 void	expand_cmd(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd)
 		return ;
 	expand_args(&cmd->args, shell);
-	remove_empty_args(&cmd->args);
 	expand_wildcards(&cmd->args);
 	expand_redirs(&cmd->redirs, shell);
 }

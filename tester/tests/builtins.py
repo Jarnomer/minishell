@@ -401,17 +401,3 @@ def get_all_builtin_tests() -> list[TestCase]:
         ENV_TESTS +
         EXIT_TESTS
     )
-
-
-def get_builtin_tests_by_command(command: str) -> list[TestCase]:
-    """Get builtin tests filtered by command name."""
-    command_map = {
-        "echo": ECHO_TESTS,
-        "pwd": PWD_TESTS,
-        "cd": CD_TESTS,
-        "export": EXPORT_TESTS,
-        "unset": UNSET_TESTS,
-        "env": ENV_TESTS,
-        "exit": EXIT_TESTS,
-    }
-    return command_map.get(command, [])

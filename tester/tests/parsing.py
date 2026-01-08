@@ -1,4 +1,13 @@
-"""Parsing tests for minishell - quotes, tokenization, expansion."""
+"""Parsing tests for minishell - quotes, tokenization, expansion.
+
+Test Categories:
+- QUOTE_TESTS: Basic quote handling + mixing quotes + special chars in quotes + whitespace + weird combinations
+- EXPANSION_TESTS: Variable expansion + expansion with quotes
+- TOKENIZATION_TESTS: Whitespace handling
+- OPERATOR_TESTS: Pipes and redirections
+- EDGE_CASE_TESTS: Edge cases and weird inputs
+- UNCLOSED_QUOTE_TESTS: Syntax errors
+"""
 
 from config import TestCase
 
@@ -76,6 +85,322 @@ QUOTE_TESTS = [
         category="parsing/quotes"
     ),
 ]
+
+# === Quote Mixing Within Words ===
+QUOTE_MIXING_TESTS = [
+    TestCase(
+        name="single quote inside double quotes",
+        command='echo "wor\'ld"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="double quote inside single quotes",
+        command="echo 'wor\"ld'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="multiple single quotes in double",
+        command='echo "it\'s a \'test\'"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="alternating quotes same word",
+        command='echo "hel"\'lo\'',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="three-way quote mix",
+        command='echo "a"\'b\'"c"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="quoted then unquoted in word",
+        command='echo "hello"world',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="unquoted then quoted in word",
+        command='echo hello"world"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="single-double-single pattern",
+        command="echo 'a\"b'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="double-single-double pattern",
+        command='echo "a\'b"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="empty quotes mixed with text",
+        command='echo ""hello""world""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="alternating empty and filled",
+        command='echo ""a""b""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="complex email-like pattern",
+        command='echo "$USER"@"$HOME"',
+        category="parsing/quotes",
+        skip_stdout_check=True  # Output varies by user
+    ),
+]
+
+# === Special Characters in Quotes ===
+SPECIAL_CHARS_IN_QUOTES_TESTS = [
+    TestCase(
+        name="dollar sign in single quotes",
+        command="echo '$USER'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="dollar sign in double quotes",
+        command='echo "$USER"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="literal dollar in single quotes",
+        command="echo '$'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="asterisk in single quotes",
+        command="echo '*'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="asterisk in double quotes",
+        command='echo "*"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="question mark in quotes",
+        command="echo '?'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="pipe symbol in quotes",
+        command="echo 'hello | world'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="redirect in quotes",
+        command='echo "a > b"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="ampersand in quotes",
+        command="echo 'a && b'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="semicolon in single quotes",
+        command="echo 'a;b;c'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="parentheses in quotes",
+        command='echo "(hello)"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="brackets in quotes",
+        command="echo '[test]'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="backslash in single quotes",
+        command="echo 'hello\\world'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="multiple special chars quoted",
+        command='echo "| > < & * ?"',
+        category="parsing/quotes"
+    ),
+]
+
+# === Whitespace in Quotes ===
+WHITESPACE_IN_QUOTES_TESTS = [
+    TestCase(
+        name="multiple spaces preserved",
+        command='echo "a    b    c"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="leading spaces in quotes",
+        command='echo "   hello"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="trailing spaces in quotes",
+        command='echo "hello   "',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="only spaces in quotes",
+        command='echo "     "',
+        category="parsing/quotes"
+    ),
+]
+
+# === Weird Quote Combinations ===
+WEIRD_QUOTE_TESTS = [
+    TestCase(
+        name="many empty quotes",
+        command='echo "" "" "" ""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="alternating quote types empty",
+        command='echo ""\'\'""\'\'',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="six consecutive quotes",
+        command='echo """"""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="quote soup",
+        command='echo "a"\'\'"b"\'c\'""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="single char in each quote type",
+        command='echo "a"\'b\'"c"\'d\'',
+        category="parsing/quotes"
+    ),
+]
+
+# === Variable Expansion with Quotes ===
+EXPANSION_WITH_QUOTES_TESTS = [
+    TestCase(
+        name="var with surrounding text in quotes",
+        command='echo "user:$USER:end"',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="var in single quotes not expanded",
+        command="echo 'user:$USER:end'",
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="mix quoted and unquoted var",
+        command='echo $USER"@example.com"',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="var between quotes",
+        command='echo "user:"$USER":end"',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="dollar question in quotes",
+        command='echo "exit: $?"',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="dollar question in single quotes",
+        command="echo 'exit: $?'",
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="empty var in quotes",
+        command='echo "value:$UNSET_VAR:end"',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="multiple vars in quotes",
+        command='echo "$USER $HOME $PATH" | wc -w',
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="var with quote immediately after",
+        command='echo $USER"s home"',
+        category="parsing/expansion"
+    ),
+]
+
+# Add them all to QUOTE_TESTS
+QUOTE_TESTS = [
+    # Basic quotes
+    TestCase(
+        name="single quotes basic",
+        command="echo 'hello world'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="double quotes basic", 
+        command='echo "hello world"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="empty single quotes",
+        command="echo ''",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="empty double quotes",
+        command='echo ""',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="adjacent quotes",
+        command="echo 'hel''lo'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="mixed adjacent quotes",
+        command='echo "hel"\'lo\'',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="single quote in double",
+        command='echo "it\'s working"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="double quote in single",
+        command="echo 'say \"hello\"'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="quotes preserve spaces",
+        command='echo "   spaces   "',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="quotes preserve whitespace",
+        command='echo "  a  b  c  "',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="multiple quoted args",
+        command='echo "one" "two" "three"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="quote then unquoted",
+        command='echo "hello"world',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="unquoted then quote",
+        command='echo hello"world"',
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="complex mixed quotes",
+        command='echo "a"\'b\'"c"\'d\'',
+        category="parsing/quotes"
+    ),
+] + QUOTE_MIXING_TESTS + SPECIAL_CHARS_IN_QUOTES_TESTS + WHITESPACE_IN_QUOTES_TESTS + WEIRD_QUOTE_TESTS
 
 # === Unclosed Quotes (Syntax Errors) ===
 UNCLOSED_QUOTE_TESTS = [
@@ -224,7 +549,7 @@ EXPANSION_TESTS = [
         command="echo '$'",
         category="parsing/expansion"
     ),
-]
+] + EXPANSION_WITH_QUOTES_TESTS
 
 # === Tokenization ===
 TOKENIZATION_TESTS = [
@@ -395,6 +720,42 @@ EDGE_CASE_TESTS = [
         category="parsing/edge_cases"
     ),
     TestCase(
+        name="command is just quotes",
+        command='""',
+        category="parsing/edge_cases",
+        expect_error=True
+    ),
+    TestCase(
+        name="empty string argument to echo",
+        command='echo "" hello',
+        category="parsing/edge_cases"
+    ),
+    TestCase(
+        name="multiple empty string arguments",
+        command='echo "" "" hello ""',
+        category="parsing/edge_cases"
+    ),
+    TestCase(
+        name="unset variable disappears",
+        command='echo $UNSET_VAR_12345',
+        category="parsing/edge_cases"
+    ),
+    TestCase(
+        name="quoted unset variable kept",
+        command='echo "$UNSET_VAR_12345"',
+        category="parsing/edge_cases"
+    ),
+    TestCase(
+        name="unset variable as command",
+        command='$UNSET_VAR_12345',
+        category="parsing/edge_cases"
+    ),
+    TestCase(
+        name="argument looks like option",
+        command="echo -n hello",
+        category="parsing/edge_cases"
+    ),
+    TestCase(
         name="very long argument",
         command="echo " + "a" * 1000,
         category="parsing/edge_cases"
@@ -402,17 +763,6 @@ EDGE_CASE_TESTS = [
     TestCase(
         name="many arguments",
         command="echo " + " ".join(f"arg{i}" for i in range(100)),
-        category="parsing/edge_cases"
-    ),
-    TestCase(
-        name="command is just quotes",
-        command='""',
-        category="parsing/edge_cases",
-        expect_error=True
-    ),
-    TestCase(
-        name="argument looks like option",
-        command="echo -n hello",
         category="parsing/edge_cases"
     ),
 ]
@@ -428,9 +778,3 @@ def get_all_parsing_tests() -> list[TestCase]:
         OPERATOR_TESTS +
         EDGE_CASE_TESTS
     )
-
-
-def get_parsing_tests_by_subcategory(subcategory: str) -> list[TestCase]:
-    """Get parsing tests filtered by subcategory."""
-    all_tests = get_all_parsing_tests()
-    return [t for t in all_tests if subcategory in t.category]

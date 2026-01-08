@@ -21,6 +21,7 @@ class TestRunner:
     def __init__(self, config: Config):
         self.config = config
         self.results: list[TestResult] = []
+        self.test_num = 0
         self._setup_test_env()
     
     def _setup_test_env(self):
@@ -191,7 +192,6 @@ class TestRunner:
             result.indirectly_lost = int(match.group(1).replace(",", ""))
         
         # Parse open file descriptors
-        # Look for "FILE DESCRIPTORS: X open" or parse the fd list
         match = re.search(r"FILE DESCRIPTORS: (\d+) open", output)
         if match:
             result.open_fds = int(match.group(1))
@@ -262,18 +262,20 @@ class TestRunner:
     
     def _strip_prompt(self, output: str, command: str = "") -> str:
         """Remove shell prompts and echoed commands from output for comparison."""
-        lines = output.split('\n')
+        # First, remove all ANSI escape sequences
+        ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
+        output_clean = ansi_escape.sub('', output)
+        
+        lines = output_clean.split('\n')
         cleaned = []
         
-        # Get the command without any trailing parts for matching
         cmd_stripped = command.strip()
         
         for line in lines:
             # Remove prompt pattern from start of line
-            line = re.sub(self.config.prompt_pattern, '', line)
+            line = re.sub(r'^minishell\$ ', '', line)
             
-            # Also remove prompt from end of line (for echo -n case where no newline)
-            # Pattern: "output textminishell$ " or "output textminishell$ exit"
+            # Remove prompt from end of line
             line = re.sub(r'minishell\$ exit$', '', line)
             line = re.sub(r'minishell\$ $', '', line)
             line = re.sub(r'minishell\$$', '', line)
@@ -305,8 +307,7 @@ class TestRunner:
     ) -> tuple[bool, bool]:
         """Compare minishell output to bash output."""
         
-        # Normalize outputs (strip trailing whitespace, normalize newlines)
-        # Strip prompts and echoed command from minishell output
+        # Normalize outputs
         ms_stdout = self._strip_prompt(ms_result.stdout, command).rstrip()
         ref_stdout = ref_result.stdout.rstrip()
         
@@ -331,6 +332,8 @@ class TestRunner:
     
     def run_test(self, test: TestCase) -> TestResult:
         """Execute a single test case."""
+        
+        self.test_num += 1
         
         # Setup test files
         for filename, content in test.setup_files.items():
@@ -432,7 +435,6 @@ class TestPrinter:
     
     def __init__(self, config: Config):
         self.config = config
-        self.test_num = 0
     
     def print_header(self, title: str):
         """Print section header."""
@@ -445,95 +447,83 @@ class TestPrinter:
               f"{' ' * pad}{Colors.PURPLE} |{Colors.RESET}")
         print(f"{Colors.PURPLE}{line}{Colors.RESET}\n")
     
-    def print_test_title(self, test: TestCase):
-        """Print individual test title."""
-        self.test_num += 1
-        pad = "=" * 5
-        print(f"\n{Colors.PURPLE}{pad}{Colors.RESET} "
-              f"{Colors.BOLD_GREEN}TEST {self.test_num}{Colors.RESET} - "
-              f"{Colors.BOLD_GREEN}{test.name}{Colors.RESET}\n")
+    def print_result(self, result: TestResult, test_num: int):
+        """Print test result in compact format."""
+        
+        # Compact status line
+        if result.passed:
+            print(f"{Colors.BOLD_PURPLE}TEST {test_num:3d}: ✅ {Colors.RESET}"
+                  f"{Colors.CYAN}{result.command}{Colors.RESET}")
+        else:
+            print(f"\n{Colors.BOLD_RED}TEST {test_num:3d}: 💢 {Colors.RESET}"
+                  f"{Colors.YELLOW}{result.command}{Colors.RESET}")
+            self._print_verbose_failure(result)
     
-    def print_result(self, result: TestResult, verbose: bool = False):
-        """Print test result."""
+    def _print_verbose_failure(self, result: TestResult):
+        """Print detailed failure information."""
+        separator = "=" * 50
+        print(f"\n{Colors.BOLD_RED}{separator}{Colors.RESET}\n")
         
-        # Command info
-        print(f"{Colors.CYAN}Command:{Colors.RESET} {result.command}")
+        # ANSI escape pattern for cleaning display output
+        ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
         
-        if verbose or not result.passed:
-            # Show cleaned minishell output (without prompts and echoed command)
-            ms_out = result.minishell.stdout
+        # Show what failed
+        failures = []
+        if not result.exit_code_match:
+            failures.append(f"Exit code: minishell={result.minishell.exit_code} bash={result.reference.exit_code}")
+        
+        if not result.stdout_match:
+            # Strip ANSI codes and prompts for display
+            ms_out = ansi_escape.sub('', result.minishell.stdout)
             cmd_stripped = result.command.strip()
             
-            # Strip prompts and echoed command for display
             lines = []
             for line in ms_out.split('\n'):
                 # Remove prompt from start
-                if line.startswith("minishell$ "):
-                    line = line[len("minishell$ "):]
-                # Remove prompt from end (echo -n case)
+                line = re.sub(r'^minishell\$ ', '', line)
+                # Remove prompt from end
                 line = re.sub(r'minishell\$ exit$', '', line)
                 line = re.sub(r'minishell\$ $', '', line)
                 line = re.sub(r'minishell\$$', '', line)
                 # Skip echoed command and exit
-                if line.strip() == cmd_stripped:
+                if line.strip() == cmd_stripped or line.strip() == 'exit':
                     continue
-                if line.strip() == 'exit':
-                    continue
-                if line:  # Keep non-empty lines
+                if line:
                     lines.append(line)
-            ms_out = '\n'.join(lines)
+            ms_out = '\n'.join(lines).rstrip()
             
-            if ms_out or result.reference.stdout.rstrip():
-                print(f"{Colors.CYAN}Minishell:{Colors.RESET} {repr(ms_out.rstrip()[:100])}")
-                print(f"{Colors.GREEN}Bash:{Colors.RESET}      {repr(result.reference.stdout.rstrip()[:100])}")
-            print(f"{Colors.GREEN}Exits:{Colors.RESET} minishell={result.minishell.exit_code} "
-                  f"bash={result.reference.exit_code}")
+            ref_out = result.reference.stdout.rstrip()
+            failures.append(f"Stdout mismatch:\n  Minishell: {repr(ms_out)}\n  Bash:      {repr(ref_out)}")
         
-        # Status line
-        status_parts = []
+        if not result.outfile_match and ">" in result.command:
+            failures.append("Output file mismatch")
         
-        # Exit code
-        if result.exit_code_match:
-            status_parts.append(f"{Colors.BLUE}Exit:{Colors.RESET} {Colors.ok('OK')}")
-        else:
-            status_parts.append(f"{Colors.YELLOW}Exit:{Colors.RESET} {Colors.ko('KO')}")
-        
-        # Stdout
-        if result.stdout_match:
-            status_parts.append(f"{Colors.BLUE}Output:{Colors.RESET} {Colors.ok('OK')}")
-        else:
-            status_parts.append(f"{Colors.YELLOW}Output:{Colors.RESET} {Colors.ko('KO')}")
-        
-        # Outfile (if applicable)
-        if ">" in result.command:
-            if result.outfile_match:
-                status_parts.append(f"{Colors.BLUE}File:{Colors.RESET} {Colors.ok('OK')}")
-            else:
-                status_parts.append(f"{Colors.YELLOW}File:{Colors.RESET} {Colors.ko('KO')}")
-        
-        # Crash
         if result.minishell.crashed:
-            status_parts.append(f"{Colors.YELLOW}Crash:{Colors.RESET} {Colors.ko('SIGSEGV')}")
-        elif result.minishell.timed_out:
-            status_parts.append(f"{Colors.YELLOW}Timeout:{Colors.RESET} {Colors.ko('KO')}")
+            sig_name = signal.Signals(result.minishell.signal).name if result.minishell.signal else "UNKNOWN"
+            failures.append(f"Crashed with signal: {sig_name}")
         
-        # Valgrind
-        if result.valgrind:
-            if result.valgrind.passed:
-                status_parts.append(f"{Colors.BLUE}Leaks:{Colors.RESET} {Colors.ok('OK')}")
-            else:
-                status_parts.append(f"{Colors.YELLOW}Leaks:{Colors.RESET} {Colors.ko('KO')}")
+        if result.minishell.timed_out:
+            failures.append("Timed out")
         
-        # Zombies
+        if result.valgrind and not result.valgrind.passed:
+            if result.valgrind.has_leaks:
+                failures.append(f"Memory leaks: {result.valgrind.definitely_lost} bytes definitely lost")
+            if result.valgrind.open_fds > 3:
+                failures.append(f"Open file descriptors: {result.valgrind.open_fds}")
+        
         if result.zombie_count > 0:
-            status_parts.append(f"{Colors.YELLOW}Zombies:{Colors.RESET} {Colors.ko(str(result.zombie_count))}")
+            failures.append(f"Zombie processes: {result.zombie_count}")
         
-        print(" | ".join(status_parts))
+        for failure in failures:
+            print(f"{Colors.YELLOW}{failure}{Colors.RESET}")
+        
+        print(f"\n{Colors.BOLD_RED}{separator}\n{Colors.RESET}")
     
-    def print_summary(self, summary: dict):
+    def print_summary(self, summary: dict, test_count: int):
         """Print final summary."""
         self.print_header("SUMMARY")
         
+        print(f"{Colors.BOLD_BLUE}Tests run:{Colors.RESET}    {test_count}")
         print(f"{Colors.BOLD_BLUE}Tests passed:{Colors.RESET} {Colors.ok(str(summary['passed']))}")
         print(f"{Colors.BOLD_BLUE}Tests failed:{Colors.RESET} {Colors.ko(str(summary['failed']))}")
         

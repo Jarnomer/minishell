@@ -66,7 +66,7 @@ int	builtin_exit(t_vec *args, t_shell *shell)
 	if (args->len > 2)
 	{
 		ft_dprintf(STDERR_FILENO, "%sexit: %s\n", ERR_PROMPT, ERR_MSG_TOOMANY);
-		return (EC_TOOMANY);
+		return (EC_FAILURE);
 	}
 	code = str_to_long_long(arg);
 	exit_with_code(shell, (unsigned char)code);
