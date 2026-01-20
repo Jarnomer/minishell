@@ -65,8 +65,11 @@ char	*expand_word(char *word, t_shell *shell)
 	i = 0;
 	while (word[i])
 	{
-		if (is_quote(word[i]) && is_quote_delimiter(word[i], state))
+		if (is_quote_delimiter(word[i], state))
+		{
 			state = update_quote_state(word[i], state);
+			result = append_char(result, word[i]);
+		}
 		else if (word[i] == '$' && state != Q_SINGLE)
 			result = handle_dollar(word, &i, result, shell);
 		else

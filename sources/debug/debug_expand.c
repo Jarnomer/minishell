@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lex_token.c                                        :+:      :+:    :+:   */
+/*   debug_expand.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmertane <jmertane@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,25 +10,26 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <lexer.h>
+#include <debug.h>
 
-t_token	*token_new(t_token_type type, char *value)
+static void	print_expand_header(const char *title)
 {
-	t_token	*tok;
+	int		i;
 
-	tok = safe_calloc(sizeof(t_token));
-	tok->type = type;
-	tok->value = value;
-	return (tok);
+	printf("\n%s%s╔", DBG_PURPLE, DBG_BOLD);
+	i = -1;
+	while (++i < DBG_BOX_WIDTH)
+		printf("═");
+	printf("╗%s\n", DBG_RESET);
+	printf("%s║%s %s%s%s%s\n", DBG_PURPLE, DBG_RESET,
+		DBG_GREEN, DBG_BOLD, title, DBG_RESET);
+	print_debug_separator();
 }
 
-void	token_free(void *token)
+void	debug_print_expand(t_ast *ast, t_shell *shell)
 {
-	t_token	*tok;
-
-	if (!token)
-		return ;
-	tok = (t_token *)token;
-	free(tok->value);
-	free(tok);
+	expand_ast(ast, shell);
+	print_expand_header("3. FINAL RESULT");
+	debug_print_ast(ast, 0);
+	print_debug_footer();
 }

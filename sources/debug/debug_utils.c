@@ -12,23 +12,53 @@
 
 #include <debug.h>
 
-void	print_debug_header(const char *title, const char *input)
+void	print_debug_header(const char *title, const char *extra)
 {
-	printf("\n╔══════════════════════════════════════════════════════════╗\n");
-	printf("║ %s\n", title);
-	printf("╠══════════════════════════════════════════════════════════╣\n");
-	printf("║ Input: %s\n", input);
-	printf("╠══════════════════════════════════════════════════════════╣\n");
+	int	i;
+
+	printf("\n%s%s╔", DBG_PURPLE, DBG_BOLD);
+	i = -1;
+	while (++i < DBG_BOX_WIDTH)
+		printf("═");
+	printf("╗%s\n", DBG_RESET);
+	printf("%s║%s %s%s%s%s", DBG_PURPLE, DBG_RESET,
+		DBG_GREEN, DBG_BOLD, title, DBG_RESET);
+	if (extra)
+		printf(" %s%s%s", DBG_CYAN, extra, DBG_RESET);
+	printf("\n");
+	print_debug_separator();
+}
+
+void	print_debug_separator(void)
+{
+	int	i;
+
+	printf("%s╠", DBG_PURPLE);
+	i = -1;
+	while (++i < DBG_BOX_WIDTH)
+		printf("═");
+	printf("╣%s\n", DBG_RESET);
 }
 
 void	print_debug_footer(void)
 {
-	printf("╚══════════════════════════════════════════════════════════╝\n");
+	int	i;
+
+	printf("%s╚", DBG_PURPLE);
+	i = -1;
+	while (++i < DBG_BOX_WIDTH)
+		printf("═");
+	printf("╝%s\n", DBG_RESET);
+}
+
+void	print_debug_line(const char *content)
+{
+	printf("%s║%s %s\n", DBG_PURPLE, DBG_RESET, content);
 }
 
 void	print_debug_indent(int depth)
 {
-	printf("║ ");
+	printf("%s║%s ", DBG_PURPLE, DBG_RESET);
 	while (depth-- > 0)
 		printf("  ");
 }

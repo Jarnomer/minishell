@@ -38,20 +38,20 @@ static void	debug_line(t_shell *shell, char *line)
 
 	lex = lexer_new(line);
 	if (!lexer_tokenize(&lex))
-		return (print_error("ERR_MSG_QUOTE"), lexer_free(&lex));
-	print_debug_header("1. LEXER (tokenizing)", line);
+		return (lexer_free(&lex));
+	print_debug_header("1. LEXER", NULL);
+	printf("%s║%s Input: %s%s%s\n", DBG_PURPLE,
+		DBG_RESET, DBG_CYAN, line, DBG_RESET);
+	print_debug_separator();
 	debug_print_lexer(&lex);
 	print_debug_footer();
 	ast = debug_parse(&lex);
 	if (!ast)
 		return (lexer_free(&lex));
-	print_debug_header("2. PARSER (before expand)", line);
+	print_debug_header("2. PARSER", NULL);
 	debug_print_ast(ast, 0);
 	print_debug_footer();
-	expand_ast(ast, shell);
-	print_debug_header("3. RESULT (after expand)", line);
-	debug_print_ast(ast, 0);
-	print_debug_footer();
+	debug_print_expand(ast, shell);
 	lexer_free(&lex);
 	ast_free(ast);
 }

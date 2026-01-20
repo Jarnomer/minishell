@@ -28,11 +28,10 @@ void	redir_free(void *ptr)
 {
 	t_redir	*redir;
 
-	redir = (t_redir *)ptr;
-	if (!redir)
+	if (!ptr)
 		return ;
-	if (redir->target)
-		free(redir->target);
+	redir = (t_redir *)ptr;
+	free(redir->target);
 	free(redir);
 }
 

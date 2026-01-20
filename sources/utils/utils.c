@@ -31,12 +31,10 @@ bool	has_quotes(const char *value)
 {
 	if (!value)
 		return (false);
-	while (*value)
-	{
-		if (is_quote(*value))
-			return (true);
-		value++;
-	}
+	if (ft_strchr(value, '\''))
+		return (true);
+	if (ft_strchr(value, '"'))
+		return (true);
 	return (false);
 }
 

@@ -12,12 +12,6 @@
 
 #include <error.h>
 
-void	print_error(char *msg)
-{
-	ft_dprintf(STDERR_FILENO, "%s%ssyntax error: %s%s%s\n",
-		ERR_PROMPT, C_BOLD_RED, C_YELLOW, msg, C_RESET);
-}
-
 void	print_error_token(char *token)
 {
 	ft_dprintf(STDERR_FILENO,

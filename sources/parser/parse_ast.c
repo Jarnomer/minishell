@@ -26,16 +26,14 @@ void	ast_free(void *ptr)
 {
 	t_ast	*node;
 
-	node = (t_ast *)ptr;
-	if (!node)
+	if (!ptr)
 		return ;
+	node = (t_ast *)ptr;
 	if (node->cmd)
 		cmd_free(node->cmd);
 	vec_free(&node->redirs, redir_free);
-	if (node->left)
-		ast_free(node->left);
-	if (node->right)
-		ast_free(node->right);
+	ast_free(node->left);
+	ast_free(node->right);
 	free(node);
 }
 

@@ -26,9 +26,9 @@ void	cmd_free(void *ptr)
 {
 	t_cmd	*cmd;
 
-	cmd = (t_cmd *)ptr;
-	if (!cmd)
+	if (!ptr)
 		return ;
+	cmd = (t_cmd *)ptr;
 	vec_free(&cmd->args, free_str);
 	vec_free(&cmd->redirs, redir_free);
 	free(cmd);

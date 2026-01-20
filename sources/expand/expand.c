@@ -58,7 +58,8 @@ static void	expand_redirs(t_vec *redirs, t_shell *shell)
 		old = redir->target;
 		new = expand_word(old, shell);
 		free(old);
-		redir->target = new;
+		redir->target = strip_quotes(new);
+		free(new);
 		i++;
 	}
 }

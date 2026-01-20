@@ -28,16 +28,10 @@ static void	vec_grow(t_vec *v)
 {
 	void	**new_data;
 	size_t	new_cap;
-	size_t	i;
 
 	new_cap = v->cap * 2;
 	new_data = safe_calloc(sizeof(void *) * new_cap);
-	i = 0;
-	while (i < v->len)
-	{
-		new_data[i] = v->data[i];
-		i++;
-	}
+	ft_memcpy(new_data, v->data, sizeof(void *) * v->len);
 	free(v->data);
 	v->data = new_data;
 	v->cap = new_cap;

@@ -12,16 +12,10 @@
 
 #include <expand.h>
 
-static void	process_wildcard_arg(t_vec *new_args, char *arg, bool had_quotes)
+static void	process_wildcard_arg(t_vec *new_args, char *arg)
 {
 	t_vec	matches;
 
-	if (had_quotes)
-	{
-		vec_push(new_args, strip_quotes(arg));
-		free(arg);
-		return ;
-	}
 	matches = get_matching_files(arg);
 	if (matches.len > 0)
 		vec_append(new_args, &matches);
@@ -48,7 +42,7 @@ static t_quote_state	update_quote(char c, t_quote_state state)
 	return (state);
 }
 
-static bool	has_wildcard(const char *str)
+static bool	has_unquoted_wildcard(const char *str)
 {
 	t_quote_state	state;
 
@@ -68,7 +62,6 @@ void	expand_wildcards(t_vec *args)
 {
 	t_vec	new_args;
 	char	*arg;
-	bool	had_quotes;
 	size_t	i;
 
 	new_args = vec_new(0);
@@ -76,11 +69,13 @@ void	expand_wildcards(t_vec *args)
 	while (i < args->len)
 	{
 		arg = vec_get(args, i);
-		had_quotes = has_quotes(arg);
-		if (has_wildcard(arg))
-			process_wildcard_arg(&new_args, arg, had_quotes);
+		if (has_unquoted_wildcard(arg))
+			process_wildcard_arg(&new_args, arg);
 		else
-			vec_push(&new_args, arg);
+		{
+			vec_push(&new_args, strip_quotes(arg));
+			free(arg);
+		}
 		i++;
 	}
 	free(args->data);

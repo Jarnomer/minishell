@@ -62,7 +62,6 @@ typedef enum e_err
 	ERR_AMBIG_REDIR
 }	t_err;
 
-void	print_error(char *msg);
 void	print_error_token(char *token);
 void	print_error_cmd(char *cmd, char *msg);
 void	print_error_arg(char *cmd, char *arg, char *msg);

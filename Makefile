@@ -118,6 +118,7 @@ SOURCES := main \
            debug \
            debug_lexer \
            debug_parser \
+           debug_expand \
            debug_types \
            debug_utils \
            vec \
