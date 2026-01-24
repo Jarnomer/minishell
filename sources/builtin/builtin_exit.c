@@ -45,7 +45,7 @@ static int	handle_numeric_error(char *arg, t_shell *shell)
 {
 	ft_dprintf(STDERR_FILENO, "%sexit: %s: %s\n",
 		ERR_PROMPT, arg, ERR_MSG_NUMARG);
-	exit_with_code(shell, EC_SYNTAX);
+	shell->exit_status = EC_SYNTAX;
 	return (EC_SYNTAX);
 }
 
@@ -66,7 +66,7 @@ int	builtin_exit(t_vec *args, t_shell *shell)
 	if (args->len > 2)
 	{
 		ft_dprintf(STDERR_FILENO, "%sexit: %s\n", ERR_PROMPT, ERR_MSG_TOOMANY);
-		return (EC_FAILURE);
+		return (EC_TOOMANY);
 	}
 	code = str_to_long_long(arg);
 	exit_with_code(shell, (unsigned char)code);

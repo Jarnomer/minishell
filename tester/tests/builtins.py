@@ -114,9 +114,8 @@ PWD_TESTS = [
     ),
     TestCase(
         name="pwd after cd",
-        command="cd /tmp && pwd",
-        category="builtins/pwd",
-        bonus=True  # Requires &&
+        commands=["cd /tmp", "pwd"],
+        category="builtins/pwd"
     ),
     TestCase(
         name="pwd ignores args",
@@ -132,38 +131,39 @@ PWD_TESTS = [
 
 # === Cd Tests ===
 CD_TESTS = [
-    # Basic navigation (with && for verification - bonus)
+    # Basic navigation (multi-command for verification)
     TestCase(
         name="cd absolute path",
-        command="cd /tmp && pwd",
-        category="builtins/cd",
-        bonus=True
+        commands=["cd /tmp", "pwd"],
+        category="builtins/cd"
     ),
     TestCase(
         name="cd home no args",
-        command="cd && pwd",
+        commands=["cd", "pwd"],
         category="builtins/cd",
-        bonus=True
+        skip_stdout_check=True  # HOME varies
     ),
     TestCase(
-        name="cd relative path",
-        command="cd /tmp && cd .. && pwd",
-        category="builtins/cd",
-        bonus=True
+        name="cd relative dotdot",
+        commands=["cd /tmp", "cd ..", "pwd"],
+        category="builtins/cd"
     ),
     TestCase(
-        name="cd dot",
-        command="cd . && pwd",
-        category="builtins/cd",
-        bonus=True
+        name="cd dot stays same",
+        commands=["cd /tmp", "cd .", "pwd"],
+        category="builtins/cd"
     ),
     TestCase(
-        name="cd dotdot",
-        command="cd /tmp && cd .. && pwd",
-        category="builtins/cd",
-        bonus=True
+        name="cd multiple dirs",
+        commands=["cd /tmp", "cd /var", "pwd"],
+        category="builtins/cd"
     ),
-    # Error cases (no && needed)
+    TestCase(
+        name="cd back and forth",
+        commands=["cd /tmp", "cd /var", "cd /tmp", "pwd"],
+        category="builtins/cd"
+    ),
+    # Error cases (no multi-command needed)
     TestCase(
         name="cd nonexistent",
         command="cd /nonexistent_dir_12345",
@@ -188,10 +188,10 @@ CD_TESTS = [
         category="builtins/cd",
         expect_error=True
     ),
-    # Pipe test (no && needed)
+    # Pipe test (shows cd in subshell doesn't affect parent)
     TestCase(
-        name="cd in pipe",
-        command="cd /tmp | pwd",  # pwd runs in subshell
+        name="cd in pipe subshell",
+        command="cd /tmp | pwd",
         category="builtins/cd"
     ),
 ]
@@ -207,39 +207,48 @@ EXPORT_TESTS = [
     ),
     TestCase(
         name="export simple var",
-        command="export TESTVAR=hello && echo $TESTVAR",
-        category="builtins/export",
-        bonus=True
+        commands=["export TESTVAR=hello", "echo $TESTVAR"],
+        category="builtins/export"
     ),
     TestCase(
         name="export empty value",
-        command="export TESTVAR= && echo \"[$TESTVAR]\"",
-        category="builtins/export",
-        bonus=True
+        commands=["export TESTVAR=", 'echo "[$TESTVAR]"'],
+        category="builtins/export"
     ),
     TestCase(
         name="export multiple vars",
-        command="export A=1 B=2 && echo $A $B",
-        category="builtins/export",
-        bonus=True
+        commands=["export A=1 B=2", "echo $A $B"],
+        category="builtins/export"
     ),
     TestCase(
         name="export with underscore",
-        command="export _VAR=test && echo $_VAR",
-        category="builtins/export",
-        bonus=True
+        commands=["export _VAR=test", "echo $_VAR"],
+        category="builtins/export"
     ),
     TestCase(
         name="export value with spaces",
-        command='export TESTVAR="hello world" && echo $TESTVAR',
-        category="builtins/export",
-        bonus=True
+        commands=['export TESTVAR="hello world"', "echo $TESTVAR"],
+        category="builtins/export"
     ),
     TestCase(
-        name="export overwrite",
-        command="export TESTVAR=first && export TESTVAR=second && echo $TESTVAR",
-        category="builtins/export",
-        bonus=True
+        name="export overwrite var",
+        commands=["export TESTVAR=first", "export TESTVAR=second", "echo $TESTVAR"],
+        category="builtins/export"
+    ),
+    TestCase(
+        name="export numeric value",
+        commands=["export NUM=42", "echo $NUM"],
+        category="builtins/export"
+    ),
+    TestCase(
+        name="export with single quotes",
+        commands=["export TESTVAR='hello world'", "echo $TESTVAR"],
+        category="builtins/export"
+    ),
+    TestCase(
+        name="export appears in env",
+        commands=["export UNIQUEVAR123=test", "env | grep UNIQUEVAR123"],
+        category="builtins/export"
     ),
     # Error cases
     TestCase(
@@ -272,9 +281,8 @@ EXPORT_TESTS = [
 UNSET_TESTS = [
     TestCase(
         name="unset existing var",
-        command="export TESTVAR=hello && unset TESTVAR && echo \"[$TESTVAR]\"",
-        category="builtins/unset",
-        bonus=True
+        commands=["export TESTVAR=hello", "unset TESTVAR", 'echo "[$TESTVAR]"'],
+        category="builtins/unset"
     ),
     TestCase(
         name="unset nonexistent var",
@@ -283,9 +291,8 @@ UNSET_TESTS = [
     ),
     TestCase(
         name="unset multiple vars",
-        command="export A=1 B=2 && unset A B && echo \"[$A][$B]\"",
-        category="builtins/unset",
-        bonus=True
+        commands=["export A=1 B=2", "unset A B", 'echo "[$A][$B]"'],
+        category="builtins/unset"
     ),
     TestCase(
         name="unset no args",
@@ -293,17 +300,27 @@ UNSET_TESTS = [
         category="builtins/unset"
     ),
     TestCase(
-        name="unset PATH then ls",
-        command="unset PATH && ls",
+        name="unset PATH then ls fails",
+        commands=["unset PATH", "ls"],
         category="builtins/unset",
-        expect_error=True
+        expect_error=True,
+        expected_exit=127
     ),
-    # Error cases - unset typically silently ignores invalid identifiers
+    TestCase(
+        name="unset PATH builtin still works",
+        commands=["unset PATH", "echo hello"],
+        category="builtins/unset"
+    ),
+    TestCase(
+        name="unset then reexport",
+        commands=["export TESTVAR=first", "unset TESTVAR", "export TESTVAR=second", "echo $TESTVAR"],
+        category="builtins/unset"
+    ),
+    # unset typically silently ignores invalid identifiers
     TestCase(
         name="unset invalid identifier",
         command="unset 1VAR",
         category="builtins/unset"
-        # Note: bash doesn't error on this, just ignores it
     ),
 ]
 
@@ -332,15 +349,20 @@ ENV_TESTS = [
     ),
     TestCase(
         name="env after export",
-        command="export TESTVAR=hello && env | grep TESTVAR",
+        commands=["export ENVTESTVAR=hello", "env | grep ENVTESTVAR"],
+        category="builtins/env"
+    ),
+    TestCase(
+        name="env after unset",
+        commands=["export ENVTESTVAR=hello", "unset ENVTESTVAR", "env | grep -c ENVTESTVAR"],
         category="builtins/env",
-        bonus=True
+        expected_exit=1  # grep returns 1 when no match
     ),
     TestCase(
         name="env with args error",
         command="env arg1 arg2",
         category="builtins/env",
-        expect_error=True  # Your implementation errors on args
+        expect_error=True
     ),
 ]
 
@@ -427,10 +449,9 @@ EXIT_TESTS = [
         expected_exit=5
     ),
     TestCase(
-        name="exit in pipe",
+        name="exit in pipe subshell",
         command="exit 42 | echo hello",
         category="builtins/exit"
-        # Exit in pipe runs in subshell
     ),
 ]
 

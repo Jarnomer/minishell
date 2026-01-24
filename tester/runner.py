@@ -40,6 +40,21 @@ class TestRunner:
         if self.test_dir.exists():
             shutil.rmtree(self.test_dir)
     
+    def _build_stdin_input(self, test_or_command) -> str:
+        """Build stdin input from test case or command string.
+        
+        Args:
+            test_or_command: Either a TestCase object or a command string
+            
+        Returns:
+            String to send to shell stdin (with exit appended)
+        """
+        if isinstance(test_or_command, TestCase):
+            return test_or_command.get_stdin_input() + "\nexit\n"
+        else:
+            # Plain string command (backward compatible)
+            return test_or_command + "\nexit\n"
+    
     def run_command(
         self,
         shell_path: str,
@@ -47,9 +62,18 @@ class TestRunner:
         timeout: Optional[float] = None,
         env: Optional[dict] = None,
         cwd: Optional[Path] = None,
-        use_c_flag: bool = False
+        use_stdin: bool = True
     ) -> ExecutionResult:
-        """Execute a command in a shell and capture results."""
+        """Execute a command in a shell and capture results.
+        
+        Args:
+            shell_path: Path to shell executable
+            command: Command string or stdin input to send
+            timeout: Execution timeout in seconds
+            env: Environment variables to set
+            cwd: Working directory
+            use_stdin: If True, pipe command to stdin. If False, use -c flag.
+        """
         
         timeout = timeout or self.config.timeout
         cwd = cwd or self.test_dir
@@ -60,14 +84,14 @@ class TestRunner:
             run_env.update(env)
         
         try:
-            # For bash, use -c flag. For minishell, pipe to stdin
-            if use_c_flag:
+            if use_stdin:
+                # Pipe commands to stdin (for minishell and multi-command bash)
+                shell_cmd = [shell_path]
+                stdin_input = (command + "\nexit\n").encode()
+            else:
+                # Use -c flag (for single-command bash)
                 shell_cmd = [shell_path, "-c", command]
                 stdin_input = None
-            else:
-                shell_cmd = [shell_path]
-                # Add newline to ensure command is executed, then exit
-                stdin_input = (command + "\nexit\n").encode()
             
             proc = subprocess.Popen(
                 shell_cmd,
@@ -121,24 +145,41 @@ class TestRunner:
     
     def run_minishell(
         self,
-        command: str,
+        test: TestCase,
         timeout: Optional[float] = None,
         env: Optional[dict] = None
     ) -> ExecutionResult:
-        """Run command in minishell (piped to stdin)."""
+        """Run test in minishell (piped to stdin)."""
         ms_path = str(self.config.minishell_path.resolve())
-        return self.run_command(ms_path, command, timeout, env, use_c_flag=False)
+        stdin_input = test.get_stdin_input()
+        return self.run_command(ms_path, stdin_input, timeout, env, use_stdin=True)
     
     def run_bash(
         self,
-        command: str,
+        test: TestCase,
         timeout: Optional[float] = None,
         env: Optional[dict] = None
     ) -> ExecutionResult:
-        """Run command in bash for reference (using -c flag)."""
-        return self.run_command(self.config.bash_cmd, command, timeout, env, use_c_flag=True)
+        """Run test in bash for reference.
+        
+        For multi-command tests, we pipe to stdin like minishell.
+        For single-command tests, we can use -c flag for cleaner output.
+        """
+        if test.is_multi_command():
+            # Multi-command: pipe to stdin like minishell
+            stdin_input = test.get_stdin_input()
+            return self.run_command(
+                self.config.bash_cmd, stdin_input, timeout, env, use_stdin=True
+            )
+        else:
+            # Single command: use -c flag for cleaner comparison
+            return self.run_command(
+                self.config.bash_cmd, test.command, timeout, env, use_stdin=False
+            )
     
-    def check_valgrind(self, command: str, env: Optional[dict] = None) -> ValgrindResult:
+    def check_valgrind(
+        self, test: TestCase, env: Optional[dict] = None
+    ) -> ValgrindResult:
         """Run minishell under valgrind and parse output."""
         
         if not self.config.valgrind.available or not self.config.valgrind.enabled:
@@ -156,7 +197,7 @@ class TestRunner:
         if env:
             run_env.update(env)
         
-        stdin_input = (command + "\nexit\n").encode()
+        stdin_input = (test.get_stdin_input() + "\nexit\n").encode()
         
         try:
             proc = subprocess.run(
@@ -208,7 +249,7 @@ class TestRunner:
         
         return result
     
-    def check_zombies(self, command: str, env: Optional[dict] = None) -> int:
+    def check_zombies(self, test: TestCase, env: Optional[dict] = None) -> int:
         """Check for zombie processes during execution."""
         
         ms_path = str(self.config.minishell_path.resolve())
@@ -216,7 +257,7 @@ class TestRunner:
         if env:
             run_env.update(env)
         
-        stdin_input = (command + "\nexit\n").encode()
+        stdin_input = (test.get_stdin_input() + "\nexit\n").encode()
         
         try:
             proc = subprocess.Popen(
@@ -260,7 +301,7 @@ class TestRunner:
         except Exception:
             return 0
     
-    def _strip_prompt(self, output: str, command: str = "") -> str:
+    def _strip_prompt(self, output: str, test: TestCase) -> str:
         """Remove shell prompts and echoed commands from output for comparison."""
         # First, remove all ANSI escape sequences
         ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
@@ -269,7 +310,11 @@ class TestRunner:
         lines = output_clean.split('\n')
         cleaned = []
         
-        cmd_stripped = command.strip()
+        # Get all commands to skip (for multi-command tests)
+        if test.is_multi_command():
+            commands_to_skip = set(cmd.strip() for cmd in test.commands)
+        else:
+            commands_to_skip = {test.command.strip()}
         
         for line in lines:
             # Remove prompt pattern from start of line
@@ -280,8 +325,8 @@ class TestRunner:
             line = re.sub(r'minishell\$ $', '', line)
             line = re.sub(r'minishell\$$', '', line)
             
-            # Skip the echoed command itself
-            if cmd_stripped and line.strip() == cmd_stripped:
+            # Skip echoed commands
+            if line.strip() in commands_to_skip:
                 continue
             # Skip the 'exit' command we inject
             if line.strip() == 'exit':
@@ -298,18 +343,60 @@ class TestRunner:
         
         return '\n'.join(cleaned)
     
+    def _strip_bash_interactive(self, output: str, test: TestCase) -> str:
+        """Strip bash interactive output for multi-command tests."""
+        # For bash run interactively, we need similar cleanup
+        ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
+        output_clean = ansi_escape.sub('', output)
+        
+        lines = output_clean.split('\n')
+        cleaned = []
+        
+        # Get all commands to skip
+        if test.is_multi_command():
+            commands_to_skip = set(cmd.strip() for cmd in test.commands)
+        else:
+            commands_to_skip = {test.command.strip()}
+        
+        for line in lines:
+            # Remove various bash prompt patterns
+            line = re.sub(r'^bash-[0-9.]+[$#] ', '', line)
+            line = re.sub(r'^[$#] ', '', line)
+            
+            # Skip echoed commands
+            if line.strip() in commands_to_skip:
+                continue
+            if line.strip() == 'exit':
+                continue
+            
+            cleaned.append(line)
+        
+        # Remove trailing/leading empty lines
+        while cleaned and not cleaned[-1].strip():
+            cleaned.pop()
+        while cleaned and not cleaned[0].strip():
+            cleaned.pop(0)
+        
+        return '\n'.join(cleaned)
+    
     def compare_outputs(
         self,
         ms_result: ExecutionResult,
         ref_result: ExecutionResult,
-        command: str = "",
+        test: TestCase,
         check_stderr: bool = False
     ) -> tuple[bool, bool]:
         """Compare minishell output to bash output."""
         
         # Normalize outputs
-        ms_stdout = self._strip_prompt(ms_result.stdout, command).rstrip()
-        ref_stdout = ref_result.stdout.rstrip()
+        ms_stdout = self._strip_prompt(ms_result.stdout, test).rstrip()
+        
+        if test.is_multi_command():
+            # Bash was run interactively, needs similar stripping
+            ref_stdout = self._strip_bash_interactive(ref_result.stdout, test).rstrip()
+        else:
+            # Bash was run with -c, output is clean
+            ref_stdout = ref_result.stdout.rstrip()
         
         stdout_match = ms_stdout == ref_stdout
         
@@ -334,6 +421,18 @@ class TestRunner:
         """Check if this is a syntax error test."""
         return test.category.startswith("syntax/") or test.category == "syntax"
     
+    def _has_pipe_in_test(self, test: TestCase) -> bool:
+        """Check if test involves pipes."""
+        if test.is_multi_command():
+            return any("|" in cmd for cmd in test.commands)
+        return "|" in test.command
+    
+    def _has_redirect_in_test(self, test: TestCase) -> bool:
+        """Check if test involves redirections."""
+        if test.is_multi_command():
+            return any(">" in cmd for cmd in test.commands)
+        return ">" in test.command
+    
     def run_test(self, test: TestCase) -> TestResult:
         """Execute a single test case."""
         
@@ -354,8 +453,8 @@ class TestRunner:
         env = test.env_vars.copy() if test.env_vars else None
         
         # Run in both shells
-        ms_result = self.run_minishell(test.command, timeout, env)
-        ref_result = self.run_bash(test.command, timeout, env)
+        ms_result = self.run_minishell(test, timeout, env)
+        ref_result = self.run_bash(test, timeout, env)
         
         # For syntax error tests, check stderr has content and exit code is 2
         is_syntax_test = self._is_syntax_error_test(test)
@@ -370,7 +469,7 @@ class TestRunner:
         else:
             stdout_match, stderr_match = self.compare_outputs(
                 ms_result, ref_result,
-                command=test.command,
+                test=test,
                 check_stderr=test.expect_error
             )
         
@@ -382,23 +481,23 @@ class TestRunner:
         
         # Compare output files if redirections were used
         outfile_match = True
-        if ">" in test.command and not is_syntax_test:
+        if self._has_redirect_in_test(test) and not is_syntax_test:
             outfile_match = self.compare_files(self.outfile_ms, self.outfile_ref)
         
         # Check valgrind (optional)
         valgrind_result = None
         if not test.skip_valgrind and self.config.valgrind.enabled:
-            valgrind_result = self.check_valgrind(test.command, env)
+            valgrind_result = self.check_valgrind(test, env)
         
         # Check zombies for pipeline tests (not for syntax errors)
         zombie_count = 0
-        if "|" in test.command and not is_syntax_test:
-            zombie_count = self.check_zombies(test.command, env)
+        if self._has_pipe_in_test(test) and not is_syntax_test:
+            zombie_count = self.check_zombies(test, env)
         
         result = TestResult(
             name=test.name,
             category=test.category,
-            command=test.command,
+            command=test.get_display_command(),
             minishell=ms_result,
             reference=ref_result,
             stdout_match=stdout_match if not test.skip_stdout_check else True,
@@ -424,7 +523,7 @@ class TestRunner:
         # 1. stderr has some error message (not empty)
         # 2. stdout is empty or just the prompt
         
-        ms_stdout_clean = self._strip_prompt(ms_result.stdout, test.command).strip()
+        ms_stdout_clean = self._strip_prompt(ms_result.stdout, test).strip()
         
         # stdout should be empty for syntax errors
         stdout_match = len(ms_stdout_clean) == 0
@@ -516,20 +615,17 @@ class TestPrinter:
             )
         
         if not result.stdout_match:
-            # Strip ANSI codes and prompts for display
+            # Strip ANSI codes for display
             ms_out = ansi_escape.sub('', result.minishell.stdout)
-            cmd_stripped = result.command.strip()
             
+            # Basic cleanup for display
             lines = []
             for line in ms_out.split('\n'):
-                # Remove prompt from start
                 line = re.sub(r'^minishell\$ ', '', line)
-                # Remove prompt from end
                 line = re.sub(r'minishell\$ exit$', '', line)
                 line = re.sub(r'minishell\$ $', '', line)
                 line = re.sub(r'minishell\$$', '', line)
-                # Skip echoed command and exit
-                if line.strip() == cmd_stripped or line.strip() == 'exit':
+                if line.strip() == 'exit':
                     continue
                 if line:
                     lines.append(line)

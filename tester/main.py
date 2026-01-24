@@ -35,6 +35,39 @@ from tests.builtins import (
     ENV_TESTS,
     EXIT_TESTS,
 )
+from tests.pipes import (
+    get_all_pipe_tests,
+    PIPE_BASIC_TESTS,
+    PIPE_MULTIPLE_TESTS,
+    PIPE_EXIT_TESTS,
+    PIPE_BUILTIN_TESTS,
+    PIPE_EDGE_TESTS,
+    PIPE_SUBSHELL_TESTS,
+)
+from tests.execution import (
+    get_all_execution_tests,
+    EXEC_BASIC_TESTS,
+    EXEC_ABSOLUTE_TESTS,
+    EXEC_RELATIVE_TESTS,
+    EXEC_NOT_FOUND_TESTS,
+    EXEC_PERMISSION_TESTS,
+    EXEC_PATH_TESTS,
+    EXEC_PATH_EDGE_TESTS,
+    EXEC_DOT_TESTS,
+    EXEC_ARGS_TESTS,
+    EXEC_ENV_TESTS,
+    EXEC_EXIT_TESTS,
+)
+from tests.redirections import (
+    get_all_redirection_tests,
+    REDIR_OUT_TESTS,
+    REDIR_APPEND_TESTS,
+    REDIR_IN_TESTS,
+    REDIR_COMBINED_TESTS,
+    REDIR_PIPE_TESTS,
+    REDIR_ERROR_TESTS,
+    REDIR_MULTIPLE_TESTS,
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -48,9 +81,12 @@ Examples:
   %(prog)s -s                   Run syntax error tests only
   %(prog)s -p                   Run parsing tests only
   %(prog)s -b                   Run builtin tests
+  %(prog)s -i                   Run pipe tests
+  %(prog)s -x                   Run execution tests
+  %(prog)s -r                   Run redirection tests
   %(prog)s -c syntax/quotes     Run specific subcategory
-  %(prog)s --bonus              Include bonus tests (&&, ||, etc.)
-  %(prog)s -l                   Enable memory leak checks with valgrind
+  %(prog)s --bonus              Include bonus tests (&&, ||, (), *)
+  %(prog)s -l                   Enable memory leak checks with valgrind (slow)
   %(prog)s -v                   Verbose output
   %(prog)s --list               List all available categories
         """
@@ -80,19 +116,19 @@ Examples:
         help="Run builtin tests"
     )
     parser.add_argument(
-        "-e", "--execution",
+        "-i", "--pipes",
         action="store_true",
-        help="Run execution tests (not yet implemented)"
+        help="Run pipe tests"
+    )
+    parser.add_argument(
+        "-x", "--execution",
+        action="store_true",
+        help="Run execution tests"
     )
     parser.add_argument(
         "-r", "--redirections",
         action="store_true",
-        help="Run redirection tests (not yet implemented)"
-    )
-    parser.add_argument(
-        "-i", "--pipes",
-        action="store_true",
-        help="Run pipe tests (not yet implemented)"
+        help="Run redirection tests"
     )
     
     parser.add_argument(
@@ -177,12 +213,33 @@ def list_categories():
         "builtins/unset": "unset command",
         "builtins/env": "env command",
         "builtins/exit": "exit command",
-        # Future categories
-        "pipes": "Pipe tests (coming soon)",
-        "redirections": "Redirection tests (coming soon)",
-        "heredoc": "Heredoc tests (coming soon)",
-        "execution": "Command execution tests (coming soon)",
-        "bonus": "Bonus features (coming soon)",
+        "pipes": "All pipe tests",
+        "pipes/basic": "Basic pipe functionality",
+        "pipes/multiple": "Multiple pipes in chain",
+        "pipes/exit_status": "Exit status from last command",
+        "pipes/builtins": "Pipes with builtin commands",
+        "pipes/edge_cases": "Pipe edge cases",
+        "pipes/subshell": "Pipes with subshells (bonus)",
+        "execution": "All execution tests",
+        "execution/basic": "Basic command execution",
+        "execution/absolute": "Absolute path execution",
+        "execution/relative": "Relative path execution",
+        "execution/not_found": "Command not found (exit 127)",
+        "execution/permissions": "Permission denied (exit 126)",
+        "execution/path": "PATH resolution",
+        "execution/path_edge": "PATH edge cases (unset/empty)",
+        "execution/dot": "Dot file/directory handling",
+        "execution/arguments": "Argument handling",
+        "execution/environment": "Environment passing",
+        "execution/exit_codes": "Exit code handling",
+        "redirections": "All redirection tests",
+        "redirections/output": "Output redirection (>)",
+        "redirections/append": "Append redirection (>>)",
+        "redirections/input": "Input redirection (<)",
+        "redirections/combined": "Combined redirections",
+        "redirections/pipes": "Redirections with pipes",
+        "redirections/errors": "Redirection errors",
+        "redirections/multiple": "Multiple redirections",
     }
     
     print(f"\n{Colors.BOLD_GREEN}Available test categories:{Colors.RESET}\n")
@@ -196,7 +253,7 @@ def list_categories():
             current_section = section
         
         indent = "  " if "/" in cat else ""
-        print(f"{indent}{Colors.CYAN}{cat:25}{Colors.RESET} {desc}")
+        print(f"{indent}{Colors.CYAN}{cat:30}{Colors.RESET} {desc}")
     print()
 
 
@@ -228,6 +285,36 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "builtins/unset": lambda: UNSET_TESTS,
         "builtins/env": lambda: ENV_TESTS,
         "builtins/exit": lambda: EXIT_TESTS,
+        # Pipes
+        "pipes": get_all_pipe_tests,
+        "pipes/basic": lambda: PIPE_BASIC_TESTS,
+        "pipes/multiple": lambda: PIPE_MULTIPLE_TESTS,
+        "pipes/exit_status": lambda: PIPE_EXIT_TESTS,
+        "pipes/builtins": lambda: PIPE_BUILTIN_TESTS,
+        "pipes/edge_cases": lambda: PIPE_EDGE_TESTS,
+        "pipes/subshell": lambda: PIPE_SUBSHELL_TESTS,
+        # Execution
+        "execution": get_all_execution_tests,
+        "execution/basic": lambda: EXEC_BASIC_TESTS,
+        "execution/absolute": lambda: EXEC_ABSOLUTE_TESTS,
+        "execution/relative": lambda: EXEC_RELATIVE_TESTS,
+        "execution/not_found": lambda: EXEC_NOT_FOUND_TESTS,
+        "execution/permissions": lambda: EXEC_PERMISSION_TESTS,
+        "execution/path": lambda: EXEC_PATH_TESTS,
+        "execution/path_edge": lambda: EXEC_PATH_EDGE_TESTS,
+        "execution/dot": lambda: EXEC_DOT_TESTS,
+        "execution/arguments": lambda: EXEC_ARGS_TESTS,
+        "execution/environment": lambda: EXEC_ENV_TESTS,
+        "execution/exit_codes": lambda: EXEC_EXIT_TESTS,
+        # Redirections
+        "redirections": get_all_redirection_tests,
+        "redirections/output": lambda: REDIR_OUT_TESTS,
+        "redirections/append": lambda: REDIR_APPEND_TESTS,
+        "redirections/input": lambda: REDIR_IN_TESTS,
+        "redirections/combined": lambda: REDIR_COMBINED_TESTS,
+        "redirections/pipes": lambda: REDIR_PIPE_TESTS,
+        "redirections/errors": lambda: REDIR_ERROR_TESTS,
+        "redirections/multiple": lambda: REDIR_MULTIPLE_TESTS,
     }
     
     if not categories:
@@ -249,7 +336,11 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     seen = set()
     unique_tests = []
     for t in tests:
-        key = (t.name, t.command)
+        # Use command or commands for dedup key
+        if t.commands:
+            key = (t.name, tuple(t.commands))
+        else:
+            key = (t.name, t.command)
         if key not in seen:
             seen.add(key)
             unique_tests.append(t)
@@ -309,16 +400,19 @@ def main():
         categories.append("parsing")
     if args.builtins:
         categories.append("builtins")
-    if args.execution:
-        print(f"{Colors.warn('Execution tests not yet implemented')}")
-    if args.redirections:
-        print(f"{Colors.warn('Redirection tests not yet implemented')}")
     if args.pipes:
-        print(f"{Colors.warn('Pipe tests not yet implemented')}")
+        categories.append("pipes")
+    if args.execution:
+        categories.append("execution")
+    if args.redirections:
+        categories.append("redirections")
     
     # If --all, run everything available
     if args.all:
-        categories = ["syntax", "parsing", "builtins"]
+        categories = [
+            "syntax", "parsing", "builtins",
+            "pipes", "execution", "redirections"
+        ]
     
     config = Config(
         minishell_path=args.minishell,
@@ -356,8 +450,11 @@ def main():
                 by_category[cat] = []
             by_category[cat].append(test)
         
-        # Run tests in order: syntax first, then parsing, then builtins
-        category_order = ["syntax", "parsing", "builtins"]
+        # Run tests in logical order
+        category_order = [
+            "syntax", "parsing", "builtins",
+            "pipes", "execution", "redirections"
+        ]
         sorted_categories = sorted(
             by_category.keys(),
             key=lambda x: category_order.index(x) if x in category_order else 999

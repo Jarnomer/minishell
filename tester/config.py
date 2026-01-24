@@ -200,9 +200,21 @@ class TestResult:
 # === Test Definition ===
 @dataclass
 class TestCase:
-    """Definition of a single test."""
+    """Definition of a single test.
+    
+    Supports two modes:
+    - Single command: Use `command` field (backward compatible)
+    - Multi-command: Use `commands` field (list of commands sent as separate lines)
+    
+    Multi-command mode allows testing sequences like:
+        commands=["cd /tmp", "pwd"]
+        commands=["unset PATH", "ls"]
+    
+    Without requiring && (bonus feature).
+    """
     name: str
-    command: str
+    command: str = ""                                    # Single command (backward compatible)
+    commands: list[str] = field(default_factory=list)   # Multi-command sequence
     category: str = "general"
     
     # Expected behavior
@@ -220,3 +232,19 @@ class TestCase:
     
     # Timeout override
     timeout: Optional[float] = None
+    
+    def get_display_command(self) -> str:
+        """Get command string for display purposes."""
+        if self.commands:
+            return " ; ".join(self.commands)
+        return self.command
+    
+    def get_stdin_input(self) -> str:
+        """Get the input to send to shell stdin."""
+        if self.commands:
+            return "\n".join(self.commands)
+        return self.command
+    
+    def is_multi_command(self) -> bool:
+        """Check if this is a multi-command test."""
+        return len(self.commands) > 0
