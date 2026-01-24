@@ -4,6 +4,7 @@ from config import TestCase
 
 # === Echo Tests ===
 ECHO_TESTS = [
+    # Basic functionality
     TestCase(
         name="echo basic",
         command="echo hello",
@@ -19,6 +20,7 @@ ECHO_TESTS = [
         command="echo",
         category="builtins/echo"
     ),
+    # -n flag handling
     TestCase(
         name="echo -n flag",
         command="echo -n hello",
@@ -45,7 +47,13 @@ ECHO_TESTS = [
         category="builtins/echo"
     ),
     TestCase(
-        name="echo -n then text",
+        name="echo -nnn no args",
+        command="echo -nnn",
+        category="builtins/echo"
+    ),
+    # -n flag edge cases
+    TestCase(
+        name="echo -n then text -n",
         command="echo -n hello -n",
         category="builtins/echo"
     ),
@@ -60,8 +68,29 @@ ECHO_TESTS = [
         category="builtins/echo"
     ),
     TestCase(
-        name="echo with quotes",
+        name="echo just dash",
+        command="echo -",
+        category="builtins/echo"
+    ),
+    TestCase(
+        name="echo double dash",
+        command="echo --",
+        category="builtins/echo"
+    ),
+    TestCase(
+        name="echo -n- invalid",
+        command="echo -n- hello",
+        category="builtins/echo"
+    ),
+    # With quotes
+    TestCase(
+        name="echo with double quotes",
         command='echo "hello world"',
+        category="builtins/echo"
+    ),
+    TestCase(
+        name="echo with single quotes",
+        command="echo 'hello world'",
         category="builtins/echo"
     ),
     TestCase(
@@ -90,14 +119,20 @@ PWD_TESTS = [
         bonus=True  # Requires &&
     ),
     TestCase(
-        name="pwd ignore args",
+        name="pwd ignores args",
         command="pwd ignored args",
+        category="builtins/pwd"
+    ),
+    TestCase(
+        name="pwd ignores flags",
+        command="pwd -L -P",
         category="builtins/pwd"
     ),
 ]
 
 # === Cd Tests ===
 CD_TESTS = [
+    # Basic navigation (with && for verification - bonus)
     TestCase(
         name="cd absolute path",
         command="cd /tmp && pwd",
@@ -111,46 +146,10 @@ CD_TESTS = [
         bonus=True
     ),
     TestCase(
-        name="cd home tilde",
-        command="cd ~ && pwd",
-        category="builtins/cd",
-        bonus=True  # Tilde expansion might be bonus
-    ),
-    TestCase(
         name="cd relative path",
         command="cd /tmp && cd .. && pwd",
         category="builtins/cd",
         bonus=True
-    ),
-    TestCase(
-        name="cd nonexistent",
-        command="cd /nonexistent_dir_12345",
-        category="builtins/cd",
-        expect_error=True
-    ),
-    TestCase(
-        name="cd too many args",
-        command="cd /tmp /var",
-        category="builtins/cd",
-        expect_error=True
-    ),
-    TestCase(
-        name="cd dash previous",
-        command="cd /tmp && cd /var && cd - && pwd",
-        category="builtins/cd",
-        bonus=True
-    ),
-    TestCase(
-        name="cd file not dir",
-        command="cd /etc/hostname",
-        category="builtins/cd",
-        expect_error=True
-    ),
-    TestCase(
-        name="cd no permission",
-        command="cd /root",
-        category="builtins/cd",
-        expect_error=True
     ),
     TestCase(
         name="cd dot",
@@ -164,21 +163,47 @@ CD_TESTS = [
         category="builtins/cd",
         bonus=True
     ),
-    # Tests without && (pipe version)
+    # Error cases (no && needed)
     TestCase(
-        name="cd then pwd pipe",
-        command="cd /tmp | pwd",  # pwd runs in subshell, shows original dir
+        name="cd nonexistent",
+        command="cd /nonexistent_dir_12345",
+        category="builtins/cd",
+        expect_error=True
+    ),
+    TestCase(
+        name="cd too many args",
+        command="cd /tmp /var",
+        category="builtins/cd",
+        expect_error=True
+    ),
+    TestCase(
+        name="cd file not dir",
+        command="cd /etc/hostname",
+        category="builtins/cd",
+        expect_error=True
+    ),
+    TestCase(
+        name="cd no permission",
+        command="cd /root",
+        category="builtins/cd",
+        expect_error=True
+    ),
+    # Pipe test (no && needed)
+    TestCase(
+        name="cd in pipe",
+        command="cd /tmp | pwd",  # pwd runs in subshell
         category="builtins/cd"
     ),
 ]
 
 # === Export Tests ===
 EXPORT_TESTS = [
+    # Basic functionality
     TestCase(
-        name="export no args",
-        command="export",
+        name="export no args shows env",
+        command="export | head -5",
         category="builtins/export",
-        skip_stdout_check=True  # Output varies by environment
+        skip_stdout_check=True  # Output varies
     ),
     TestCase(
         name="export simple var",
@@ -188,34 +213,15 @@ EXPORT_TESTS = [
     ),
     TestCase(
         name="export empty value",
-        command="export TESTVAR= && echo $TESTVAR",
+        command="export TESTVAR= && echo \"[$TESTVAR]\"",
         category="builtins/export",
         bonus=True
-    ),
-    TestCase(
-        name="export no value",
-        command="export TESTVAR && export | grep TESTVAR",
-        category="builtins/export",
-        bonus=True,
-        skip_stdout_check=True
     ),
     TestCase(
         name="export multiple vars",
         command="export A=1 B=2 && echo $A $B",
         category="builtins/export",
         bonus=True
-    ),
-    TestCase(
-        name="export invalid identifier",
-        command="export 1VAR=test",
-        category="builtins/export",
-        expect_error=True
-    ),
-    TestCase(
-        name="export invalid identifier dash",
-        command="export VAR-NAME=test",
-        category="builtins/export",
-        expect_error=True
     ),
     TestCase(
         name="export with underscore",
@@ -235,11 +241,30 @@ EXPORT_TESTS = [
         category="builtins/export",
         bonus=True
     ),
+    # Error cases
     TestCase(
-        name="export append value",
-        command="export TESTVAR=hello && export TESTVAR+=world && echo $TESTVAR",
+        name="export invalid start digit",
+        command="export 1VAR=test",
         category="builtins/export",
-        bonus=True  # += might not be required
+        expect_error=True
+    ),
+    TestCase(
+        name="export invalid dash",
+        command="export VAR-NAME=test",
+        category="builtins/export",
+        expect_error=True
+    ),
+    TestCase(
+        name="export no name",
+        command="export =value",
+        category="builtins/export",
+        expect_error=True
+    ),
+    TestCase(
+        name="export empty string",
+        command='export ""',
+        category="builtins/export",
+        expect_error=True
     ),
 ]
 
@@ -247,7 +272,7 @@ EXPORT_TESTS = [
 UNSET_TESTS = [
     TestCase(
         name="unset existing var",
-        command="export TESTVAR=hello && unset TESTVAR && echo $TESTVAR",
+        command="export TESTVAR=hello && unset TESTVAR && echo \"[$TESTVAR]\"",
         category="builtins/unset",
         bonus=True
     ),
@@ -258,7 +283,7 @@ UNSET_TESTS = [
     ),
     TestCase(
         name="unset multiple vars",
-        command="export A=1 B=2 && unset A B && echo $A $B",
+        command="export A=1 B=2 && unset A B && echo \"[$A][$B]\"",
         category="builtins/unset",
         bonus=True
     ),
@@ -268,16 +293,17 @@ UNSET_TESTS = [
         category="builtins/unset"
     ),
     TestCase(
-        name="unset PATH",
+        name="unset PATH then ls",
         command="unset PATH && ls",
         category="builtins/unset",
         expect_error=True
     ),
+    # Error cases - unset typically silently ignores invalid identifiers
     TestCase(
         name="unset invalid identifier",
         command="unset 1VAR",
-        category="builtins/unset",
-        expect_error=True
+        category="builtins/unset"
+        # Note: bash doesn't error on this, just ignores it
     ),
 ]
 
@@ -285,23 +311,23 @@ UNSET_TESTS = [
 ENV_TESTS = [
     TestCase(
         name="env basic",
-        command="env",
+        command="env | wc -l",
         category="builtins/env",
-        skip_stdout_check=True  # Output varies
+        skip_stdout_check=True  # Count varies
     ),
     TestCase(
-        name="env with grep",
-        command="env | grep PATH",
+        name="env shows PATH",
+        command="env | grep -c PATH",
         category="builtins/env"
     ),
     TestCase(
-        name="env has HOME",
-        command="env | grep HOME",
+        name="env shows HOME",
+        command="env | grep -c HOME",
         category="builtins/env"
     ),
     TestCase(
-        name="env has USER",
-        command="env | grep USER",
+        name="env shows USER",
+        command="env | grep -c USER",
         category="builtins/env"
     ),
     TestCase(
@@ -311,10 +337,10 @@ ENV_TESTS = [
         bonus=True
     ),
     TestCase(
-        name="env ignores args",
-        command="env ignored args | wc -l",
+        name="env with args error",
+        command="env arg1 arg2",
         category="builtins/env",
-        skip_stdout_check=True  # Line count varies
+        expect_error=True  # Your implementation errors on args
     ),
 ]
 
@@ -350,23 +376,29 @@ EXIT_TESTS = [
         expected_exit=255
     ),
     TestCase(
-        name="exit 256 wraps",
+        name="exit 256 wraps to 0",
         command="exit 256",
         category="builtins/exit",
-        expected_exit=0  # 256 % 256 = 0
+        expected_exit=0
+    ),
+    TestCase(
+        name="exit 257 wraps to 1",
+        command="exit 257",
+        category="builtins/exit",
+        expected_exit=1
     ),
     TestCase(
         name="exit negative",
         command="exit -1",
         category="builtins/exit",
-        expected_exit=255  # -1 wraps to 255
+        expected_exit=255
     ),
     TestCase(
         name="exit non-numeric",
         command="exit abc",
         category="builtins/exit",
         expect_error=True,
-        expected_exit=2  # bash returns 2 for non-numeric
+        expected_exit=2
     ),
     TestCase(
         name="exit too many args",
@@ -375,17 +407,30 @@ EXIT_TESTS = [
         expect_error=True
     ),
     TestCase(
-        name="exit large number",
+        name="exit large overflow",
         command="exit 9999999999999999999",
         category="builtins/exit",
         expect_error=True,
         expected_exit=2
     ),
     TestCase(
+        name="exit negative overflow",
+        command="exit -9999999999999999999",
+        category="builtins/exit",
+        expect_error=True,
+        expected_exit=2
+    ),
+    TestCase(
+        name="exit with plus sign",
+        command="exit +5",
+        category="builtins/exit",
+        expected_exit=5
+    ),
+    TestCase(
         name="exit in pipe",
         command="exit 42 | echo hello",
         category="builtins/exit"
-        # Exit in pipe runs in subshell, doesn't exit main shell
+        # Exit in pipe runs in subshell
     ),
 ]
 

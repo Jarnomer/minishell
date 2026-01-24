@@ -330,6 +330,10 @@ class TestRunner:
             return False
         return file1.read_bytes() == file2.read_bytes()
     
+    def _is_syntax_error_test(self, test: TestCase) -> bool:
+        """Check if this is a syntax error test."""
+        return test.category.startswith("syntax/") or test.category == "syntax"
+    
     def run_test(self, test: TestCase) -> TestResult:
         """Execute a single test case."""
         
@@ -353,12 +357,22 @@ class TestRunner:
         ms_result = self.run_minishell(test.command, timeout, env)
         ref_result = self.run_bash(test.command, timeout, env)
         
+        # For syntax error tests, check stderr has content and exit code is 2
+        is_syntax_test = self._is_syntax_error_test(test)
+        
         # Compare outputs
-        stdout_match, stderr_match = self.compare_outputs(
-            ms_result, ref_result,
-            command=test.command,
-            check_stderr=test.expect_error
-        )
+        if is_syntax_test:
+            # For syntax errors: stdout should be empty (or just prompt),
+            # stderr should have error message
+            stdout_match, stderr_match = self._compare_syntax_error(
+                ms_result, ref_result, test
+            )
+        else:
+            stdout_match, stderr_match = self.compare_outputs(
+                ms_result, ref_result,
+                command=test.command,
+                check_stderr=test.expect_error
+            )
         
         # Compare exit codes
         if test.expected_exit is not None:
@@ -368,7 +382,7 @@ class TestRunner:
         
         # Compare output files if redirections were used
         outfile_match = True
-        if ">" in test.command:
+        if ">" in test.command and not is_syntax_test:
             outfile_match = self.compare_files(self.outfile_ms, self.outfile_ref)
         
         # Check valgrind (optional)
@@ -376,9 +390,9 @@ class TestRunner:
         if not test.skip_valgrind and self.config.valgrind.enabled:
             valgrind_result = self.check_valgrind(test.command, env)
         
-        # Check zombies for pipeline tests
+        # Check zombies for pipeline tests (not for syntax errors)
         zombie_count = 0
-        if "|" in test.command:
+        if "|" in test.command and not is_syntax_test:
             zombie_count = self.check_zombies(test.command, env)
         
         result = TestResult(
@@ -397,6 +411,29 @@ class TestRunner:
         
         self.results.append(result)
         return result
+    
+    def _compare_syntax_error(
+        self,
+        ms_result: ExecutionResult,
+        ref_result: ExecutionResult,
+        test: TestCase
+    ) -> tuple[bool, bool]:
+        """Compare syntax error output - checks stderr has content."""
+        
+        # For syntax errors, we care that:
+        # 1. stderr has some error message (not empty)
+        # 2. stdout is empty or just the prompt
+        
+        ms_stdout_clean = self._strip_prompt(ms_result.stdout, test.command).strip()
+        
+        # stdout should be empty for syntax errors
+        stdout_match = len(ms_stdout_clean) == 0
+        
+        # stderr should have some error message
+        ms_has_error = bool(ms_result.stderr.strip())
+        stderr_match = ms_has_error
+        
+        return stdout_match, stderr_match
     
     def run_tests(self, tests: list[TestCase]) -> list[TestResult]:
         """Run multiple tests."""
@@ -467,10 +504,16 @@ class TestPrinter:
         # ANSI escape pattern for cleaning display output
         ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
         
+        # Check if this is a syntax error test
+        is_syntax_test = result.category.startswith("syntax")
+        
         # Show what failed
         failures = []
         if not result.exit_code_match:
-            failures.append(f"Exit code: minishell={result.minishell.exit_code} bash={result.reference.exit_code}")
+            failures.append(
+                f"Exit code: minishell={result.minishell.exit_code} "
+                f"expected={result.reference.exit_code}"
+            )
         
         if not result.stdout_match:
             # Strip ANSI codes and prompts for display
@@ -492,8 +535,22 @@ class TestPrinter:
                     lines.append(line)
             ms_out = '\n'.join(lines).rstrip()
             
-            ref_out = result.reference.stdout.rstrip()
-            failures.append(f"Stdout mismatch:\n  Minishell: {repr(ms_out)}\n  Bash:      {repr(ref_out)}")
+            if is_syntax_test:
+                failures.append(f"Stdout should be empty but got: {repr(ms_out)}")
+            else:
+                ref_out = result.reference.stdout.rstrip()
+                failures.append(
+                    f"Stdout mismatch:\n"
+                    f"  Minishell: {repr(ms_out)}\n"
+                    f"  Bash:      {repr(ref_out)}"
+                )
+        
+        if not result.stderr_match:
+            if is_syntax_test:
+                if not result.minishell.stderr.strip():
+                    failures.append("Stderr should have error message but is empty")
+            else:
+                failures.append("Stderr presence mismatch")
         
         if not result.outfile_match and ">" in result.command:
             failures.append("Output file mismatch")
@@ -507,7 +564,9 @@ class TestPrinter:
         
         if result.valgrind and not result.valgrind.passed:
             if result.valgrind.has_leaks:
-                failures.append(f"Memory leaks: {result.valgrind.definitely_lost} bytes definitely lost")
+                failures.append(
+                    f"Memory leaks: {result.valgrind.definitely_lost} bytes definitely lost"
+                )
             if result.valgrind.open_fds > 3:
                 failures.append(f"Open file descriptors: {result.valgrind.open_fds}")
         
@@ -516,6 +575,11 @@ class TestPrinter:
         
         for failure in failures:
             print(f"{Colors.YELLOW}{failure}{Colors.RESET}")
+        
+        # Show stderr if present (useful for debugging)
+        if result.minishell.stderr.strip() and self.config.verbose:
+            print(f"\n{Colors.CYAN}Minishell stderr:{Colors.RESET}")
+            print(f"  {result.minishell.stderr.strip()}")
         
         print(f"\n{Colors.BOLD_RED}{separator}\n{Colors.RESET}")
     
@@ -529,8 +593,9 @@ class TestPrinter:
         
         if summary["by_category"]:
             print(f"\n{Colors.BOLD_BLUE}By category:{Colors.RESET}")
-            for cat, counts in summary["by_category"].items():
-                print(f"  {cat}: {Colors.ok(str(counts['passed']))} passed, "
+            for cat, counts in sorted(summary["by_category"].items()):
+                status = Colors.ok("✓") if counts["failed"] == 0 else Colors.ko("✗")
+                print(f"  {status} {cat}: {Colors.ok(str(counts['passed']))} passed, "
                       f"{Colors.ko(str(counts['failed']))} failed")
         
         print()

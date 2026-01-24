@@ -9,14 +9,21 @@ from config import Config, ValgrindConfig, Colors
 from runner import TestRunner, TestPrinter, TestLogger
 
 # Import test categories
+from tests.syntax import (
+    get_all_syntax_tests,
+    get_mandatory_syntax_tests,
+    UNCLOSED_QUOTE_TESTS,
+    PIPE_SYNTAX_TESTS,
+    REDIR_SYNTAX_TESTS,
+    PAREN_SYNTAX_TESTS,
+    LOGICAL_SYNTAX_TESTS,
+)
 from tests.parsing import (
     get_all_parsing_tests,
     QUOTE_TESTS,
     EXPANSION_TESTS,
     TOKENIZATION_TESTS,
-    OPERATOR_TESTS,
     EDGE_CASE_TESTS,
-    UNCLOSED_QUOTE_TESTS,
 )
 from tests.builtins import (
     get_all_builtin_tests,
@@ -38,13 +45,14 @@ def parse_args() -> argparse.Namespace:
         epilog="""
 Examples:
   %(prog)s                      Run all mandatory tests
+  %(prog)s -s                   Run syntax error tests only
   %(prog)s -p                   Run parsing tests only
-  %(prog)s -p -b                Run parsing and builtin tests
-  %(prog)s -c parsing/quotes    Run specific subcategory
-  %(prog)s --bonus              Include bonus tests
+  %(prog)s -b                   Run builtin tests
+  %(prog)s -c syntax/quotes     Run specific subcategory
+  %(prog)s --bonus              Include bonus tests (&&, ||, etc.)
   %(prog)s -l                   Enable memory leak checks with valgrind
   %(prog)s -v                   Verbose output
-  %(prog)s --help               Show this help message
+  %(prog)s --list               List all available categories
         """
     )
     
@@ -57,9 +65,14 @@ Examples:
     
     # Category shorthand flags
     parser.add_argument(
+        "-s", "--syntax",
+        action="store_true",
+        help="Run syntax error tests"
+    )
+    parser.add_argument(
         "-p", "--parsing",
         action="store_true",
-        help="Run parsing tests"
+        help="Run parsing tests (quotes, expansion)"
     )
     parser.add_argument(
         "-b", "--builtins",
@@ -69,17 +82,17 @@ Examples:
     parser.add_argument(
         "-e", "--execution",
         action="store_true",
-        help="Run execution tests"
+        help="Run execution tests (not yet implemented)"
     )
     parser.add_argument(
         "-r", "--redirections",
         action="store_true",
-        help="Run redirection tests"
+        help="Run redirection tests (not yet implemented)"
     )
     parser.add_argument(
-        "-s", "--signals",
+        "-i", "--pipes",
         action="store_true",
-        help="Run signal tests"
+        help="Run pipe tests (not yet implemented)"
     )
     
     parser.add_argument(
@@ -133,18 +146,28 @@ Examples:
         help="Log file for failed tests (default: minishell_test.log)"
     )
     
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List all available test categories"
+    )
+    
     return parser.parse_args()
 
 
 def list_categories():
     """Print available test categories."""
     categories = {
-        "parsing": "All parsing tests",
+        "syntax": "All syntax error tests (exit code 2)",
+        "syntax/quotes": "Unclosed quote errors",
+        "syntax/pipe": "Pipe syntax errors",
+        "syntax/redirect": "Redirection syntax errors",
+        "syntax/parentheses": "Parentheses errors (bonus)",
+        "syntax/logical": "&&/|| errors (bonus)",
+        "parsing": "All parsing tests (quotes + expansion)",
         "parsing/quotes": "Quote handling",
         "parsing/expansion": "Variable expansion ($VAR, $?, etc.)",
         "parsing/tokenization": "Whitespace and tokenization",
-        "parsing/operators": "Pipes and redirections",
-        "parsing/syntax_errors": "Syntax error handling",
         "parsing/edge_cases": "Edge cases and weird inputs",
         "builtins": "All builtin tests",
         "builtins/echo": "echo command",
@@ -155,15 +178,25 @@ def list_categories():
         "builtins/env": "env command",
         "builtins/exit": "exit command",
         # Future categories
-        "execution": "Command execution (coming soon)",
-        "redirections": "Redirections (coming soon)",
-        "signals": "Signal handling (coming soon)",
+        "pipes": "Pipe tests (coming soon)",
+        "redirections": "Redirection tests (coming soon)",
+        "heredoc": "Heredoc tests (coming soon)",
+        "execution": "Command execution tests (coming soon)",
         "bonus": "Bonus features (coming soon)",
     }
     
     print(f"\n{Colors.BOLD_GREEN}Available test categories:{Colors.RESET}\n")
+    
+    current_section = ""
     for cat, desc in categories.items():
-        print(f"  {Colors.CYAN}{cat:25}{Colors.RESET} {desc}")
+        section = cat.split("/")[0]
+        if section != current_section:
+            if current_section:
+                print()
+            current_section = section
+        
+        indent = "  " if "/" in cat else ""
+        print(f"{indent}{Colors.CYAN}{cat:25}{Colors.RESET} {desc}")
     print()
 
 
@@ -173,13 +206,18 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     
     # Map category names to test lists
     category_map = {
+        # Syntax errors
+        "syntax": get_mandatory_syntax_tests if not include_bonus else get_all_syntax_tests,
+        "syntax/quotes": lambda: UNCLOSED_QUOTE_TESTS,
+        "syntax/pipe": lambda: PIPE_SYNTAX_TESTS,
+        "syntax/redirect": lambda: REDIR_SYNTAX_TESTS,
+        "syntax/parentheses": lambda: PAREN_SYNTAX_TESTS,
+        "syntax/logical": lambda: LOGICAL_SYNTAX_TESTS,
         # Parsing
         "parsing": get_all_parsing_tests,
         "parsing/quotes": lambda: QUOTE_TESTS,
         "parsing/expansion": lambda: EXPANSION_TESTS,
         "parsing/tokenization": lambda: TOKENIZATION_TESTS,
-        "parsing/operators": lambda: OPERATOR_TESTS,
-        "parsing/syntax_errors": lambda: UNCLOSED_QUOTE_TESTS,
         "parsing/edge_cases": lambda: EDGE_CASE_TESTS,
         # Builtins
         "builtins": get_all_builtin_tests,
@@ -194,7 +232,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     
     if not categories:
         # Default: all mandatory tests
-        categories = ["parsing", "builtins"]
+        categories = ["syntax", "parsing", "builtins"]
     
     for cat in categories:
         if cat in category_map:
@@ -249,9 +287,14 @@ def check_requirements(config: Config) -> bool:
 def main():
     args = parse_args()
     
+    # Handle --list
+    if args.list:
+        list_categories()
+        return 0
+    
     # Build configuration
     valgrind_config = ValgrindConfig(
-        enabled=args.leaks,  # Only enable if -l/--leaks flag is passed
+        enabled=args.leaks,
         check_leaks=True,
         check_fds=not args.no_fds,
     )
@@ -260,20 +303,22 @@ def main():
     categories = args.categories or []
     
     # Add categories from shorthand flags
+    if args.syntax:
+        categories.append("syntax")
     if args.parsing:
         categories.append("parsing")
     if args.builtins:
         categories.append("builtins")
     if args.execution:
-        categories.append("execution")
+        print(f"{Colors.warn('Execution tests not yet implemented')}")
     if args.redirections:
-        categories.append("redirections")
-    if args.signals:
-        categories.append("signals")
+        print(f"{Colors.warn('Redirection tests not yet implemented')}")
+    if args.pipes:
+        print(f"{Colors.warn('Pipe tests not yet implemented')}")
     
-    # If --all or no categories specified, run all available
-    if args.all or not categories:
-        categories = ["parsing", "builtins"]  # Add more as implemented
+    # If --all, run everything available
+    if args.all:
+        categories = ["syntax", "parsing", "builtins"]
     
     config = Config(
         minishell_path=args.minishell,
@@ -294,6 +339,7 @@ def main():
     
     if not tests:
         print(f"{Colors.warn('No tests to run!')}")
+        print("Use --list to see available categories")
         return 1
     
     # Initialize runner, printer, logger
@@ -302,7 +348,7 @@ def main():
     logger = TestLogger(config)
     
     try:
-        # Group tests by category
+        # Group tests by top-level category for display
         by_category = {}
         for test in tests:
             cat = test.category.split("/")[0]
@@ -310,8 +356,15 @@ def main():
                 by_category[cat] = []
             by_category[cat].append(test)
         
-        # Run tests
-        for category, cat_tests in by_category.items():
+        # Run tests in order: syntax first, then parsing, then builtins
+        category_order = ["syntax", "parsing", "builtins"]
+        sorted_categories = sorted(
+            by_category.keys(),
+            key=lambda x: category_order.index(x) if x in category_order else 999
+        )
+        
+        for category in sorted_categories:
+            cat_tests = by_category[category]
             printer.print_header(category.upper())
             
             for test in cat_tests:
