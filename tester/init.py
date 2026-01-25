@@ -8,11 +8,12 @@ from tests.execution import get_all_execution_tests
 from tests.redirections import get_all_redirection_tests
 
 __all__ = [
-    'get_all_syntax_tests',
-    'get_mandatory_syntax_tests',
-    'get_all_parsing_tests',
-    'get_all_builtin_tests',
-    'get_all_pipe_tests',
-    'get_all_execution_tests',
-    'get_all_redirection_tests',
+    "get_all_syntax_tests",
+    "get_mandatory_syntax_tests",
+    "get_all_parsing_tests",
+    "get_all_builtin_tests",
+    "get_all_pipe_tests",
+    "get_all_execution_tests",
+    "get_all_redirection_tests",
 ]
+

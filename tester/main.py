@@ -57,6 +57,8 @@ from tests.execution import (
     EXEC_ARGS_TESTS,
     EXEC_ENV_TESTS,
     EXEC_EXIT_TESTS,
+    EXEC_LOGICAL_TESTS,
+    EXEC_SUBSHELL_TESTS,
 )
 from tests.redirections import (
     get_all_redirection_tests,
@@ -73,7 +75,7 @@ from tests.redirections import (
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Minishell tester - compare your shell against bash",
+        description="Minishell tester - compares against bash",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -89,105 +91,88 @@ Examples:
   %(prog)s -l                   Enable memory leak checks with valgrind (slow)
   %(prog)s -v                   Verbose output
   %(prog)s --list               List all available categories
-        """
+        """,
     )
-    
+
     parser.add_argument(
-        "-m", "--minishell",
+        "-m",
+        "--minishell",
         type=Path,
         default=Path("./minishell"),
-        help="Path to minishell binary (default: ./minishell)"
+        help="Path to minishell binary (default: ./minishell)",
     )
-    
+
     # Category shorthand flags
     parser.add_argument(
-        "-s", "--syntax",
-        action="store_true",
-        help="Run syntax error tests"
+        "-s", "--syntax", action="store_true", help="Run syntax error tests"
     )
     parser.add_argument(
-        "-p", "--parsing",
+        "-p",
+        "--parsing",
         action="store_true",
-        help="Run parsing tests (quotes, expansion)"
+        help="Run parsing tests (quotes, expansion)",
     )
     parser.add_argument(
-        "-b", "--builtins",
-        action="store_true",
-        help="Run builtin tests"
+        "-b", "--builtins", action="store_true", help="Run builtin tests"
+    )
+    parser.add_argument("-i", "--pipes", action="store_true", help="Run pipe tests")
+    parser.add_argument(
+        "-x", "--execution", action="store_true", help="Run execution tests"
     )
     parser.add_argument(
-        "-i", "--pipes",
-        action="store_true",
-        help="Run pipe tests"
+        "-r", "--redirections", action="store_true", help="Run redirection tests"
     )
+
     parser.add_argument(
-        "-x", "--execution",
-        action="store_true",
-        help="Run execution tests"
-    )
-    parser.add_argument(
-        "-r", "--redirections",
-        action="store_true",
-        help="Run redirection tests"
-    )
-    
-    parser.add_argument(
-        "-c", "--category",
+        "-c",
+        "--category",
         action="append",
         dest="categories",
-        help="Run specific test category/subcategory (can be used multiple times)"
+        help="Run specific test category/subcategory (can be used multiple times)",
     )
-    
+
     parser.add_argument(
         "--bonus",
         action="store_true",
-        help="Include bonus tests (&&, ||, wildcards, etc.)"
+        help="Include bonus tests (&&, ||, wildcards, etc.)",
     )
-    
+
     parser.add_argument(
-        "-a", "--all",
-        action="store_true",
-        help="Run all test categories"
+        "-a", "--all", action="store_true", help="Run all test categories"
     )
-    
+
     parser.add_argument(
-        "-t", "--timeout",
+        "-t",
+        "--timeout",
         type=float,
         default=0.5,
-        help="Timeout per test in seconds (default: 0.5)"
+        help="Timeout per test in seconds (default: 0.5)",
     )
-    
+
     parser.add_argument(
-        "-l", "--leaks",
-        action="store_true",
-        help="Enable valgrind memory leak checks"
+        "-l", "--leaks", action="store_true", help="Enable valgrind memory leak checks"
     )
-    
+
     parser.add_argument(
         "--no-fds",
         action="store_true",
-        help="Skip file descriptor checking (when using -l/--leaks)"
+        help="Skip file descriptor checking (when using -l/--leaks)",
     )
-    
+
+    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
+
     parser.add_argument(
-        "-v", "--verbose",
-        action="store_true",
-        help="Verbose output"
-    )
-    
-    parser.add_argument(
-        "-o", "--log",
+        "-o",
+        "--log",
         type=Path,
         default=Path("minishell_test.log"),
-        help="Log file for failed tests (default: minishell_test.log)"
+        help="Log file for failed tests (default: minishell_test.log)",
     )
-    
+
     parser.add_argument(
-        "--list",
-        action="store_true",
-        help="List all available test categories"
+        "--list", action="store_true", help="List all available test categories"
     )
-    
+
     return parser.parse_args()
 
 
@@ -232,6 +217,8 @@ def list_categories():
         "execution/arguments": "Argument handling",
         "execution/environment": "Environment passing",
         "execution/exit_codes": "Exit code handling",
+        "execution/logical": "Exit code handling",
+        "execution/subshell": "Exit code handling",
         "redirections": "All redirection tests",
         "redirections/output": "Output redirection (>)",
         "redirections/append": "Append redirection (>>)",
@@ -241,9 +228,9 @@ def list_categories():
         "redirections/errors": "Redirection errors",
         "redirections/multiple": "Multiple redirections",
     }
-    
+
     print(f"\n{Colors.BOLD_GREEN}Available test categories:{Colors.RESET}\n")
-    
+
     current_section = ""
     for cat, desc in categories.items():
         section = cat.split("/")[0]
@@ -251,7 +238,7 @@ def list_categories():
             if current_section:
                 print()
             current_section = section
-        
+
         indent = "  " if "/" in cat else ""
         print(f"{indent}{Colors.CYAN}{cat:30}{Colors.RESET} {desc}")
     print()
@@ -260,11 +247,13 @@ def list_categories():
 def get_tests_for_categories(categories: list[str], include_bonus: bool):
     """Get all tests matching the specified categories."""
     tests = []
-    
+
     # Map category names to test lists
     category_map = {
         # Syntax errors
-        "syntax": get_mandatory_syntax_tests if not include_bonus else get_all_syntax_tests,
+        "syntax": (
+            get_mandatory_syntax_tests if not include_bonus else get_all_syntax_tests
+        ),
         "syntax/quotes": lambda: UNCLOSED_QUOTE_TESTS,
         "syntax/pipe": lambda: PIPE_SYNTAX_TESTS,
         "syntax/redirect": lambda: REDIR_SYNTAX_TESTS,
@@ -306,6 +295,8 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "execution/arguments": lambda: EXEC_ARGS_TESTS,
         "execution/environment": lambda: EXEC_ENV_TESTS,
         "execution/exit_codes": lambda: EXEC_EXIT_TESTS,
+        "execution/logical": lambda: EXEC_LOGICAL_TESTS,
+        "execution/subshell": lambda: EXEC_SUBSHELL_TESTS,
         # Redirections
         "redirections": get_all_redirection_tests,
         "redirections/output": lambda: REDIR_OUT_TESTS,
@@ -316,22 +307,22 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "redirections/errors": lambda: REDIR_ERROR_TESTS,
         "redirections/multiple": lambda: REDIR_MULTIPLE_TESTS,
     }
-    
+
     if not categories:
         # Default: all mandatory tests
         categories = ["syntax", "parsing", "builtins"]
-    
+
     for cat in categories:
         if cat in category_map:
             cat_tests = category_map[cat]()
             tests.extend(cat_tests)
         else:
             print(f"{Colors.warn(f'Unknown category: {cat}')}")
-    
+
     # Filter bonus tests if not enabled
     if not include_bonus:
         tests = [t for t in tests if not t.bonus]
-    
+
     # Remove duplicates while preserving order
     seen = set()
     unique_tests = []
@@ -344,55 +335,57 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         if key not in seen:
             seen.add(key)
             unique_tests.append(t)
-    
+
     return unique_tests
 
 
 def check_requirements(config: Config) -> bool:
     """Check that required tools are available."""
     issues = []
-    
+
     # Check minishell exists
     if not config.minishell_path.exists():
         issues.append(f"Minishell not found at {config.minishell_path}")
     elif not config.minishell_path.is_file():
         issues.append(f"{config.minishell_path} is not a file")
-    
+
     # Check bash
     if not config.bash_cmd:
         issues.append("bash not found in PATH")
-    
+
     # Warn about optional tools
     if config.valgrind.enabled and not config.valgrind.available:
-        print(f"{Colors.warn('WARNING:')} valgrind not available, skipping memory checks")
+        print(
+            f"{Colors.warn('WARNING:')} valgrind not available, skipping memory checks"
+        )
         config.valgrind.enabled = False
-    
+
     if issues:
         for issue in issues:
             print(f"{Colors.ko('ERROR:')} {issue}")
         return False
-    
+
     return True
 
 
 def main():
     args = parse_args()
-    
+
     # Handle --list
     if args.list:
         list_categories()
         return 0
-    
+
     # Build configuration
     valgrind_config = ValgrindConfig(
         enabled=args.leaks,
         check_leaks=True,
         check_fds=not args.no_fds,
     )
-    
+
     # Build categories list from flags
     categories = args.categories or []
-    
+
     # Add categories from shorthand flags
     if args.syntax:
         categories.append("syntax")
@@ -406,14 +399,18 @@ def main():
         categories.append("execution")
     if args.redirections:
         categories.append("redirections")
-    
+
     # If --all, run everything available
     if args.all:
         categories = [
-            "syntax", "parsing", "builtins",
-            "pipes", "execution", "redirections"
+            "syntax",
+            "parsing",
+            "builtins",
+            "pipes",
+            "execution",
+            "redirections",
         ]
-    
+
     config = Config(
         minishell_path=args.minishell,
         timeout=args.timeout,
@@ -423,24 +420,24 @@ def main():
         verbose=args.verbose,
         log_file=args.log,
     )
-    
+
     # Check requirements
     if not check_requirements(config):
         return 1
-    
+
     # Get tests
     tests = get_tests_for_categories(categories, args.bonus)
-    
+
     if not tests:
         print(f"{Colors.warn('No tests to run!')}")
         print("Use --list to see available categories")
         return 1
-    
+
     # Initialize runner, printer, logger
     runner = TestRunner(config)
     printer = TestPrinter(config)
     logger = TestLogger(config)
-    
+
     try:
         # Group tests by top-level category for display
         by_category = {}
@@ -449,35 +446,40 @@ def main():
             if cat not in by_category:
                 by_category[cat] = []
             by_category[cat].append(test)
-        
+
         # Run tests in logical order
         category_order = [
-            "syntax", "parsing", "builtins",
-            "pipes", "execution", "redirections"
+            "syntax",
+            "parsing",
+            "builtins",
+            "pipes",
+            "execution",
+            "redirections",
         ]
         sorted_categories = sorted(
             by_category.keys(),
-            key=lambda x: category_order.index(x) if x in category_order else 999
+            key=lambda x: category_order.index(x) if x in category_order else 999,
         )
-        
+
         for category in sorted_categories:
             cat_tests = by_category[category]
             printer.print_header(category.upper())
-            
+
             for test in cat_tests:
                 result = runner.run_test(test)
                 printer.print_result(result, runner.test_num)
                 logger.log_result(result)
-        
+
         # Print summary
         summary = runner.get_summary()
         printer.print_summary(summary, runner.test_num)
-        
+
         return 0 if summary["failed"] == 0 else 1
-        
+
     finally:
         runner.cleanup()
 
 
 if __name__ == "__main__":
     sys.exit(main())
+

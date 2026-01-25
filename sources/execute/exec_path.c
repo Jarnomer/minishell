@@ -25,8 +25,9 @@ static char	*join_path(const char *dir, const char *cmd)
 
 static char	*search_in_paths(char **paths, const char *cmd)
 {
-	char	*full_path;
-	size_t	i;
+	char		*full_path;
+	struct stat	st;
+	size_t		i;
 
 	i = 0;
 	while (paths[i])
@@ -34,8 +35,11 @@ static char	*search_in_paths(char **paths, const char *cmd)
 		full_path = join_path(paths[i], cmd);
 		if (access(full_path, X_OK) == 0)
 		{
-			ft_free_double((void ***)&paths);
-			return (full_path);
+			if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode))
+			{
+				ft_free_double((void ***)&paths);
+				return (full_path);
+			}
 		}
 		free(full_path);
 		i++;
