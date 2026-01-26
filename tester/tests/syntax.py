@@ -1,16 +1,7 @@
-"""Syntax error tests for minishell.
-
-These tests verify that minishell properly detects and reports syntax errors.
-All syntax errors should:
-- Print an error message to stderr
-- Return exit code 2
-
-Run these tests early - they only require tokenization/parsing, not execution.
-"""
+"""Syntax error tests for minishell."""
 
 from config import TestCase
 
-# === Unclosed Quote Errors ===
 UNCLOSED_QUOTE_TESTS = [
     TestCase(
         name="unclosed single quote",
@@ -56,7 +47,6 @@ UNCLOSED_QUOTE_TESTS = [
     ),
 ]
 
-# === Pipe Syntax Errors ===
 PIPE_SYNTAX_TESTS = [
     TestCase(
         name="pipe at start",
@@ -95,7 +85,6 @@ PIPE_SYNTAX_TESTS = [
     ),
 ]
 
-# === Redirection Syntax Errors ===
 REDIR_SYNTAX_TESTS = [
     TestCase(
         name="redirect out no target",
@@ -183,7 +172,6 @@ REDIR_SYNTAX_TESTS = [
     ),
 ]
 
-# === Parentheses Syntax Errors (Bonus) ===
 PAREN_SYNTAX_TESTS = [
     TestCase(
         name="unmatched open paren",
@@ -227,7 +215,6 @@ PAREN_SYNTAX_TESTS = [
     ),
 ]
 
-# === Logical Operator Syntax Errors (Bonus) ===
 LOGICAL_SYNTAX_TESTS = [
     TestCase(
         name="and at start",

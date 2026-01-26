@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Minishell tester - main entry point."""
+
+"""Main entry point for minishell tester."""
 
 import argparse
 import sys
@@ -8,7 +9,6 @@ from pathlib import Path
 from config import Config, ValgrindConfig, Colors
 from runner import TestRunner, TestPrinter, TestLogger
 
-# Import test categories
 from tests.syntax import (
     get_all_syntax_tests,
     get_mandatory_syntax_tests,
@@ -81,7 +81,7 @@ from tests.redirections import (
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Minishell tester - compare your shell against bash",
+        description="Minishell tester",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -92,42 +92,49 @@ Examples:
   %(prog)s -i                   Run pipe tests
   %(prog)s -x                   Run execution tests
   %(prog)s -r                   Run redirection tests
-  %(prog)s -c syntax/quotes     Run specific subcategory
-  %(prog)s -c redirections/heredoc  Run heredoc tests
+  %(prog)s -v                   Verbose error outputs
+  %(prog)s -l                   Check leaks with valgrind (slow)
   %(prog)s --bonus              Include bonus tests (&&, ||, (), *)
-  %(prog)s -l                   Enable memory leak checks with valgrind (slow)
-  %(prog)s -v                   Verbose output
   %(prog)s --list               List all available categories
         """,
     )
 
     parser.add_argument(
-        "-m",
-        "--minishell",
-        type=Path,
-        default=Path("./minishell"),
-        help="Path to minishell binary (default: ./minishell)",
-    )
-
-    # Category shorthand flags
-    parser.add_argument(
         "-s", "--syntax", action="store_true", help="Run syntax error tests"
     )
     parser.add_argument(
-        "-p",
-        "--parsing",
-        action="store_true",
-        help="Run parsing tests (quotes, expansion)",
+        "-p", "--parsing", action="store_true", help="Run parsing tests",
     )
     parser.add_argument(
         "-b", "--builtins", action="store_true", help="Run builtin tests"
     )
-    parser.add_argument("-i", "--pipes", action="store_true", help="Run pipe tests")
+    parser.add_argument(
+        "-i", "--pipes", action="store_true", help="Run pipeline tests"
+    )
     parser.add_argument(
         "-x", "--execution", action="store_true", help="Run execution tests"
     )
     parser.add_argument(
         "-r", "--redirections", action="store_true", help="Run redirection tests"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Verbose output"
+    )
+    parser.add_argument(
+        "--list", action="store_true", help="List all available test categories"
+    )
+    parser.add_argument(
+        "--bonus", action="store_true", help="Include all bonus tests",
+    )
+    parser.add_argument(
+        "-l", "--leaks", action="store_true", help="Enable valgrind memory leak checks"
+    )
+    parser.add_argument(
+        "-t",
+        "--timeout",
+        type=float,
+        default=0.5,
+        help="Timeout per test in seconds (default: 0.5)",
     )
 
     parser.add_argument(
@@ -139,34 +146,12 @@ Examples:
     )
 
     parser.add_argument(
-        "--bonus",
-        action="store_true",
-        help="Include bonus tests (&&, ||, wildcards, etc.)",
+        "-m",
+        "--minishell",
+        type=Path,
+        default=Path("./minishell"),
+        help="Path to minishell binary (default: ./minishell)",
     )
-
-    parser.add_argument(
-        "-a", "--all", action="store_true", help="Run all test categories"
-    )
-
-    parser.add_argument(
-        "-t",
-        "--timeout",
-        type=float,
-        default=0.5,
-        help="Timeout per test in seconds (default: 0.5)",
-    )
-
-    parser.add_argument(
-        "-l", "--leaks", action="store_true", help="Enable valgrind memory leak checks"
-    )
-
-    parser.add_argument(
-        "--no-fds",
-        action="store_true",
-        help="Skip file descriptor checking (when using -l/--leaks)",
-    )
-
-    parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     parser.add_argument(
         "-o",
@@ -174,10 +159,6 @@ Examples:
         type=Path,
         default=Path("minishell_test.log"),
         help="Log file for failed tests (default: minishell_test.log)",
-    )
-
-    parser.add_argument(
-        "--list", action="store_true", help="List all available test categories"
     )
 
     return parser.parse_args()
@@ -191,7 +172,7 @@ def list_categories():
         "syntax/pipe": "Pipe syntax errors",
         "syntax/redirect": "Redirection syntax errors",
         "syntax/parentheses": "Parentheses errors (bonus)",
-        "syntax/logical": "&&/|| errors (bonus)",
+        "syntax/logical": "&& and || errors (bonus)",
         "parsing": "All parsing tests (quotes + expansion)",
         "parsing/quotes": "Quote handling",
         "parsing/expansion": "Variable expansion ($VAR, $?, etc.)",
@@ -239,7 +220,7 @@ def list_categories():
         "redirections/heredoc/pipes": "Heredoc with pipes",
         "redirections/heredoc/edge": "Heredoc edge cases",
         "redirections/heredoc/multiple": "Multiple heredocs",
-        "redirections/heredoc/redir": "Heredoc with other redirections",
+        "redirections/heredoc/redir": "Heredoc with redirections",
     }
 
     print(f"\n{Colors.BOLD_GREEN}Available test categories:{Colors.RESET}\n")
@@ -260,25 +241,23 @@ def list_categories():
 def get_tests_for_categories(categories: list[str], include_bonus: bool):
     """Get all tests matching the specified categories."""
     tests = []
-
-    # Map category names to test lists
     category_map = {
-        # Syntax errors
         "syntax": get_mandatory_syntax_tests
         if not include_bonus
         else get_all_syntax_tests,
+
         "syntax/quotes": lambda: UNCLOSED_QUOTE_TESTS,
         "syntax/pipe": lambda: PIPE_SYNTAX_TESTS,
         "syntax/redirect": lambda: REDIR_SYNTAX_TESTS,
         "syntax/parentheses": lambda: PAREN_SYNTAX_TESTS,
         "syntax/logical": lambda: LOGICAL_SYNTAX_TESTS,
-        # Parsing
+
         "parsing": get_all_parsing_tests,
         "parsing/quotes": lambda: QUOTE_TESTS,
         "parsing/expansion": lambda: EXPANSION_TESTS,
         "parsing/tokenization": lambda: TOKENIZATION_TESTS,
         "parsing/edge_cases": lambda: EDGE_CASE_TESTS,
-        # Builtins
+
         "builtins": get_all_builtin_tests,
         "builtins/echo": lambda: ECHO_TESTS,
         "builtins/pwd": lambda: PWD_TESTS,
@@ -287,7 +266,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "builtins/unset": lambda: UNSET_TESTS,
         "builtins/env": lambda: ENV_TESTS,
         "builtins/exit": lambda: EXIT_TESTS,
-        # Pipes
+
         "pipes": get_all_pipe_tests,
         "pipes/basic": lambda: PIPE_BASIC_TESTS,
         "pipes/multiple": lambda: PIPE_MULTIPLE_TESTS,
@@ -295,7 +274,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "pipes/builtins": lambda: PIPE_BUILTIN_TESTS,
         "pipes/edge_cases": lambda: PIPE_EDGE_TESTS,
         "pipes/subshell": lambda: PIPE_SUBSHELL_TESTS,
-        # Execution
+
         "execution": get_all_execution_tests,
         "execution/basic": lambda: EXEC_BASIC_TESTS,
         "execution/absolute": lambda: EXEC_ABSOLUTE_TESTS,
@@ -308,7 +287,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "execution/arguments": lambda: EXEC_ARGS_TESTS,
         "execution/environment": lambda: EXEC_ENV_TESTS,
         "execution/exit_codes": lambda: EXEC_EXIT_TESTS,
-        # Redirections
+
         "redirections": get_all_redirection_tests,
         "redirections/output": lambda: REDIR_OUT_TESTS,
         "redirections/append": lambda: REDIR_APPEND_TESTS,
@@ -317,7 +296,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "redirections/pipes": lambda: REDIR_PIPE_TESTS,
         "redirections/errors": lambda: REDIR_ERROR_TESTS,
         "redirections/multiple": lambda: REDIR_MULTIPLE_TESTS,
-        # Heredoc
+
         "redirections/heredoc": get_heredoc_tests,
         "redirections/heredoc/basic": lambda: HEREDOC_BASIC_TESTS,
         "redirections/heredoc/expand": lambda: HEREDOC_EXPAND_TESTS,
@@ -329,8 +308,7 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     }
 
     if not categories:
-        # Default: all mandatory tests
-        categories = ["syntax", "parsing", "builtins"]
+        categories = ["syntax", "parsing", "builtins", "execution", "redirections",]
 
     for cat in categories:
         if cat in category_map:
@@ -347,7 +325,6 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     seen = set()
     unique_tests = []
     for t in tests:
-        # Use command or commands for dedup key
         if t.commands:
             key = (t.name, tuple(t.commands))
         else:
@@ -363,19 +340,18 @@ def check_requirements(config: Config) -> bool:
     """Check that required tools are available."""
     issues = []
 
-    # Check minishell exists
     if not config.minishell_path.exists():
         issues.append(f"Minishell not found at {config.minishell_path}")
     elif not config.minishell_path.is_file():
         issues.append(f"{config.minishell_path} is not a file")
 
-    # Check bash
     if not config.bash_cmd:
         issues.append("bash not found in PATH")
 
-    # Warn about optional tools
     if config.valgrind.enabled and not config.valgrind.available:
-        print(f"{Colors.warn('WARNING:')} valgrind not available, skipping memory checks")
+        print(
+            f"{Colors.warn('WARNING:')} valgrind not available"
+        )
         config.valgrind.enabled = False
 
     if issues:
@@ -389,19 +365,17 @@ def check_requirements(config: Config) -> bool:
 def main():
     args = parse_args()
 
-    # Handle --list
     if args.list:
         list_categories()
         return 0
 
-    # Build configuration
     tester_dir = Path(__file__).parent.parent
     supp_file = tester_dir / "supp" / "readline.supp"
 
     valgrind_config = ValgrindConfig(
         enabled=args.leaks,
         check_leaks=True,
-        check_fds=not args.no_fds,
+        check_fds=True,
         suppression_file=supp_file if supp_file.exists() else None,
     )
 
@@ -422,17 +396,6 @@ def main():
     if args.redirections:
         categories.append("redirections")
 
-    # If --all, run everything available
-    if args.all:
-        categories = [
-            "syntax",
-            "parsing",
-            "builtins",
-            "pipes",
-            "execution",
-            "redirections",
-        ]
-
     config = Config(
         minishell_path=args.minishell,
         timeout=args.timeout,
@@ -443,11 +406,9 @@ def main():
         log_file=args.log,
     )
 
-    # Check requirements
     if not check_requirements(config):
         return 1
 
-    # Get tests
     tests = get_tests_for_categories(categories, args.bonus)
 
     if not tests:
@@ -455,13 +416,12 @@ def main():
         print("Use --list to see available categories")
         return 1
 
-    # Initialize runner, printer, logger
     runner = TestRunner(config)
     printer = TestPrinter(config)
     logger = TestLogger(config)
 
     try:
-        # Group tests by top-level category for display
+        # Group tests by top-level category
         by_category = {}
         for test in tests:
             cat = test.category.split("/")[0]
@@ -492,7 +452,6 @@ def main():
                 printer.print_result(result, runner.test_num)
                 logger.log_result(result)
 
-        # Print summary
         summary = runner.get_summary()
         printer.print_summary(summary, runner.test_num)
 

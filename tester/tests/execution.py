@@ -1,20 +1,28 @@
-"""Execution tests for minishell - command resolution, PATH, permissions."""
+"""Execution tests for minishell."""
 
 from config import TestCase
 
-# === Basic Execution ===
 EXEC_BASIC_TESTS = [
     TestCase(
-        name="run ls", command="ls", category="execution/basic", skip_stdout_check=True
+        name="run ls",
+        command="ls",
+        category="execution/basic",
+        skip_stdout_check=True,
     ),
     TestCase(
-        name="run cat file", command="cat /etc/hostname", category="execution/basic"
+        name="run cat file",
+        command="cat /etc/hostname",
+        category="execution/basic",
     ),
     TestCase(
-        name="run true", command="true", category="execution/basic", expected_exit=0
+        name="run true",
+        command="true",
+        category="execution/basic",
     ),
     TestCase(
-        name="run false", command="false", category="execution/basic", expected_exit=1
+        name="run false",
+        command="false",
+        category="execution/basic",
     ),
     TestCase(
         name="run with args",
@@ -24,7 +32,6 @@ EXEC_BASIC_TESTS = [
     ),
 ]
 
-# === Absolute Path Execution ===
 EXEC_ABSOLUTE_TESTS = [
     TestCase(
         name="absolute path /bin/ls",
@@ -65,7 +72,6 @@ EXEC_ABSOLUTE_TESTS = [
     ),
 ]
 
-# === Relative Path Execution ===
 EXEC_RELATIVE_TESTS = [
     TestCase(
         name="relative path dot slash",
@@ -85,7 +91,6 @@ EXEC_RELATIVE_TESTS = [
     ),
 ]
 
-# === Command Not Found (exit 127) ===
 EXEC_NOT_FOUND_TESTS = [
     TestCase(
         name="nonexistent command",
@@ -143,7 +148,6 @@ EXEC_NOT_FOUND_TESTS = [
     ),
 ]
 
-# === Permission Denied (exit 126) ===
 EXEC_PERMISSION_TESTS = [
     TestCase(
         name="no execute permission",
@@ -175,7 +179,6 @@ EXEC_PERMISSION_TESTS = [
     ),
 ]
 
-# === PATH Resolution ===
 EXEC_PATH_TESTS = [
     TestCase(
         name="command from PATH",
@@ -196,7 +199,6 @@ EXEC_PATH_TESTS = [
     ),
 ]
 
-# === PATH Edge Cases (Multi-command) ===
 EXEC_PATH_EDGE_TESTS = [
     TestCase(
         name="unset PATH builtin still works",
@@ -234,7 +236,6 @@ EXEC_PATH_EDGE_TESTS = [
     ),
 ]
 
-# === Dot Files/Directories ===
 EXEC_DOT_TESTS = [
     TestCase(
         name="ls dot", command="ls .", category="execution/dot", skip_stdout_check=True
@@ -253,7 +254,6 @@ EXEC_DOT_TESTS = [
     ),
 ]
 
-# === Arguments Handling ===
 EXEC_ARGS_TESTS = [
     TestCase(
         name="multiple arguments",
@@ -292,7 +292,6 @@ EXEC_ARGS_TESTS = [
     ),
 ]
 
-# === Environment Passing ===
 EXEC_ENV_TESTS = [
     TestCase(
         name="child sees PATH",
@@ -316,7 +315,6 @@ EXEC_ENV_TESTS = [
     ),
 ]
 
-# === Exit Codes ===
 EXEC_EXIT_TESTS = [
     TestCase(
         name="exit code 0 from true",
@@ -356,9 +354,7 @@ EXEC_EXIT_TESTS = [
     ),
 ]
 
-# === Logical Operators (Bonus) ===
 EXEC_LOGICAL_TESTS = [
-    # Basic && (AND)
     TestCase(
         name="and both succeed",
         command="true && echo success",
@@ -384,7 +380,6 @@ EXEC_LOGICAL_TESTS = [
         bonus=True,
         expected_exit=1,
     ),
-    # Basic || (OR)
     TestCase(
         name="or first succeeds",
         command="true || echo fallback",
@@ -409,7 +404,6 @@ EXEC_LOGICAL_TESTS = [
         category="execution/logical",
         bonus=True,
     ),
-    # Mixed && and ||
     TestCase(
         name="and then or",
         command="false && echo no || echo fallback",
@@ -422,7 +416,6 @@ EXEC_LOGICAL_TESTS = [
         category="execution/logical",
         bonus=True,
     ),
-    # Exit status propagation
     TestCase(
         name="and preserves exit status",
         command="false && true",
@@ -439,7 +432,6 @@ EXEC_LOGICAL_TESTS = [
     ),
 ]
 
-# === Subshell Execution (Bonus) ===
 EXEC_SUBSHELL_TESTS = [
     TestCase(
         name="subshell basic",

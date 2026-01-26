@@ -2,15 +2,22 @@
 
 from config import TestCase
 
-# === Basic Pipe Tests ===
 PIPE_BASIC_TESTS = [
-    TestCase(name="pipe simple", command="echo hello | cat", category="pipes/basic"),
+    TestCase(
+        name="pipe simple",
+        command="echo hello | cat",
+        category="pipes/basic"
+    ),
     TestCase(
         name="pipe with grep",
         command="echo hello world | grep hello",
         category="pipes/basic",
     ),
-    TestCase(name="pipe with wc", command="echo hello | wc -c", category="pipes/basic"),
+    TestCase(
+        name="pipe with wc",
+        command="echo hello | wc -c",
+        category="pipes/basic"
+    ),
     TestCase(
         name="pipe preserves output",
         command="echo hello | cat | cat",
@@ -24,7 +31,6 @@ PIPE_BASIC_TESTS = [
     ),
 ]
 
-# === Multiple Pipes ===
 PIPE_MULTIPLE_TESTS = [
     TestCase(
         name="pipe three commands",
@@ -48,7 +54,6 @@ PIPE_MULTIPLE_TESTS = [
     ),
 ]
 
-# === Pipe Exit Status ===
 PIPE_EXIT_TESTS = [
     TestCase(
         name="pipe exit from last true",
@@ -100,19 +105,26 @@ PIPE_EXIT_TESTS = [
     ),
 ]
 
-# === Pipe with Builtins ===
 PIPE_BUILTIN_TESTS = [
     TestCase(
-        name="pipe echo to cat", command="echo hello | cat", category="pipes/builtins"
+        name="pipe echo to cat",
+        command="echo hello | cat",
+        category="pipes/builtins"
     ),
     TestCase(
         name="pipe echo to wc",
         command="echo hello world | wc -w",
         category="pipes/builtins",
     ),
-    TestCase(name="pipe pwd to cat", command="pwd | cat", category="pipes/builtins"),
     TestCase(
-        name="pipe env to grep", command="env | grep PATH", category="pipes/builtins"
+        name="pipe pwd to cat",
+        command="pwd | cat",
+        category="pipes/builtins"
+    ),
+    TestCase(
+        name="pipe env to grep",
+        command="env | grep PATH",
+        category="pipes/builtins"
     ),
     TestCase(
         name="pipe env to wc",
@@ -132,10 +144,11 @@ PIPE_BUILTIN_TESTS = [
     ),
 ]
 
-# === Pipe Edge Cases ===
 PIPE_EDGE_TESTS = [
     TestCase(
-        name="pipe no spaces", command="echo hello|cat", category="pipes/edge_cases"
+        name="pipe no spaces",
+        command="echo hello|cat",
+        category="pipes/edge_cases"
     ),
     TestCase(
         name="pipe only left space",
@@ -157,9 +170,15 @@ PIPE_EDGE_TESTS = [
         command="echo 'hello world' | cat",
         category="pipes/edge_cases",
     ),
-    TestCase(name="pipe empty echo", command="echo | cat", category="pipes/edge_cases"),
     TestCase(
-        name="pipe echo -n empty", command="echo -n | cat", category="pipes/edge_cases"
+        name="pipe empty echo",
+        command="echo | cat",
+        category="pipes/edge_cases"
+    ),
+    TestCase(
+        name="pipe echo -n empty",
+        command="echo -n | cat",
+        category="pipes/edge_cases"
     ),
     TestCase(
         name="pipe cat /dev/null",
@@ -188,7 +207,6 @@ PIPE_EDGE_TESTS = [
     ),
 ]
 
-# === Pipe with subshell and logical operators (Bonus) ===
 PIPE_SUBSHELL_TESTS = [
     TestCase(
         name="pipe from subshell",

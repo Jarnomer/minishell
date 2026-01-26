@@ -1,4 +1,4 @@
-"""Main test runner for minishell."""
+"""Test runner for minishell."""
 
 import os
 import re
@@ -28,8 +28,7 @@ class TestRunner:
         self.outfile_ms = self.test_dir / "outfile_minishell"
         self.outfile_ref = self.test_dir / "outfile_bash"
 
-        # Create default infile with test content
-        self.infile.write_text("line1\nline2\nline3\nalpha\nbeta\ngamma\n")
+        self.infile.write_text("line1\nline2\nline3\n42\n")
 
     def cleanup(self):
         """Remove test environment."""
@@ -291,7 +290,7 @@ class TestRunner:
 
     def _get_heredoc_info(self, test: TestCase) -> tuple[bool, set[str], list[str]]:
         """Extract heredoc information from test commands.
-        
+
         Returns:
             Tuple of (has_heredoc, delimiters, heredoc_content_lines)
         """
@@ -300,7 +299,7 @@ class TestRunner:
         heredoc_content = []
         in_heredoc = False
         current_delimiter = None
-        
+
         for cmd in commands:
             if in_heredoc:
                 # Check if this line is the delimiter
@@ -318,7 +317,7 @@ class TestRunner:
                     delimiters.add(delimiter)
                     in_heredoc = True
                     current_delimiter = delimiter
-        
+
         return bool(delimiters), delimiters, heredoc_content
 
     def _strip_prompt(self, output: str, test: TestCase) -> str:
@@ -338,7 +337,7 @@ class TestRunner:
 
         # Get heredoc info
         has_heredoc, delimiters, heredoc_content = self._get_heredoc_info(test)
-        
+
         # Build set of heredoc content lines to skip (with > prefix)
         heredoc_lines_to_skip = set()
         if has_heredoc:
@@ -361,7 +360,7 @@ class TestRunner:
             # Skip the 'exit' command we inject
             if line.strip() == "exit":
                 continue
-            
+
             # Skip heredoc prompt lines (> content)
             if has_heredoc:
                 # Check if line is a heredoc prompt line
@@ -410,7 +409,7 @@ class TestRunner:
                 continue
             if line.strip() == "exit":
                 continue
-            
+
             # Skip heredoc prompt lines for bash too (> content)
             if has_heredoc and line.startswith("> "):
                 continue
@@ -486,7 +485,7 @@ class TestRunner:
         """Remove files created during a test run (keep only setup files)."""
         # Files we always keep
         keep_files = {"infile"}
-        
+
         for item in self.test_dir.iterdir():
             if item.name not in keep_files and item.is_file():
                 item.unlink()
@@ -512,11 +511,11 @@ class TestRunner:
 
         # Run in minishell first
         ms_result = self.run_minishell(test, timeout, env)
-        
+
         # Clean up files created by minishell before running bash
         # This prevents file content from accumulating between runs
         self._cleanup_test_files()
-        
+
         # Re-setup test files for bash run
         for filename, content in test.setup_files.items():
             (self.test_dir / filename).write_text(content)
@@ -820,3 +819,4 @@ class TestLogger:
                 f.write(f"\nValgrind output:\n{result.valgrind.raw_output}\n")
 
             f.write("\n" + "=" * 60 + "\n\n")
+

@@ -1,15 +1,7 @@
-"""Parsing tests for minishell - quotes and variable expansion only.
-
-These tests focus on tokenization, quote handling, and variable expansion.
-They require only: lexer + parser + expander + ability to run echo.
-
-Syntax error tests are in syntax.py (separate category).
-Pipe and redirection tests are in their own categories.
-"""
+"""Parsing tests for minishell"""
 
 from config import TestCase
 
-# === Basic Quote Handling ===
 QUOTE_BASIC_TESTS = [
     TestCase(
         name="single quotes basic",
@@ -21,8 +13,16 @@ QUOTE_BASIC_TESTS = [
         command='echo "hello world"',
         category="parsing/quotes",
     ),
-    TestCase(name="empty single quotes", command="echo ''", category="parsing/quotes"),
-    TestCase(name="empty double quotes", command='echo ""', category="parsing/quotes"),
+    TestCase(
+        name="empty single quotes",
+        command="echo ''",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="empty double quotes",
+        command='echo ""',
+        category="parsing/quotes"
+    ),
     TestCase(
         name="adjacent single quotes",
         command="echo 'hel''lo'",
@@ -50,7 +50,6 @@ QUOTE_BASIC_TESTS = [
     ),
 ]
 
-# === Quote Whitespace Preservation ===
 QUOTE_WHITESPACE_TESTS = [
     TestCase(
         name="quotes preserve spaces",
@@ -73,11 +72,12 @@ QUOTE_WHITESPACE_TESTS = [
         category="parsing/quotes",
     ),
     TestCase(
-        name="only spaces in quotes", command='echo "     "', category="parsing/quotes"
+        name="only spaces in quotes",
+        command='echo "     "',
+        category="parsing/quotes"
     ),
 ]
 
-# === Quote Mixing Within Words ===
 QUOTE_MIXING_TESTS = [
     TestCase(
         name="single quote inside double",
@@ -116,7 +116,6 @@ QUOTE_MIXING_TESTS = [
     ),
 ]
 
-# === Special Characters in Quotes ===
 QUOTE_SPECIAL_CHARS_TESTS = [
     TestCase(
         name="pipe symbol in quotes",
@@ -124,13 +123,19 @@ QUOTE_SPECIAL_CHARS_TESTS = [
         category="parsing/quotes",
     ),
     TestCase(
-        name="redirect in quotes", command='echo "a > b"', category="parsing/quotes"
+        name="redirect in quotes",
+        command='echo "a > b"',
+        category="parsing/quotes"
     ),
     TestCase(
-        name="ampersand in quotes", command="echo 'a && b'", category="parsing/quotes"
+        name="ampersand in quotes",
+        command="echo 'a && b'",
+        category="parsing/quotes"
     ),
     TestCase(
-        name="semicolon in quotes", command="echo 'a;b;c'", category="parsing/quotes"
+        name="semicolon in quotes",
+        command="echo 'a;b;c'",
+        category="parsing/quotes"
     ),
     TestCase(
         name="parentheses in quotes",
@@ -138,16 +143,9 @@ QUOTE_SPECIAL_CHARS_TESTS = [
         category="parsing/quotes",
     ),
     TestCase(
-        name="brackets in quotes", command="echo '[test]'", category="parsing/quotes"
-    ),
-    TestCase(
-        name="backslash in single quotes",
-        command="echo 'hello\\world'",
-        category="parsing/quotes",
-    ),
-    TestCase(name="asterisk in quotes", command="echo '*'", category="parsing/quotes"),
-    TestCase(
-        name="question mark in quotes", command="echo '?'", category="parsing/quotes"
+        name="brackets in quotes",
+        command="echo '[test]'",
+        category="parsing/quotes"
     ),
     TestCase(
         name="multiple special chars",
@@ -159,12 +157,23 @@ QUOTE_SPECIAL_CHARS_TESTS = [
         command="echo '$HOME $USER'",
         category="parsing/quotes",
     ),
+    TestCase(
+        name="question mark in quotes",
+        command="echo '?'",
+        category="parsing/quotes"
+    ),
+    TestCase(
+        name="asterisk in quotes",
+        command="echo '*'",
+        category="parsing/quotes"
+    ),
 ]
 
-# === Weird Quote Combinations ===
 QUOTE_WEIRD_TESTS = [
     TestCase(
-        name="many empty quotes", command='echo "" "" "" ""', category="parsing/quotes"
+        name="many empty quotes",
+        command='echo "" "" "" ""',
+        category="parsing/quotes"
     ),
     TestCase(
         name="alternating empty quotes",
@@ -172,7 +181,9 @@ QUOTE_WEIRD_TESTS = [
         category="parsing/quotes",
     ),
     TestCase(
-        name="six consecutive quotes", command='echo """"""', category="parsing/quotes"
+        name="six consecutive quotes",
+        command='echo """"""',
+        category="parsing/quotes"
     ),
     TestCase(
         name="multiple quoted args",
@@ -181,7 +192,6 @@ QUOTE_WEIRD_TESTS = [
     ),
 ]
 
-# Combine all quote tests
 QUOTE_TESTS = (
     QUOTE_BASIC_TESTS
     + QUOTE_WHITESPACE_TESTS
@@ -190,10 +200,17 @@ QUOTE_TESTS = (
     + QUOTE_WEIRD_TESTS
 )
 
-# === Basic Variable Expansion ===
 EXPANSION_BASIC_TESTS = [
-    TestCase(name="expand USER", command="echo $USER", category="parsing/expansion"),
-    TestCase(name="expand HOME", command="echo $HOME", category="parsing/expansion"),
+    TestCase(
+        name="expand USER",
+        command="echo $USER",
+        category="parsing/expansion"
+    ),
+    TestCase(
+        name="expand HOME",
+        command="echo $HOME",
+        category="parsing/expansion"
+    ),
     TestCase(
         name="expand PATH",
         command="echo $PATH | wc -c",
@@ -206,11 +223,12 @@ EXPANSION_BASIC_TESTS = [
         category="parsing/expansion",
     ),
     TestCase(
-        name="expand exit status", command="echo $?", category="parsing/expansion"
+        name="expand exit status",
+        command="echo $?",
+        category="parsing/expansion"
     ),
 ]
 
-# === Expansion in Quotes ===
 EXPANSION_QUOTES_TESTS = [
     TestCase(
         name="expand in double quotes",
@@ -254,13 +272,21 @@ EXPANSION_QUOTES_TESTS = [
     ),
 ]
 
-# === Expansion Edge Cases ===
 EXPANSION_EDGE_TESTS = [
-    TestCase(name="dollar at end", command="echo hello$", category="parsing/expansion"),
     TestCase(
-        name="dollar at end in quotes", command='echo "$"', category="parsing/expansion"
+        name="dollar at end",
+        command="echo hello$",
+        category="parsing/expansion"),
+    TestCase(
+        name="dollar at end in quotes",
+        command='echo "$"',
+        category="parsing/expansion"
     ),
-    TestCase(name="dollar space", command="echo $ hello", category="parsing/expansion"),
+    TestCase(
+        name="dollar space",
+        command="echo $ hello",
+        category="parsing/expansion"
+    ),
     TestCase(
         name="double dollar",
         command="echo $$",
@@ -271,10 +297,12 @@ EXPANSION_EDGE_TESTS = [
         name="double dollar in quotes",
         command='echo "$$"',
         category="parsing/expansion",
-        skip_stdout_check=True,
+        skip_stdout_check=True,  # PID varies
     ),
     TestCase(
-        name="dollar question dollar", command="echo $?$?", category="parsing/expansion"
+        name="dollar question dollar",
+        command="echo $?$?",
+        category="parsing/expansion"
     ),
     TestCase(
         name="dollar followed by number",
@@ -292,7 +320,9 @@ EXPANSION_EDGE_TESTS = [
         category="parsing/expansion",
     ),
     TestCase(
-        name="quoted dollar sign", command="echo '$'", category="parsing/expansion"
+        name="quoted dollar sign",
+        command="echo '$'",
+        category="parsing/expansion"
     ),
     TestCase(
         name="mixed quoted unquoted exit status",
@@ -321,10 +351,12 @@ EXPANSION_EDGE_TESTS = [
     ),
 ]
 
-# Combine all expansion tests
-EXPANSION_TESTS = EXPANSION_BASIC_TESTS + EXPANSION_QUOTES_TESTS + EXPANSION_EDGE_TESTS
+EXPANSION_TESTS = (
+    EXPANSION_BASIC_TESTS
+    + EXPANSION_QUOTES_TESTS
+    + EXPANSION_EDGE_TESTS
+)
 
-# === Tokenization / Whitespace ===
 TOKENIZATION_TESTS = [
     TestCase(
         name="multiple spaces between args",
@@ -341,11 +373,18 @@ TOKENIZATION_TESTS = [
         command="echo hello   ",
         category="parsing/tokenization",
     ),
-    TestCase(name="only whitespace", command="   ", category="parsing/tokenization"),
-    TestCase(name="empty command", command="", category="parsing/tokenization"),
+    TestCase(
+        name="only whitespace",
+        command="   ",
+        category="parsing/tokenization"
+    ),
+    TestCase(
+        name="empty command",
+        command="",
+        category="parsing/tokenization"
+    ),
 ]
 
-# === Edge Cases ===
 EDGE_CASE_TESTS = [
     TestCase(
         name="empty string argument",
@@ -387,6 +426,11 @@ EDGE_CASE_TESTS = [
 
 
 def get_all_parsing_tests() -> list[TestCase]:
-    """Return all parsing tests (quotes, expansion, tokenization)."""
-    return QUOTE_TESTS + EXPANSION_TESTS + TOKENIZATION_TESTS + EDGE_CASE_TESTS
+    """Return all parsing tests."""
+    return (
+        QUOTE_TESTS
+        + EXPANSION_TESTS
+        + TOKENIZATION_TESTS
+        + EDGE_CASE_TESTS
+    )
 

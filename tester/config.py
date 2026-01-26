@@ -6,7 +6,6 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
-# === Colors ===
 class Colors:
     RED = "\033[0;31m"
     GREEN = "\033[0;32m"
@@ -86,23 +85,18 @@ class ValgrindConfig:
 class Config:
     """Main configuration."""
 
-    # Paths
     minishell_path: Path = field(default_factory=lambda: Path("./minishell"))
     test_dir: Path = field(default_factory=lambda: Path("/tmp/minishell_test"))
     log_file: Path = field(default_factory=lambda: Path("minishell_test.log"))
 
-    # Execution
     timeout: float = 0.5
     reference_shell: str = "bash"
 
-    # Valgrind
     valgrind: ValgrindConfig = field(default_factory=ValgrindConfig)
 
-    # Test selection
     categories: list[str] = field(default_factory=list)
     bonus_enabled: bool = False
 
-    # Output
     verbose: bool = False
     color_enabled: bool = True
 
@@ -121,7 +115,7 @@ class Config:
 # === Result Types ===
 @dataclass
 class ExecutionResult:
-    """Result of running a single command."""
+    """Single command result."""
 
     stdout: str
     stderr: str
@@ -154,20 +148,16 @@ class TestResult:
     category: str
     command: str
 
-    # Execution results
     minishell: ExecutionResult
     reference: ExecutionResult
 
-    # Comparisons
     stdout_match: bool = False
     stderr_match: bool = False
     exit_code_match: bool = False
     outfile_match: bool = True
 
-    # Memory
     valgrind: Optional[ValgrindResult] = None
 
-    # Zombies
     zombie_count: int = 0
 
     @property
@@ -209,25 +199,21 @@ class TestCase:
     """Definition of a single test."""
 
     name: str
-    command: str = ""  # Single command
-    commands: list[str] = field(default_factory=list)  # Multi-command
+    command: str = ""
+    commands: list[str] = field(default_factory=list)
     category: str = "general"
 
-    # Expected behavior
     expected_exit: Optional[int] = None  # None = match bash
     expect_error: bool = False
 
-    # Setup
-    setup_files: dict[str, str] = field(default_factory=dict)  # filename -> content
+    setup_files: dict[str, str] = field(default_factory=dict)
     env_vars: dict[str, str] = field(default_factory=dict)
 
-    # Flags
     skip_valgrind: bool = False
     skip_stdout_check: bool = False
     bonus: bool = False
 
-    # Timeout override
-    timeout: Optional[float] = None
+    timeout: Optional[float] = None # Timeout override
 
     def get_display_command(self) -> str:
         """Get command string for display purposes."""

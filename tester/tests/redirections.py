@@ -2,8 +2,6 @@
 
 from config import TestCase
 
-# === Output Redirection (>) ===
-# Note: Use relative paths - tests run in tester's temp directory
 REDIR_OUT_TESTS = [
     TestCase(
         name="redirect out basic",
@@ -68,7 +66,6 @@ REDIR_OUT_TESTS = [
     ),
 ]
 
-# === Append Redirection (>>) ===
 REDIR_APPEND_TESTS = [
     TestCase(
         name="append basic",
@@ -111,7 +108,6 @@ REDIR_APPEND_TESTS = [
     ),
 ]
 
-# === Input Redirection (<) ===
 REDIR_IN_TESTS = [
     TestCase(
         name="redirect in basic",
@@ -162,7 +158,6 @@ REDIR_IN_TESTS = [
     ),
 ]
 
-# === Combined Redirections ===
 REDIR_COMBINED_TESTS = [
     TestCase(
         name="redirect in and out",
@@ -206,7 +201,6 @@ REDIR_COMBINED_TESTS = [
     ),
 ]
 
-# === Redirections with Pipes ===
 REDIR_PIPE_TESTS = [
     TestCase(
         name="pipe then redirect out",
@@ -258,7 +252,6 @@ REDIR_PIPE_TESTS = [
     ),
 ]
 
-# === Redirection Errors ===
 REDIR_ERROR_TESTS = [
     TestCase(
         name="redirect out to directory",
@@ -310,7 +303,6 @@ REDIR_ERROR_TESTS = [
     ),
 ]
 
-# === Multiple Redirections ===
 REDIR_MULTIPLE_TESTS = [
     TestCase(
         name="multiple output redirects",
@@ -341,7 +333,6 @@ REDIR_MULTIPLE_TESTS = [
     ),
 ]
 
-# === Heredoc Tests ===
 HEREDOC_BASIC_TESTS = [
     TestCase(
         name="heredoc basic",
@@ -370,7 +361,6 @@ HEREDOC_BASIC_TESTS = [
     ),
 ]
 
-# === Heredoc Variable Expansion ===
 HEREDOC_EXPAND_TESTS = [
     TestCase(
         name="heredoc expands variable",
@@ -396,7 +386,6 @@ HEREDOC_EXPAND_TESTS = [
     ),
 ]
 
-# === Heredoc Quoted Delimiter (no expansion) ===
 HEREDOC_QUOTED_TESTS = [
     TestCase(
         name="heredoc quoted delimiter single",
@@ -420,7 +409,6 @@ HEREDOC_QUOTED_TESTS = [
     ),
 ]
 
-# === Heredoc with Pipes ===
 HEREDOC_PIPE_TESTS = [
     TestCase(
         name="heredoc piped to cat",
@@ -444,14 +432,12 @@ HEREDOC_PIPE_TESTS = [
     ),
 ]
 
-# === Heredoc Edge Cases ===
 HEREDOC_EDGE_TESTS = [
     TestCase(
         name="heredoc with spaces in content",
         commands=["cat << EOF", "   spaces   ", "EOF"],
         category="redirections/heredoc",
     ),
-    # Note: Tab test removed - tabs trigger readline completion in interactive mode
     TestCase(
         name="heredoc delimiter in content",
         commands=["cat << EOF", "not EOF yet", "still not", "EOF"],
@@ -484,7 +470,6 @@ HEREDOC_EDGE_TESTS = [
     ),
 ]
 
-# === Multiple Heredocs ===
 HEREDOC_MULTIPLE_TESTS = [
     TestCase(
         name="two heredocs sequential",
@@ -520,7 +505,6 @@ HEREDOC_MULTIPLE_TESTS = [
     ),
 ]
 
-# === Heredoc with Redirections ===
 HEREDOC_REDIR_TESTS = [
     TestCase(
         name="heredoc output to file",
