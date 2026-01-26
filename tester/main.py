@@ -94,6 +94,8 @@ Examples:
   %(prog)s -r                   Run redirection tests
   %(prog)s -v                   Verbose error outputs
   %(prog)s -l                   Check leaks with valgrind (slow)
+  %(prog)s -f 100               Run 100 random fuzzer tests
+  %(prog)s -f 100 --seed 42     Run reproducible fuzzer tests
   %(prog)s --bonus              Include bonus tests (&&, ||, (), *)
   %(prog)s --list               List all available categories
         """,
@@ -136,29 +138,37 @@ Examples:
         default=0.5,
         help="Timeout per test in seconds (default: 0.5)",
     )
-
     parser.add_argument(
         "-c",
         "--category",
         action="append",
         dest="categories",
-        help="Run specific test category/subcategory (can be used multiple times)",
+        help="Run specific test category",
     )
-
     parser.add_argument(
         "-m",
         "--minishell",
         type=Path,
         default=Path("./minishell"),
-        help="Path to minishell binary (default: ./minishell)",
+        help="Path to minishell binary ",
     )
-
     parser.add_argument(
         "-o",
         "--log",
         type=Path,
-        default=Path("minishell_test.log"),
-        help="Log file for failed tests (default: minishell_test.log)",
+        default=Path("test_result.log"),
+        help="Log file for failed tests",
+    )
+    parser.add_argument(
+        "-f", "--fuzzer",
+        type=int,
+        metavar="N",
+        help="Run N randomly generated fuzzer tests"
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        help="Random seed for reproducible fuzzer tests"
     )
 
     return parser.parse_args()
@@ -235,6 +245,10 @@ def list_categories():
 
         indent = "  " if "/" in cat else ""
         print(f"{indent}{Colors.CYAN}{cat:30}{Colors.RESET} {desc}")
+    
+    print(f"\n{Colors.BOLD_GREEN}Fuzzer:{Colors.RESET}\n")
+    print(f"  {Colors.CYAN}{'-f N, --fuzzer N':30}{Colors.RESET} Run N random tests")
+    print(f"  {Colors.CYAN}{'--seed SEED':30}{Colors.RESET} Reproducible random seed")
     print()
 
 
@@ -362,6 +376,111 @@ def check_requirements(config: Config) -> bool:
     return True
 
 
+def run_fuzzer_tests(args, config: Config) -> int:
+    """Run fuzzer-generated tests.
+    
+    Args:
+        args: Parsed command line arguments
+        config: Test configuration
+        
+    Returns:
+        Exit code (0 = success, 1 = failures)
+    """
+    from tests.fuzzer import MinishellFuzzer
+    
+    fuzzer = MinishellFuzzer(seed=args.seed, include_bonus=args.bonus)
+    tests = fuzzer.generate_tests(args.fuzzer)
+    
+    runner = TestRunner(config)
+    printer = TestPrinter(config)
+    logger = TestLogger(config)
+    
+    printer.print_header(f"FUZZER: {args.fuzzer}")
+    print(f"{Colors.info('Seed:')} {fuzzer.seed}")
+    print()
+    
+    try:
+        for test in tests:
+            # Filter bonus tests if not enabled
+            if test.bonus and not args.bonus:
+                continue
+            
+            result = runner.run_test(test)
+            printer.print_result(result, runner.test_num)
+            logger.log_result(result)
+        
+        summary = runner.get_summary()
+        printer.print_summary(summary, runner.test_num)
+        
+        return 0 if summary["failed"] == 0 else 1
+    
+    finally:
+        runner.cleanup()
+
+
+def run_category_tests(args, config: Config, categories: list[str]) -> int:
+    """Run category-based tests.
+    
+    Args:
+        args: Parsed command line arguments
+        config: Test configuration
+        categories: List of categories to run
+        
+    Returns:
+        Exit code (0 = success, 1 = failures)
+    """
+    tests = get_tests_for_categories(categories, args.bonus)
+
+    if not tests:
+        print(f"{Colors.warn('No tests to run!')}")
+        print("Use --list to see available categories")
+        return 1
+    
+    runner = TestRunner(config)
+    printer = TestPrinter(config)
+    logger = TestLogger(config)
+    
+    try:
+        # Group tests by top-level category
+        by_category = {}
+        for test in tests:
+            cat = test.category.split("/")[0]
+            if cat not in by_category:
+                by_category[cat] = []
+            by_category[cat].append(test)
+        
+        # Run tests in logical order
+        category_order = [
+            "syntax",
+            "parsing",
+            "builtins",
+            "pipes",
+            "execution",
+            "redirections",
+        ]
+        sorted_categories = sorted(
+            by_category.keys(),
+            key=lambda x: category_order.index(x) if x in category_order else 999,
+        )
+        
+        for category in sorted_categories:
+            cat_tests = by_category[category]
+            printer.print_header(category.upper())
+            
+            for test in cat_tests:
+                result = runner.run_test(test)
+                printer.print_result(result, runner.test_num)
+                logger.log_result(result)
+        
+        summary = runner.get_summary()
+        printer.print_summary(summary, runner.test_num)
+        
+        return 0 if summary["failed"] == 0 else 1
+    
+    finally:
+        runner.cleanup()
+
+
 def main():
     args = parse_args()
 
@@ -379,10 +498,7 @@ def main():
         suppression_file=supp_file if supp_file.exists() else None,
     )
 
-    # Build categories list from flags
     categories = args.categories or []
-
-    # Add categories from shorthand flags
     if args.syntax:
         categories.append("syntax")
     if args.parsing:
@@ -409,56 +525,10 @@ def main():
     if not check_requirements(config):
         return 1
 
-    tests = get_tests_for_categories(categories, args.bonus)
-
-    if not tests:
-        print(f"{Colors.warn('No tests to run!')}")
-        print("Use --list to see available categories")
-        return 1
-
-    runner = TestRunner(config)
-    printer = TestPrinter(config)
-    logger = TestLogger(config)
-
-    try:
-        # Group tests by top-level category
-        by_category = {}
-        for test in tests:
-            cat = test.category.split("/")[0]
-            if cat not in by_category:
-                by_category[cat] = []
-            by_category[cat].append(test)
-
-        # Run tests in logical order
-        category_order = [
-            "syntax",
-            "parsing",
-            "builtins",
-            "pipes",
-            "execution",
-            "redirections",
-        ]
-        sorted_categories = sorted(
-            by_category.keys(),
-            key=lambda x: category_order.index(x) if x in category_order else 999,
-        )
-
-        for category in sorted_categories:
-            cat_tests = by_category[category]
-            printer.print_header(category.upper())
-
-            for test in cat_tests:
-                result = runner.run_test(test)
-                printer.print_result(result, runner.test_num)
-                logger.log_result(result)
-
-        summary = runner.get_summary()
-        printer.print_summary(summary, runner.test_num)
-
-        return 0 if summary["failed"] == 0 else 1
-
-    finally:
-        runner.cleanup()
+    if args.fuzzer:
+        return run_fuzzer_tests(args, config)
+    
+    return run_category_tests(args, config, categories)
 
 
 if __name__ == "__main__":

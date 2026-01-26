@@ -87,7 +87,7 @@ class Config:
 
     minishell_path: Path = field(default_factory=lambda: Path("./minishell"))
     test_dir: Path = field(default_factory=lambda: Path("/tmp/minishell_test"))
-    log_file: Path = field(default_factory=lambda: Path("minishell_test.log"))
+    log_file: Path = field(default_factory=lambda: Path("test_result.log"))
 
     timeout: float = 0.5
     reference_shell: str = "bash"
