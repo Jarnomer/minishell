@@ -19,7 +19,7 @@
 
 static void	shell_cleanup(t_shell *shell)
 {
-	vec_free(&shell->env, free_str);
+	vec_free(&shell->env, free);
 	rl_clear_history();
 }
 

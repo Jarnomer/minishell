@@ -18,6 +18,8 @@ static int	apply_hdoc(t_redir *redir)
 		return (-1);
 	if (try_dup2(redir->fd, STDIN_FILENO) == -1)
 		return (-1);
+	safe_close(redir->fd);
+	redir->fd = -1;
 	return (0);
 }
 

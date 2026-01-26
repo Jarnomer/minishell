@@ -37,14 +37,14 @@ static char	*search_in_paths(char **paths, const char *cmd)
 		{
 			if (stat(full_path, &st) == 0 && S_ISREG(st.st_mode))
 			{
-				ft_free_double((void ***)&paths);
+				free_arr(paths);
 				return (full_path);
 			}
 		}
 		free(full_path);
 		i++;
 	}
-	ft_free_double((void ***)&paths);
+	free_arr(paths);
 	return (NULL);
 }
 

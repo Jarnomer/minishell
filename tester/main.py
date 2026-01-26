@@ -395,10 +395,14 @@ def main():
         return 0
 
     # Build configuration
+    tester_dir = Path(__file__).parent.parent
+    supp_file = tester_dir / "supp" / "readline.supp"
+
     valgrind_config = ValgrindConfig(
         enabled=args.leaks,
         check_leaks=True,
         check_fds=not args.no_fds,
+        suppression_file=supp_file if supp_file.exists() else None,
     )
 
     # Build categories list from flags

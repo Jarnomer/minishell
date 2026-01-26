@@ -37,6 +37,7 @@ static void	heredoc_child(t_redir *redir, t_shell *shell, int write_fd)
 	}
 	ft_putstr_fd(content, write_fd);
 	free(content);
+	safe_close(write_fd);
 	exit(EC_SUCCESS);
 }
 

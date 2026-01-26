@@ -33,7 +33,7 @@ void	close_pipe(int pipefd[2]);
 bool	is_metachar(char c);
 bool	is_quote(char c);
 bool	has_quotes(const char *value);
-void	free_str(void *str);
 char	**vec_to_arr(t_vec *vec);
+void	free_arr(char **arr);
 
 #endif

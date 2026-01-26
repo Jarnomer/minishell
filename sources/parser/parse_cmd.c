@@ -29,7 +29,7 @@ void	cmd_free(void *ptr)
 	if (!ptr)
 		return ;
 	cmd = (t_cmd *)ptr;
-	vec_free(&cmd->args, free_str);
+	vec_free(&cmd->args, free);
 	vec_free(&cmd->redirs, redir_free);
 	free(cmd);
 }

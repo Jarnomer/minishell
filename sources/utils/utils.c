@@ -12,11 +12,6 @@
 
 #include <shell.h>
 
-void	free_str(void *str)
-{
-	free(str);
-}
-
 bool	is_metachar(char c)
 {
 	return (c && ft_strchr(METACHAR, c));
@@ -51,4 +46,19 @@ char	**vec_to_arr(t_vec *env)
 		i++;
 	}
 	return (arr);
+}
+
+void	free_arr(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
 }
