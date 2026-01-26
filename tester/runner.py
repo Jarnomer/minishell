@@ -289,8 +289,40 @@ class TestRunner:
         except Exception:
             return 0
 
+    def _get_heredoc_info(self, test: TestCase) -> tuple[bool, set[str], list[str]]:
+        """Extract heredoc information from test commands.
+        
+        Returns:
+            Tuple of (has_heredoc, delimiters, heredoc_content_lines)
+        """
+        commands = test.commands if test.is_multi_command() else [test.command]
+        delimiters = set()
+        heredoc_content = []
+        in_heredoc = False
+        current_delimiter = None
+        
+        for cmd in commands:
+            if in_heredoc:
+                # Check if this line is the delimiter
+                if cmd.strip() == current_delimiter:
+                    heredoc_content.append(cmd)
+                    in_heredoc = False
+                    current_delimiter = None
+                else:
+                    heredoc_content.append(cmd)
+            else:
+                # Check for heredoc operator
+                match = re.search(r'<<\s*(["\']?)(\S+)\1', cmd)
+                if match:
+                    delimiter = match.group(2)
+                    delimiters.add(delimiter)
+                    in_heredoc = True
+                    current_delimiter = delimiter
+        
+        return bool(delimiters), delimiters, heredoc_content
+
     def _strip_prompt(self, output: str, test: TestCase) -> str:
-        """Remove shell prompts and echoed commands from output for comparison."""
+        """Remove shell prompts, echoed commands, and heredoc input from output."""
         # First, remove all ANSI escape sequences
         ansi_escape = re.compile(r"\x1b\[[0-9;]*m")
         output_clean = ansi_escape.sub("", output)
@@ -303,6 +335,16 @@ class TestRunner:
             commands_to_skip = set(cmd.strip() for cmd in test.commands)
         else:
             commands_to_skip = {test.command.strip()}
+
+        # Get heredoc info
+        has_heredoc, delimiters, heredoc_content = self._get_heredoc_info(test)
+        
+        # Build set of heredoc content lines to skip (with > prefix)
+        heredoc_lines_to_skip = set()
+        if has_heredoc:
+            for content in heredoc_content:
+                heredoc_lines_to_skip.add(f"> {content}")
+                heredoc_lines_to_skip.add(content)  # Also without prefix
 
         for line in lines:
             # Remove prompt pattern from start of line
@@ -319,6 +361,15 @@ class TestRunner:
             # Skip the 'exit' command we inject
             if line.strip() == "exit":
                 continue
+            
+            # Skip heredoc prompt lines (> content)
+            if has_heredoc:
+                # Check if line is a heredoc prompt line
+                if line.startswith("> "):
+                    continue
+                # Also skip if it exactly matches heredoc content
+                if line in heredoc_lines_to_skip:
+                    continue
 
             cleaned.append(line)
 
@@ -346,6 +397,9 @@ class TestRunner:
         else:
             commands_to_skip = {test.command.strip()}
 
+        # Get heredoc info for bash too
+        has_heredoc, delimiters, heredoc_content = self._get_heredoc_info(test)
+
         for line in lines:
             # Remove various bash prompt patterns
             line = re.sub(r"^bash-[0-9.]+[$#] ", "", line)
@@ -355,6 +409,13 @@ class TestRunner:
             if line.strip() in commands_to_skip:
                 continue
             if line.strip() == "exit":
+                continue
+            
+            # Skip heredoc prompt lines for bash too (> content)
+            if has_heredoc and line.startswith("> "):
+                continue
+            # Skip heredoc content lines
+            if has_heredoc and line.strip() in heredoc_content:
                 continue
 
             cleaned.append(line)
@@ -421,6 +482,15 @@ class TestRunner:
             return any(">" in cmd for cmd in test.commands)
         return ">" in test.command
 
+    def _cleanup_test_files(self):
+        """Remove files created during a test run (keep only setup files)."""
+        # Files we always keep
+        keep_files = {"infile"}
+        
+        for item in self.test_dir.iterdir():
+            if item.name not in keep_files and item.is_file():
+                item.unlink()
+
     def run_test(self, test: TestCase) -> TestResult:
         """Execute a single test case."""
 
@@ -440,8 +510,18 @@ class TestRunner:
         # Build environment
         env = test.env_vars.copy() if test.env_vars else None
 
-        # Run in both shells
+        # Run in minishell first
         ms_result = self.run_minishell(test, timeout, env)
+        
+        # Clean up files created by minishell before running bash
+        # This prevents file content from accumulating between runs
+        self._cleanup_test_files()
+        
+        # Re-setup test files for bash run
+        for filename, content in test.setup_files.items():
+            (self.test_dir / filename).write_text(content)
+
+        # Run in bash
         ref_result = self.run_bash(test, timeout, env)
 
         # For syntax error tests, check stderr has content and exit code is 2
@@ -614,6 +694,9 @@ class TestPrinter:
                 line = re.sub(r"minishell\$ exit$", "", line)
                 line = re.sub(r"minishell\$ $", "", line)
                 line = re.sub(r"minishell\$$", "", line)
+                # Also skip heredoc prompts for display
+                if line.startswith("> "):
+                    continue
                 if line.strip() == "exit":
                     continue
                 if line:
@@ -737,4 +820,3 @@ class TestLogger:
                 f.write(f"\nValgrind output:\n{result.valgrind.raw_output}\n")
 
             f.write("\n" + "=" * 60 + "\n\n")
-

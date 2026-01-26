@@ -244,4 +244,3 @@ class TestCase:
     def is_multi_command(self) -> bool:
         """Check if this is a multi-command test."""
         return len(self.commands) > 0
-

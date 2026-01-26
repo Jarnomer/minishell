@@ -57,11 +57,10 @@ from tests.execution import (
     EXEC_ARGS_TESTS,
     EXEC_ENV_TESTS,
     EXEC_EXIT_TESTS,
-    EXEC_LOGICAL_TESTS,
-    EXEC_SUBSHELL_TESTS,
 )
 from tests.redirections import (
     get_all_redirection_tests,
+    get_heredoc_tests,
     REDIR_OUT_TESTS,
     REDIR_APPEND_TESTS,
     REDIR_IN_TESTS,
@@ -69,13 +68,20 @@ from tests.redirections import (
     REDIR_PIPE_TESTS,
     REDIR_ERROR_TESTS,
     REDIR_MULTIPLE_TESTS,
+    HEREDOC_BASIC_TESTS,
+    HEREDOC_EXPAND_TESTS,
+    HEREDOC_QUOTED_TESTS,
+    HEREDOC_PIPE_TESTS,
+    HEREDOC_EDGE_TESTS,
+    HEREDOC_MULTIPLE_TESTS,
+    HEREDOC_REDIR_TESTS,
 )
 
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Minishell tester - compares against bash",
+        description="Minishell tester - compare your shell against bash",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -87,6 +93,7 @@ Examples:
   %(prog)s -x                   Run execution tests
   %(prog)s -r                   Run redirection tests
   %(prog)s -c syntax/quotes     Run specific subcategory
+  %(prog)s -c redirections/heredoc  Run heredoc tests
   %(prog)s --bonus              Include bonus tests (&&, ||, (), *)
   %(prog)s -l                   Enable memory leak checks with valgrind (slow)
   %(prog)s -v                   Verbose output
@@ -217,8 +224,6 @@ def list_categories():
         "execution/arguments": "Argument handling",
         "execution/environment": "Environment passing",
         "execution/exit_codes": "Exit code handling",
-        "execution/logical": "Exit code handling",
-        "execution/subshell": "Exit code handling",
         "redirections": "All redirection tests",
         "redirections/output": "Output redirection (>)",
         "redirections/append": "Append redirection (>>)",
@@ -227,6 +232,14 @@ def list_categories():
         "redirections/pipes": "Redirections with pipes",
         "redirections/errors": "Redirection errors",
         "redirections/multiple": "Multiple redirections",
+        "redirections/heredoc": "All heredoc tests (<<)",
+        "redirections/heredoc/basic": "Basic heredoc functionality",
+        "redirections/heredoc/expand": "Variable expansion in heredoc",
+        "redirections/heredoc/quoted": "Quoted delimiter (no expansion)",
+        "redirections/heredoc/pipes": "Heredoc with pipes",
+        "redirections/heredoc/edge": "Heredoc edge cases",
+        "redirections/heredoc/multiple": "Multiple heredocs",
+        "redirections/heredoc/redir": "Heredoc with other redirections",
     }
 
     print(f"\n{Colors.BOLD_GREEN}Available test categories:{Colors.RESET}\n")
@@ -251,9 +264,9 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
     # Map category names to test lists
     category_map = {
         # Syntax errors
-        "syntax": (
-            get_mandatory_syntax_tests if not include_bonus else get_all_syntax_tests
-        ),
+        "syntax": get_mandatory_syntax_tests
+        if not include_bonus
+        else get_all_syntax_tests,
         "syntax/quotes": lambda: UNCLOSED_QUOTE_TESTS,
         "syntax/pipe": lambda: PIPE_SYNTAX_TESTS,
         "syntax/redirect": lambda: REDIR_SYNTAX_TESTS,
@@ -295,8 +308,6 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "execution/arguments": lambda: EXEC_ARGS_TESTS,
         "execution/environment": lambda: EXEC_ENV_TESTS,
         "execution/exit_codes": lambda: EXEC_EXIT_TESTS,
-        "execution/logical": lambda: EXEC_LOGICAL_TESTS,
-        "execution/subshell": lambda: EXEC_SUBSHELL_TESTS,
         # Redirections
         "redirections": get_all_redirection_tests,
         "redirections/output": lambda: REDIR_OUT_TESTS,
@@ -306,6 +317,15 @@ def get_tests_for_categories(categories: list[str], include_bonus: bool):
         "redirections/pipes": lambda: REDIR_PIPE_TESTS,
         "redirections/errors": lambda: REDIR_ERROR_TESTS,
         "redirections/multiple": lambda: REDIR_MULTIPLE_TESTS,
+        # Heredoc
+        "redirections/heredoc": get_heredoc_tests,
+        "redirections/heredoc/basic": lambda: HEREDOC_BASIC_TESTS,
+        "redirections/heredoc/expand": lambda: HEREDOC_EXPAND_TESTS,
+        "redirections/heredoc/quoted": lambda: HEREDOC_QUOTED_TESTS,
+        "redirections/heredoc/pipes": lambda: HEREDOC_PIPE_TESTS,
+        "redirections/heredoc/edge": lambda: HEREDOC_EDGE_TESTS,
+        "redirections/heredoc/multiple": lambda: HEREDOC_MULTIPLE_TESTS,
+        "redirections/heredoc/redir": lambda: HEREDOC_REDIR_TESTS,
     }
 
     if not categories:
@@ -355,9 +375,7 @@ def check_requirements(config: Config) -> bool:
 
     # Warn about optional tools
     if config.valgrind.enabled and not config.valgrind.available:
-        print(
-            f"{Colors.warn('WARNING:')} valgrind not available, skipping memory checks"
-        )
+        print(f"{Colors.warn('WARNING:')} valgrind not available, skipping memory checks")
         config.valgrind.enabled = False
 
     if issues:
@@ -482,4 +500,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-
